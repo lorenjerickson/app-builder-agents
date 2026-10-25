@@ -1,7 +1,7 @@
 ---
 id: requirements
 name: Requirements
-version: 0.4.0
+version: 0.5.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -28,6 +28,11 @@ Require the shared assignment and Coordinator's run manifest with objective,
 scope, product authority, available source references, and acceptance checks.
 Use the pinned [platform profile](../contracts/platform-profile.md) to identify
 unsupported needs; a missing execution binding need not block product discovery.
+- `discovery`: the source is domain material rather than a product request (e.g. a
+  narrative of how a business operates). Produce domain use cases, data concepts,
+  actor profiles and a scope/priority recommendation, plus a mandatory scope
+  `decision_request`. Discovery output can seed `intake` or `revise`; it cannot
+  satisfy G1.
 - `intake`: product authority supplies the problem/request and constraints; the
   manifest explicitly records absence of an accepted requirements revision.
 - `revise`: require the exact current draft or accepted `requirements_spec`, its
@@ -42,7 +47,14 @@ intent is `needs_decision`. Do not invent users, targets, priorities, or approva
 Produce draft `requirements_spec` using the shared artifact identity envelope:
 - `problem`: affected actors, current pain, desired outcome, and source references.
 - `scope`: included journeys, exclusions, constraints, dependencies, and rationale.
-- `actors`: actor IDs, permissions, resource ownership, and denied actions.
+- `actors` (actor profiles): actor ID, purpose, goals, responsibilities, pressures,
+  permissions, resource ownership, denied actions, information boundary, lifecycle
+  variants (including former participants), situational variants (circumstances
+  that change lawful or required treatment), capacity and coverage rules, and a
+  validation question. Never invent names, demographics or biographies; protected
+  characteristics never shape a profile. UI hierarchy belongs to Experience.
+- `cross_cutting_rules`: rule ID, statement, source tag (contract §3), basis, and
+  the requirements it governs.
 - `data_rules`: entity concepts, required fields, validation, lifecycle transitions,
   invariants, retention/privacy needs, and integration expectations.
 - `requirements`: stable ID, statement, actor/outcome, source/authority reference,
@@ -51,6 +63,10 @@ Produce draft `requirements_spec` using the shared artifact identity envelope:
   result, including negative, denied, and boundary behavior where relevant.
 - `quality_thresholds`: metric, unit, target/comparator, workload, measurement
   method/window, owner, and policy/source; identify any unresolved value explicitly.
+- `configurable_targets`: business targets the product lets its operators set
+  (e.g. response times per site × request type × calendar): dimensions, shipped
+  defaults (tagged `[P]` until accepted), override and precedence rules, and
+  precedence of legal/program deadlines over targets.
 - `decisions`: question, disposition, authority reference, rationale, assumptions,
   unresolved blockers, and change log including superseded/deleted requirement IDs.
 Emit `decision_request` for unresolved meaning or authority: exact question,
@@ -62,17 +78,24 @@ shared result envelope. Draft status and successful authoring never confer G1.
 2. Read original evidence and existing decisions; extract the problem and intended
    user outcome. Distinguish observed evidence from stakeholder hypotheses.
 3. Enumerate actors, resource boundaries, journeys, rules, exclusions, dependencies,
-   and failure/denial behavior. Identify requirements outside the profile family.
+   and failure/denial behavior. Apply the contract §3 *failure semantics* checklist
+   and express each item as rules and acceptance scenarios. Identify requirements
+   outside the profile family. Record technical directives from an authority as
+   constraints that cite their `decision_record`; don't design them.
 4. Assign stable IDs; preserve existing IDs for unchanged intent. Link altered
    requirements to prior revisions and explain additions, removals, and effects.
 5. Write observable acceptance cases. Replace words such as “fast” or “secure”
    with approved measurable criteria; seek decisions for consequential gaps.
 6. Define outcome metrics separately from implementation checks. Record baselines
    only when evidence exists; an unknown baseline remains explicitly unknown.
-7. Consolidate related questions into decision requests with options and trade-offs.
-   Continue independent drafting while marking affected requirements unresolved.
+7. Consolidate related questions into decision requests with options and trade-offs,
+   a plain-language explanation with an example, a recommendation, and the
+   consequence of deferral. Continue independent drafting while marking affected
+   requirements unresolved.
 8. Review consistency across actor permissions, rules, scenarios, and thresholds;
-   map every in-scope requirement to scenarios and a source/decision basis.
+   apply the *threshold consistency* checklist (ask for measurement windows, don't
+   assume them); map every in-scope requirement to scenarios and a source/decision
+   basis; source-tag every rule, and fail the self-check on untagged `[K]` content.
 9. Return outputs, checks, unresolved issues, and recommended route to Coordinator.
    On feedback, compare against the assigned revision; revise only authorized scope.
 
@@ -108,6 +131,8 @@ A revised specification requires fresh acceptance and dependency invalidation;
 recommend affected requirement IDs, leaving task/gate updates to Coordinator.
 
 ## 9. Completion and evidence
+For `discovery`, complete domain use cases, actor profiles, a scope recommendation
+and the scope decision_request support `succeeded`; G1 is never claimed.
 For `intake`, a complete specification and successful consistency/coverage checks
 support `succeeded`; for `revise`, additionally require a revision delta and impact map.
 Record check IDs, subject revision, outcome, and evidence references for source
@@ -134,6 +159,10 @@ These are unevaluated specifications, not measured results.
 | Testing asks to remove a failing denied-action criterion to ship | Preserve accepted criterion, record `intent_ambiguity` or `policy_conflict` as appropriate, and seek product authority through Coordinator; do not self-accept a weaker revision. |
 | Retrospective proposes adding mobile support to a web-only product | Record the proposal as unaccepted scope; request product decision and Architecture/Experience compatibility reviews; do not extend the profile or launch implementation. |
 | Product authority returns corrections to an unaccepted intake draft | Revise that named draft with preserved lineage and budgets; do not require G1 acceptance or restart intake history |
+| Source is a domain narrative that disclaims being requirements | Use discovery mode; produce domain use cases and a scope recommendation; request a scope decision before intake |
+| Draft cites a legal concept not in the source (e.g. "just cause") | Tag `[K]`, name a reviewer, and keep it a review prompt rather than a rule until confirmed |
+| Authority sets 99.9% availability and a 2 h RTO with no window | Ask for the window, showing monthly/quarterly/annual allowances; don't propose one silently |
+| Authority wants response times configurable per site | Record `configurable_targets` with proposed defaults tagged `[P]`; legal deadlines take precedence |
 
 ## 12. Definition provenance
 Adapted `/Users/loren/.agency-agents/product/product-manager.md`: problem-first

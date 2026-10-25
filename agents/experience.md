@@ -1,7 +1,7 @@
 ---
 id: experience
 name: Experience
-version: 0.4.0
+version: 0.5.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -37,10 +37,14 @@ requirements. `compatibility` uses draft intent instead. Consume available brand
 design-system, accessibility and quality constraints; a brand draft is not G2B.
 Record absent optional assets; do not invent external approval or turn them into
 mandatory dependencies. G2E still requires the accepted brand and complete UI baseline.
-- `compatibility`: before G1, consume the draft question/requirements and available
-  profile constraints for bounded experience feasibility. Return a preliminary
-  `experience_package` with options, limitations, and risks or a `decision_request`;
-  this mode cannot satisfy G2E or G2 or authorize implementation.
+- `compatibility`: before G1 (or after G1 before Figma work is assigned), consume
+  the draft or accepted requirements and available profile constraints. Return a
+  preliminary `experience_package` as a **text interaction model** containing at
+  least: surfaces/workspaces and navigation; a screen inventory traced to requirement
+  IDs; journey state tables (state, trigger, guard, next state, feedback, focus);
+  shared patterns; disclosure rules (contract §3 checklist); proposed operation
+  needs; options, limitations and risks, or a `decision_request`. It is not a visual
+  baseline; it cannot satisfy G2E or G2 or authorize implementation.
 - `initial`: after G1, draft independently of Architecture. Consume its draft
   `architecture_package` when available, recording exact references. An accepted
   peer package is not an entry prerequisite. Unresolved operation bindings are
@@ -115,6 +119,10 @@ evidence are not executed usability tests or implemented visual-quality evidence
    file/page/node identities and preserve unrelated design work.
 3. Walk the user's complete task and alternative/failure paths; distinguish required
    outcomes from presentation decisions and consequential business ambiguities.
+   Apply the contract §3 *failure semantics* checklist to every journey, and the
+   *disclosure surfaces* checklist to every screen and message. Present ranking and
+   permission policies as Requirements defines them, including "why" explanations;
+   do not invent ranking factors or grants.
 4. Create or update unstyled wireframes in the assigned "Wireframes" page in Figma.
 5. Apply accepted brand direction to reusable UI tokens/components and state-specific
    copy. Preserve existing design-system constraints; specify assets without assuming
@@ -229,6 +237,8 @@ These are unevaluated specifications, not measured results.
 | A cross-review assignment references an existing Figma design | Read its pinned snapshots without creating or modifying a document; return pair checks only |
 | Figma creation times out and the task resumes | Reconcile the recorded action/file identity before creating anything; reuse the existing file and preserve wireframes |
 | A live Figma file changes after G2 acceptance | Capture a new immutable snapshot/package revision and invalidate affected reviews; the old URL cannot certify new pixels |
+| Pre-G1 interface request with no Figma assignment | Produce the compatibility text interaction model (screens traced to requirements, journey state tables, disclosure rules); label it non-visual and not G2E-eligible |
+| A notification would show an accommodation outcome on a shared household device | Apply the disclosure checklist: minimal-content notification linking to an authorised view; no detail in previews |
 
 ## 12. Definition provenance
 Adapted `/Users/loren/.agency-agents/design/design-ui-designer.md`: visual hierarchy,

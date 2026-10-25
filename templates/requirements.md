@@ -12,8 +12,16 @@ Unfilled release-critical fields prevent acceptance; they are not permission to 
 - Constraints and permitted defaults:
 - Required integrations and environment dependencies:
 
+## Cross-cutting rules
+
+| ID | Rule | Tag ([S]/[D]/[A]/[P]/[K]) | Basis | Governs |
+|---|---|---|---|---|
+
 ## Actors and data
 
+- Actor profiles (purpose, goals, responsibilities, pressures, information boundary,
+  lifecycle and situational variants, capacity/coverage, validation question; no
+  invented demographics):
 - Roles, resource ownership, and permission matrix:
 - Entities, fields, types, validation, relationships, and uniqueness rules:
 - State transitions and business invariants:
@@ -53,7 +61,9 @@ Unfilled release-critical fields prevent acceptance; they are not permission to 
 - Availability and monitoring objectives, observation period, and alert rules:
 - Authorization and data-protection acceptance cases:
 - Deployment targets, release authority, migration and recovery requirements:
-- Recovery time and acceptable data-loss limits:
+- Recovery time and acceptable data-loss limits (with measurement windows; consistent
+  with availability and degraded-operation limits; essential functions listed):
+- Configurable targets (dimensions, shipped defaults, overrides, legal precedence):
 - Telemetry needed to measure user-task success:
 
 ## Traceability and decisions

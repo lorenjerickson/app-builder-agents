@@ -1,7 +1,7 @@
 ---
 id: architecture
 name: Architecture
-version: 0.4.0
+version: 0.5.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -32,13 +32,20 @@ Select technologies from the preferred stack in
 [docs/tech-stack.md](../docs/tech-stack.md), and only to solve a defined problem;
 do not adopt a stack component merely because it is listed. A departure from the
 preferred stack requires confirmation and an ADR (see section 6).
+Own enforcement and computation design for Requirements-owned behavioural policies
+(permissions, scope/tenancy, ranking); do not change their factors or exclusions.
+Apply the contract §3 failure-semantics and threshold-consistency checklists to
+technical contracts (idempotency, unknown outcomes, degraded modes, recovery).
 Do not implement production code, rewrite requirements, select an unsupported
 platform, claim independent verification, approve a release, or authorize migrations.
 Testing owns verification; Deployment owns executable release plans and execution.
 
 ## 3. Inputs and entry conditions
 All modes require the shared assignment, Coordinator run manifest, available profile
-reference, the preferred stack (docs/tech-stack.md) and scoped constraints. `initial`, `revise`, and `cross_review` require an
+reference, the preferred stack (docs/tech-stack.md), every `decision_record` whose
+`binding_on` includes Architecture, and scoped constraints. Each binding technical
+directive gets an ADR showing how the design implements it, and the stack-departure
+check for any technology it implies. `initial`, `revise`, and `cross_review` require an
 accepted `requirements_spec` with G1 reference and applicable environment/quality
 constraints. `compatibility` explicitly uses draft intent instead of G1.
 - `compatibility`: bounded pre-G1 feasibility triage consumes the draft requirement
@@ -214,6 +221,7 @@ These are unevaluated specifications, not measured results.
 | Deployment reports column removal cannot recover lost data | Revise recovery/compatibility design or report missing capability; never authorize migration or equate application rollback with data restoration. |
 | A requirement could be met with Redis caching from the preferred stack, but no defined performance or state problem calls for it | Leave Redis out; record the deferred option rather than adopting it because it is listed. |
 | Development asks to use MongoDB instead of PostgreSQL for one module | Treat as a departure: send a `decision_request` to the platform authority with a preferred-stack alternative; do not adopt until confirmed; record the ADR (accepted or rejected) in `docs/adr/`. |
+| Authority's decision_record mandates CQRS with event sourcing | Treat as binding; record an ADR implementing it (event store, projections, replay restore, backup interval); check whether the event store stays in the preferred stack; send a decision_request only for genuine conflicts |
 | Requirements requests technical feasibility before G1 | Use compatibility mode with the draft question and available profile; do not require accepted requirements or claim G2A |
 
 ## 12. Definition provenance

@@ -6,7 +6,7 @@ deliverable; the pilot is its subsequent proving exercise.
 
 ## Definition set
 
-Version 0.4.0 incorporates the complete-cycle definition audit. Read the shared contract first, then the role
+Version 0.5.0 (draft, pending promotion) adds project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from the rental-ops pilot; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
 definition. Use both with a scoped assignment; each role inherits the common rules.
 These documents specify behavior and capability requirements, not installed agents.
 The audit repaired ownership and handoff gaps, including isolated staging before
@@ -32,7 +32,8 @@ Static review and the assisted ledger rehearsal are complete; full agent deliver
 
 ## Supporting documents
 
-- [Definition review](docs/definition-review.md): findings, repairs, complete-cycle walkthrough, and pilot prerequisites.
+- [Definition review](docs/definition-review.md): 0.5.0 changes and static checks; earlier reviews linked from it.
+- [0.5.0 backlog triage](docs/backlog-triage-0.5.0.md): dispositions and change sketches.
 - [Technology stack](docs/tech-stack.md): preferred stack; departures require approval.
 - [Assisted coordinator ledger](runner/README.md): durable bookkeeping, operator examples and handoff rehearsal.
 - [Blueprint](docs/blueprint.md): conceptual rationale and later pilot proposal.

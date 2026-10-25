@@ -1,6 +1,6 @@
 # Backlog triage for definition set 0.5.0
 
-Date: 2026-10-25 · Prepared by: Claude (Coordinator, workflow_evaluation) · Decision authority: Loren (workflow/platform authority) · Status: **proposal — awaiting dispositions**
+Date: 2026-10-25 · Prepared by: Claude (Coordinator, workflow_evaluation) · Decision authority: Loren (workflow/platform authority) · Status: **approved by Loren 2026-10-25 (all items); implemented in 0.5.0 draft**
 
 Evidence base: rental-ops runs RUN-20261025-CR01 (clean-room comparison) and RUN-20261025-DEC01 (decisions DR-01…DR-13, G1). Single domain, single-model sequential execution, so each change is kept small and tied to its evidence to avoid overfitting.
 

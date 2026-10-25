@@ -1,7 +1,7 @@
 ---
 id: coordinator
 name: Coordinator
-version: 0.4.0
+version: 0.5.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -42,14 +42,19 @@ missing execution bindings before assigning work that needs them.
 
 ## 4. Outputs
 
-- `run_manifest`: objective/mode, scope, baseline references, policy, authorities,
-  granted actions, budgets, environment identities, and required gates.
+- `run_manifest`: objective/mode, `execution_mode`, scope, definition-set version and
+  hashes, baseline references, policy, authorities, granted actions, budgets,
+  environment identities, and required gates, stored per the project binding (contract §2a).
 - `task_graph`: task IDs, role/mode, objective, dependencies, input/output contracts,
   required gate references, write ownership, acceptance checks, limits, and invalidation relationships.
 - `run_report`: milestones and gate verdicts with evidence references, failed or
   missing checks, decisions, actual usage, interventions, unresolved issues, next actions.
-- `decision_request`: unresolved question, affected scope, options and consequences,
-  authority to decide, and whether independent tasks can continue.
+- `decision_request`: unresolved question with a plain-language explanation and
+  example, affected scope, options and consequences, recommendation, consequence of
+  deferral, authority to decide, and whether independent tasks can continue.
+- `decision_record`: recorded authority decisions (contract §3), including
+  `binding_on` roles; Coordinator records, never decides.
+- Gate records: in manual mode, `gate_<id>.md` per contract §2a.
 
 Return assignment envelopes and requested ledger transitions to the runner. These
 are control instructions constrained by policy, not additional specialist artifacts.
@@ -80,6 +85,13 @@ are control instructions constrained by policy, not additional specialist artifa
    pair. Record the three-revision baseline only after all required checks pass.
 6. Route findings by cause. Obtain decisions from the named authority only when
    existing policy cannot resolve them. Apply retry/no-progress budgets consistently.
+   When an authority decides anything in conversation, record a `decision_record`
+   (verbatim decision plus interpretation, `binding_on` roles) before acting on it,
+   and supply it to every bound role's later assignments. Present decision requests
+   with their plain-language explanation and recommendation.
+   Ingest pre-existing material without an identity envelope as `external_baseline`
+   (provenance unknown); for evaluation, a clean-room re-derivation freezes and hashes
+   the new drafts before the old material is opened.
 7. On upstream revisions, invalidate dependent acceptance, replan affected work, and
    reject stale results for current gates. Require integrated-candidate verification.
 8. On incidents, prioritize evidence and authorized containment; route repair through
@@ -176,6 +188,9 @@ hashes match. Record the result historically and keep current attempt authority 
 | A cancelled attempt returns success after a retry has begun | Archive its result without changing current task/gate state; reconcile any external effects |
 | Verification task succeeds with a failing product verdict | Keep release blocked on G3 despite the satisfied task dependency |
 | Delivery reaches G6 while required retrospective budget is exhausted | Report missing G7 and seek authorized budget resolution; do not declare full delivery complete |
+| The product authority states a technical pattern (e.g. event sourcing) during requirements work | Record a decision_record with `binding_on: [architecture]`; Requirements records it as a constraint only; Architecture's next assignment includes it and requires an ADR |
+| Project contains detailed documents of unknown origin | Ingest as `external_baseline`; do not accept or build on them until re-derived or accepted |
+| One model instance performs several roles | Record `execution_mode: single_model_sequential`; report independence as procedural only |
 
 ## 12. Definition provenance
 

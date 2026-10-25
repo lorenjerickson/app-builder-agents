@@ -1,7 +1,7 @@
 ---
 id: testing
 name: Testing
-version: 0.4.0
+version: 0.5.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -117,6 +117,9 @@ Route `implementation_defect` to Development, `architecture_conflict` to Archite
 `intent_ambiguity` to Requirements, and `environment_fault` to Deployment.
 Own `test_fault` remediation within limits; route authority or missing capabilities
 through Coordinator. Classify severity with the run policy, not invented thresholds.
+For `configurable_targets`, verify configurability, the shipped defaults and legal
+precedence rather than a single fixed value. Derive denial, scope-leakage and
+fairness cases from Requirements-owned behavioural policies (contract §3).
 Request a decision when criteria conflict or mandatory coverage lacks a policy basis.
 
 ## 7. Tools and permissions

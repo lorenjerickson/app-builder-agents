@@ -1,7 +1,7 @@
 ---
 id: retrospective
 name: Retrospective
-version: 0.4.0
+version: 0.5.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---

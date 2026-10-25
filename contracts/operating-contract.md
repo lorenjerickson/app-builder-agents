@@ -1,6 +1,6 @@
 # Shared operating contract
 
-Version: 0.4.0. Status: draft for definition review, not a deployed system.
+Version: 0.5.0. Status: draft for definition review, not a deployed system.
 
 ## 1. Purpose, roles, and precedence
 
@@ -28,7 +28,12 @@ performs those runner duties. No runner is implemented by these documents.
 Before dispatch, Coordinator records a run manifest containing:
 
 - Objective, mode (`delivery`, `observation`, `incident`, or `workflow_evaluation`), scope, and owner.
-- Definition-set/contract version, platform-profile revision, and input references.
+- Definition-set/contract version (with file hashes when the set has no immutable
+  release tag), platform-profile revision, and input references.
+- `execution_mode`: `runner` (ledger-enforced), `separate_agents` (each role runs in
+  its own isolated context) or `single_model_sequential` (one model plays roles in
+  turn; independence is procedural only). The run report restates it and limits
+  independence claims accordingly.
 - Accepted requirements revision when available; intake explicitly records it as
   absent. Later delivery/product-affecting stages require the accepted revision.
   Workflow-only evaluation instead uses its authorized proposal and frozen workflow
@@ -57,6 +62,27 @@ and fields to pin before execution. Architecture checks technical conformance;
 Experience checks user-facing capabilities; Development consumes
 the scaffold; Deployment consumes its delivery and recovery interfaces.
 
+### 2a. Delivery project binding
+
+A delivery project (the product being built) binds to a definition set as follows.
+Paths are relative to the project root; a project may rename them in its own
+guidance file if it records the mapping.
+
+| Path | Holds |
+|---|---|
+| `AGENTS.md` (or equivalent) | Binding to this definition set, required roles, project-specific rules |
+| `docs/` | Source inputs and current accepted or baseline artifacts |
+| `docs/adr/` | Architecture decision records (`ADR-NNNN-<slug>.md`) |
+| `docs/_deprecated/` | Superseded documents, kept for history; never inputs |
+| `docs/<product>-decisions.md` | `decision_record` log |
+| `delivery/runs/<run_id>/` | run_manifest, task_graph, role drafts, `gate_<id>.md`, comparison/evaluation notes, run_report, `SHA256SUMS` |
+| `BACKLOG.md` | Product backlog (deferred or next scope); definition gaps go to the definition set's backlog |
+
+With a runner, the ledger database is the authoritative state, and gate files are
+exported evidence. In manual mode the gate files *are* the acceptance record: each
+names gate ID, exact artifact revisions and hashes, authority statement, predicate
+results, exceptions and time.
+
 ## 3. Artifact identity and ownership
 
 Every artifact carries `artifact_id`, `type`, `revision`, `producer_role`, `run_id`,
@@ -70,8 +96,9 @@ Keep secrets and unnecessary personal data out of stored evidence.
 
 | Artifact type | Sole producer | Minimum payload | Consumers |
 |---|---|---|---|
-| `requirements_spec` | Requirements | Scope, actors, data/rules, stable requirement IDs, acceptance scenarios, quality thresholds, exclusions, decisions | All downstream roles |
-| `decision_request` | Any assigned role | Exact question/conflict, options, impact, proposed owner, affected artifacts | Coordinator and external authority |
+| `requirements_spec` | Requirements | Scope, actor profiles, cross-cutting rules, data/rules, stable requirement IDs, acceptance scenarios, quality thresholds, configurable targets, exclusions, decisions; every rule source-tagged | All downstream roles |
+| `decision_request` | Any assigned role | Exact question/conflict; plain-language `explanation` with an example; options with impact; `recommendation` and rationale; `consequence_of_deferral`; proposed owner; affected artifacts | Coordinator and external authority |
+| `decision_record` | Coordinator (recording only) | Question, decision as stated by the authority, interpretation applied, authority and date, source (conversation, document), affected artifacts, `binding_on` roles, supersedes | All roles named in `binding_on`; Requirements; Retrospective |
 | `brand_package` | Branding | Positioning/personality/values, naming and claims constraints, voice/tone examples, editorial/terminology rules, visual identity and asset usage, applicability/exception rules, provenance and decisions | Experience, Architecture, Development, Testing, Retrospective |
 | `architecture_package` | Architecture | Technical decisions, modules/data/domain states, APIs, authorization/concurrency, platform conformance, slices/dependencies, telemetry implementation, migration/recovery, requirement map | Experience, Development, Testing, Deployment, Monitoring |
 | `experience_package` | Experience | Accepted brand reference and application map, UI visual tokens/components/assets, layouts and responsive rules, journeys/UI states, interaction behavior/content, accessibility/motion, operation mapping, user-outcome signal needs, requirement map | Branding, Architecture, Development, Testing, Deployment, Monitoring |
@@ -88,6 +115,45 @@ Keep secrets and unnecessary personal data out of stored evidence.
 | `retrospective_report` | Retrospective | Outcomes, interventions, costs/time, evidence-backed causes, limitations, follow-up dispositions | Coordinator, authorities |
 | `change_proposal` | Retrospective | Product/process target, evidence, hypothesis, owner, proposed delta, fixed evaluation baseline, success/reversal criteria | Coordinator, Requirements or assigned workflow work |
 | `run_manifest`, `task_graph`, `run_report` | Coordinator | Baseline/policy, dependency/ownership graph, decisions, milestones, evidence links, blockers and next actions | All assigned roles, operator |
+
+**Provenance of pre-existing material.** Documents found in a project without an
+identity envelope are ingested as `external_baseline` with `provenance: unknown`.
+They may inform discovery, comparison or clean-room evaluation, but they are never
+accepted inputs until re-derived by the owning role or accepted by the authority.
+
+**Source tags.** Every rule, term and threshold in a product artifact carries one
+tag: `[S]` stated in the source, `[D]` derived from the source, `[A]` authority
+decision (cite the decision_record), `[P]` proposal awaiting decision, or `[K]`
+external domain knowledge (needs a named reviewer before it binds). Untagged `[K]`
+content fails the producer's self-check.
+
+**Behavioural policies with fairness or authority risk** (permissions and denied
+actions, prioritisation/ranking factors and exclusions, eligibility rules) are
+Requirements-owned intent. Architecture owns their enforcement and computation;
+Experience owns their presentation, unavailable-action behaviour and "why"
+explanations; Testing derives denial and fairness cases (e.g. equal urgency ⇒
+equal rank). No role silently relocates such a policy into its own artifact.
+
+**Standard checklists** (each role applies those its definition names):
+
+- *Failure semantics:* duplicate submission and retry; unknown external outcome
+  (never shown as success, reconciled before repeat); partial failure; stale facts
+  at commit; handoff with recipient, follow-up and returned outcome; dependency
+  outage and degraded operation; deadline provenance (legal/program vs target).
+- *Disclosure surfaces:* lists, search and suggestions, counts, breadcrumbs,
+  previews, attachments, messages, exports and print, notifications (lock screen,
+  shared device), recipient selection; distinct permission verbs (view, edit,
+  propose, approve, send/execute, download/export, share); capacity and
+  "acting for" context.
+- *Threshold consistency:* every percentage target has a measurement window
+  elicited from the authority with the arithmetic shown; availability, recovery,
+  degraded-operation and maintenance limits are mutually consistent; degraded
+  operation has an elicited essential-functions list.
+
+**Binding decisions.** A `decision_record` whose `binding_on` names a role is a
+mandatory input for that role's subsequent assignments. Architecture records an ADR
+implementing each binding technical directive, including the preferred-stack
+departure check.
 
 Artifacts begin as `draft`. Runner acceptance records immutable artifact references,
 gate ID, predicate checks, authority if required, and time in the ledger. Roles do

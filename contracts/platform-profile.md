@@ -1,6 +1,6 @@
 # Shared application platform profile
 
-Profile family: `web-app-v1`. Version: 0.4.0. Status: draft architecture assumptions;
+Profile family: `web-app-v1`. Version: 0.5.0. Status: draft architecture assumptions;
 vendor/runtime bindings remain open. All ten definitions reference this profile.
 
 ## Supported application family
@@ -32,6 +32,8 @@ see [the Architecture definition](../agents/architecture.md).
 |---|---|
 | UI | Reusable accessible components; navigation and loading/empty/success/error/denied states; responsive behavior |
 | Identity | Existing identity-provider adapter; server-side role/resource authorization; independent denied-action tests |
+| Tenancy and scope | Hierarchical tenancy scope (e.g. organisation → group → site) carried on every role assignment; scope filtering applied to queries, search, counts, reports, notifications and exports; no cross-scope leakage tests |
+| Delegation and capacity | "Acting for" delegation with scope and validity; one person holding several capacities with explicit selection per action, never merged permissions; temporary coverage with an end date; invited external participants with item-scoped access |
 | Domain/API | Explicit schemas, validation, transactions, consistent error semantics, concurrency and idempotency rules where needed |
 | Data | Versioned migrations, fixtures, backup/restore interfaces, migration compatibility and data-loss assessment |
 | Build | Reproducible documented commands, pinned dependencies, immutable candidate artifact and source/build manifest |
@@ -48,7 +50,8 @@ The platform authority supplies or accepts an immutable profile instance with:
 - Stack/framework/dependency versions, selected from the preferred stack (with ADR
   references for any approved departures); scaffold identity and verification evidence.
 - Repository layout and build/test/lint/typecheck/migration commands as applicable.
-- Identity, database, hosting, and supported integration bindings.
+- Identity, database, hosting, and supported integration bindings; tenancy model and
+  identity-provider role/scope mapping; delegation and capacity support.
 - Artifact registry and deployment adapter; environment/configuration schemas.
 - Telemetry names and query interfaces; secret provider references; access policy.
 - Supported capacity and workload constraints; default quality objectives and which
