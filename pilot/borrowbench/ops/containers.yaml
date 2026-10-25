@@ -1,0 +1,101 @@
+x-test: &test
+  NODE_ENV: production
+  BORROWBENCH_AUTH_MODE: container-test
+  BORROWBENCH_TEST_ONLY: "1"
+  BORROWBENCH_ENV: ${BB_TARGET:?Select verify or pilot}
+  BORROWBENCH_RELEASE_ID: ${BB_RELEASE_ID:?Select release identity}
+  BORROWBENCH_CONFIG_ID: ${BB_CONFIG_ID:?Select configuration identity}
+services:
+  db:
+    cpus: '0.5'
+    mem_limit: 1g
+    image: postgres:17.11-bookworm@sha256:858bb5e98eed02eb8cafbcdc007f9a65d1b613972028944a8ec2133ccaf80d27
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: borrowbench
+      POSTGRES_DB: borrowbench
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
+    volumes: [database:/var/lib/postgresql/data]
+    networks: [data]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U borrowbench -d borrowbench"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  api:
+    cpus: '0.5'
+    mem_limit: 768m
+    image: ${BB_API_IMAGE:?Select an immutable image}
+    platform: linux/amd64
+    pull_policy: never
+    environment:
+      <<: *test
+      API_HOST: 0.0.0.0
+      API_PORT: "3001"
+    secrets: [test_auth, api_db_password]
+    networks: [front, data]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3001/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  setup:
+    profiles: [setup]
+    cpus: '0.5'
+    mem_limit: 768m
+    image: ${BB_API_IMAGE:?Select an immutable image}
+    platform: linux/amd64
+    pull_policy: never
+    environment:
+      <<: *test
+    secrets: [test_auth, db_password, api_db_password]
+    networks: [data]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command: [migrate]
+  web:
+    cpus: '0.75'
+    mem_limit: 1g
+    image: ${BB_WEB_IMAGE:?Select an immutable image}
+    platform: linux/amd64
+    pull_policy: never
+    environment:
+      <<: *test
+      APP_BASE_URL: http://localhost:${BB_WEB_PORT:?Select target port}
+      API_INTERNAL_URL: http://api:3001
+    secrets: [test_auth]
+    ports: ["127.0.0.1:${BB_WEB_PORT}:3000"]
+    networks: [edge, front]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+secrets:
+  test_auth:
+    file: ${BB_SECRET_DIR:?Initialize target}/test-auth
+  db_password:
+    file: ${BB_SECRET_DIR}/db-password
+  api_db_password:
+    file: ${BB_SECRET_DIR}/api-db-password
+volumes:
+  database:
+networks:
+  edge: {}
+  front: {internal: true}
+  data: {internal: true}

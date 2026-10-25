@@ -1,0 +1,23 @@
+services:
+  db:
+    cpus: '0.25'
+    mem_limit: 512m
+    image: postgres:17.11-bookworm@sha256:858bb5e98eed02eb8cafbcdc007f9a65d1b613972028944a8ec2133ccaf80d27
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: borrowbench
+      POSTGRES_DB: borrowbench
+      POSTGRES_PASSWORD: ${BORROWBENCH_DB_PASSWORD:?Initialize the named target first}
+    ports:
+      - "127.0.0.1:${BORROWBENCH_DB_PORT:?Select a target}:5432"
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U borrowbench -d borrowbench"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+volumes:
+  database:

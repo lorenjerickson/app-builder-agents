@@ -1,0 +1,30 @@
+{
+  "name": "@borrowbench/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3100",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3100",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "node --test test/*.test.mjs",
+    "ensure-env": "node tools/ensure-env.cjs"
+  },
+  "dependencies": {
+    "@auth0/nextjs-auth0": "4.33.0",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "24.10.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "9.39.1",
+    "eslint-config-next": "16.4.3"
+  }
+}

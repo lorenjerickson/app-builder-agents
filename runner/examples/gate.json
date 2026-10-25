@@ -1,0 +1,16 @@
+{
+  "type": "gate",
+  "gate_id": "R1",
+  "checks": [
+    {
+      "check_id": "handoff-complete",
+      "subject": "example-requirements@1",
+      "outcome": "pass",
+      "evidence_ref": "rehearsal:example-fixture"
+    }
+  ],
+  "artifact_refs": [
+    "example-requirements@1"
+  ],
+  "authority_ref": "user-request:coordinator-ledger-and-handoff-rehearsal"
+}

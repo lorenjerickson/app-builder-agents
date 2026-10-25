@@ -1,0 +1,23 @@
+{
+  "type": "artifact",
+  "attempt": 1,
+  "artifact": {
+    "artifact_id": "example-requirements",
+    "type": "requirements_spec",
+    "revision": "1",
+    "producer_role": "requirements",
+    "run_id": "borrowbench-assisted-rehearsal",
+    "task_id": "requirements-fixture",
+    "input_refs": [],
+    "requirement_ids": [],
+    "traceability_reason": "Synthetic workflow rehearsal",
+    "content_ref": "ledger:example-requirements@1",
+    "content_hash": "4bdef09dbe3eedd564afc3a5f5c7b988d4d5f4ee5db0e0d5ce328c7b033bfd35",
+    "completeness": "complete",
+    "missing_fields": []
+  },
+  "payload": {
+    "synthetic": true,
+    "purpose": "Example only, not accepted BorrowBench requirements"
+  }
+}

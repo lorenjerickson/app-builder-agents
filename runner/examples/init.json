@@ -1,0 +1,18 @@
+{
+  "type": "init",
+  "manifest": {
+    "run_id": "borrowbench-assisted-rehearsal",
+    "contract_version": "0.4.0",
+    "mode": "workflow_evaluation",
+    "rehearsal": true,
+    "objective": "Exercise coordinator bookkeeping with synthetic artifacts and no external actions",
+    "authorization_ref": "user-request:coordinator-ledger-and-handoff-rehearsal",
+    "max_attempts": 20,
+    "gates": { "R1": ["handoff-complete"] },
+    "environment_context": {
+      "auth0": "deferred",
+      "accounts": ["member-a", "member-b", "custodian"],
+      "live_application_actions": false
+    }
+  }
+}

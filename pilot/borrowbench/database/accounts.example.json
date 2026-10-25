@@ -1,0 +1,10 @@
+{
+  "auth0|replace-with-member-subject": {
+    "role": "member",
+    "label": "Pilot member"
+  },
+  "auth0|replace-with-custodian-subject": {
+    "role": "custodian",
+    "label": "Pilot custodian"
+  }
+}

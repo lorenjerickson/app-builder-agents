@@ -1,0 +1,37 @@
+{
+  "name": "borrowbench",
+  "private": true,
+  "packageManager": "pnpm@12.15.0",
+  "engines": {
+    "node": "24.22.1"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @borrowbench/web dev",
+    "build": "pnpm --filter @borrowbench/api build && pnpm --filter @borrowbench/web build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm --filter @borrowbench/web lint && pnpm --filter @borrowbench/api typecheck",
+    "ensure-env": "pnpm --filter @borrowbench/web ensure-env",
+    "test:auth": "node tests/smoke/auth.mjs",
+    "dev:api": "node tools/platform.mjs dev-api --target dev",
+    "db:init": "node tools/platform.mjs init --target dev",
+    "db:up": "node tools/platform.mjs up --target dev",
+    "db:migrate": "node tools/platform.mjs migrate --target dev",
+    "api:start": "node tools/platform.mjs run-api --target dev",
+    "test:platform": "node tools/platform.mjs test --target verify",
+    "start:local": "node tools/platform.mjs local --target dev",
+    "test:database": "node tools/platform.mjs test-db --target verify",
+    "test:browser": "playwright test",
+    "check:graph": "turbo run typecheck lint --cache=local:rw",
+    "toolchain:versions": "node --version && pnpm --version && turbo --version && vitest --version && playwright --version"
+  },
+  "dependencies": {
+    "jose": "6.2.13",
+    "node-pg-migrate": "9.0.0",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "turbo": "2.11.10",
+    "vitest": "5.0.5"
+  }
+}
