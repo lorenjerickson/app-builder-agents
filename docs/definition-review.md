@@ -1,6 +1,6 @@
-# Definition-set review — version 0.5.0
+# Definition-set review — version 0.5.1
 
-Date: 2026-10-25. Status: **draft release, pending evaluation and promotion by the workflow authority (Loren)**. Rollback: git tag `v0.4.0`.
+Date: 2026-10-25. Status: **promoted by the workflow authority (Loren), 2026-10-25**, for the rental-ops design run. Tags: `v0.4.0` (rollback), `v0.5.0` (evaluated), `v0.5.1` (current).
 
 ## Scope and method
 Implements the backlog items approved in [backlog-triage-0.5.0.md](backlog-triage-0.5.0.md) (all 18 open items plus P20). The evidence comes from the rental-ops pilot runs RUN-20261025-CR01 (clean-room comparison) and RUN-20261025-DEC01 (decisions and G1). Each change is small and tied to that evidence. This review is static inspection. The behavioural effect is measured separately by the evaluation run (below).
@@ -25,6 +25,15 @@ Historical reviews: [v0.4](definition-review-v0.4.md), [v0.3](definition-review-
 | P14 | Platform profile: tenancy scope, delegation, capacity | platform-profile (capabilities, instance fields) |
 | P20 | Rollback baseline committed and tagged `v0.4.0` | git |
 | — | All ten definitions, template, contract and profile at version 0.5.0 | frontmatter |
+
+## 0.5.1 increment
+| Backlog | Change | Location |
+|---|---|---|
+| P23 | Personal attributes that change treatment are stated, never inferred; actor profiles record stated preferences | contract §3; requirements §4 |
+| P24 | Disclosure checklist adds internal notes vs participant-facing communication | contract §3 |
+| P25 | Failure-semantics checklist adds facts changing after a consequential action is proposed | contract §3 |
+
+These fixes target the three EVAL-050-01 misses. They are static changes, not re-evaluated; the pilot's design run will exercise them.
 
 ## Static checks
 | Check | Result |

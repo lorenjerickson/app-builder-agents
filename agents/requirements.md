@@ -1,7 +1,7 @@
 ---
 id: requirements
 name: Requirements
-version: 0.5.0
+version: 0.5.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -50,7 +50,8 @@ Produce draft `requirements_spec` using the shared artifact identity envelope:
 - `actors` (actor profiles): actor ID, purpose, goals, responsibilities, pressures,
   permissions, resource ownership, denied actions, information boundary, lifecycle
   variants (including former participants), situational variants (circumstances
-  that change lawful or required treatment), capacity and coverage rules, and a
+  that change lawful or required treatment), stated preferences (communication,
+  language, accessibility; never inferred), capacity and coverage rules, and a
   validation question. Never invent names, demographics or biographies; protected
   characteristics never shape a profile. UI hierarchy belongs to Experience.
 - `cross_cutting_rules`: rule ID, statement, source tag (contract §3), basis, and

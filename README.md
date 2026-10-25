@@ -6,7 +6,7 @@ deliverable; the pilot is its subsequent proving exercise.
 
 ## Definition set
 
-Version 0.5.0 (draft, pending promotion) adds project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from the rental-ops pilot; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
+Version 0.5.1 (current; 0.5.0 evaluated by EVAL-050-01, plus three checklist fixes) adds project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from the rental-ops pilot; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
 definition. Use both with a scoped assignment; each role inherits the common rules.
 These documents specify behavior and capability requirements, not installed agents.
 The audit repaired ownership and handoff gaps, including isolated staging before

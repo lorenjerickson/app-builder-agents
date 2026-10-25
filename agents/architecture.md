@@ -1,7 +1,7 @@
 ---
 id: architecture
 name: Architecture
-version: 0.5.0
+version: 0.5.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---

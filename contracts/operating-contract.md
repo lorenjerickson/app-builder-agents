@@ -1,6 +1,6 @@
 # Shared operating contract
 
-Version: 0.5.0. Status: draft for definition review, not a deployed system.
+Version: 0.5.1. Status: draft for definition review, not a deployed system.
 
 ## 1. Purpose, roles, and precedence
 
@@ -133,16 +133,24 @@ Requirements-owned intent. Architecture owns their enforcement and computation;
 Experience owns their presentation, unavailable-action behaviour and "why"
 explanations; Testing derives denial and fairness cases (e.g. equal urgency ⇒
 equal rank). No role silently relocates such a policy into its own artifact.
+Personal attributes that change treatment (communication method, language,
+accessibility needs) are **stated by the person**, never inferred from name, accent,
+age, appearance or perceived disability.
 
 **Standard checklists** (each role applies those its definition names):
 
 - *Failure semantics:* duplicate submission and retry; unknown external outcome
   (never shown as success, reconciled before repeat); partial failure; stale facts
   at commit; handoff with recipient, follow-up and returned outcome; dependency
-  outage and degraded operation; deadline provenance (legal/program vs target).
+  outage and degraded operation; deadline provenance (legal/program vs target);
+  facts that change after a consequential action is *proposed* but before it is
+  executed (e.g. a payment arrives after a notice is proposed) return the matter
+  to review, with no automatic continuation or cancellation.
 - *Disclosure surfaces:* lists, search and suggestions, counts, breadcrumbs,
   previews, attachments, messages, exports and print, notifications (lock screen,
-  shared device), recipient selection; distinct permission verbs (view, edit,
+  shared device), recipient selection; internal notes vs participant-facing
+  communication (separated and labelled, with no implied legal privilege);
+  distinct permission verbs (view, edit,
   propose, approve, send/execute, download/export, share); capacity and
   "acting for" context.
 - *Threshold consistency:* every percentage target has a measurement window
