@@ -1,7 +1,7 @@
 ---
 id: testing
 name: Testing
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -68,6 +68,7 @@ release gate verdict is `fail` or `inconclusive`. You do not authorize release.
 - `decision_request`: exact ambiguity/conflict, options, impact, proposed owner,
   and affected artifacts. All outputs use shared identity fields and begin as drafts.
 - Return the shared result envelope; acceptance belongs to the runner ledger.
+  Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Validate mode, input identity/freshness, authorization and required check policy.
@@ -118,8 +119,10 @@ Route `implementation_defect` to Development, `architecture_conflict` to Archite
 Own `test_fault` remediation within limits; route authority or missing capabilities
 through Coordinator. Classify severity with the run policy, not invented thresholds.
 For `configurable_targets`, verify configurability, the shipped defaults and legal
-precedence rather than a single fixed value. Derive denial, scope-leakage and
-fairness cases from Requirements-owned behavioural policies (contract §3).
+precedence rather than a single fixed value. For `configurable_rules`, verify
+configurability at each affected workflow step and the seed set, not legal
+correctness. Derive denial, scope-leakage and fairness cases from Requirements-owned
+behavioural policies (contract §3).
 Request a decision when criteria conflict or mandatory coverage lacks a policy basis.
 
 ## 7. Tools and permissions

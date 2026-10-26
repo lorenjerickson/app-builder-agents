@@ -1,0 +1,52 @@
+# Independent review: definition set 0.6.0 draft
+
+Subject: commit `076223d` against parent `cb28698` in `/home/claude/ma060/work` (19 files, +200/−56). Scope authority: `docs/backlog-triage-0.6.0.md` (approved 2026-10-26, with the P34/P36 amendment), with fuller item text in `BACKLOG.md`. The author's `docs/definition-review-0.6.0.md` was checked claim by claim rather than taken as evidence. Reviewer: separate agent; static review only.
+
+## Verdict
+
+**Pass with minor issues.** Every approved item (P22, P26–P35) is implemented as the triage describes. P34 uses an adopted engine, with "absent one, a stack departure", and P36 is not implemented (`docs/tech-stack.md` is unchanged). Nothing was added beyond scope, the gate and authority rules are not weakened, the denylist scan is clean and versions are consistent. I found nothing blocking. Four minor findings need a fix before the evaluation result (EVAL-060-01) is scored or the release is tagged; the rest are notes.
+
+## Checks
+
+| Check | Result | Evidence |
+|---|---|---|
+| 1. Scope | pass | P22 blueprint link replaced (`docs/blueprint.md:249-250`, anchor `README.md#pilot` exists). P26 rule at contract §3 plus a pointer in all ten roles' §4 and in the template. P27 is in branding §4/§5/§11, the contract table and experience §3. P28 is in architecture §4/§5/§11 and the contract table. P29 is in contract §3, coordinator §5 and experience §4/§5/§8/§11. P30 is in requirements §4/§5/§11, experience §3/§4 and the requirements template. P31 a/b/c are in contract §2, coordinator §5 and experience §5/§11. P32 is in contract §8 and coordinator §5/§11. P33 is in contract §4, the three reviewer roles and coordinator §5/§11. P34 is in requirements, the contract §3 checklist, architecture, coordinator and testing. P35 is in AGENTS.md and contract §2a, and the three named examples are replaced. BACKLOG statuses are updated. No runner or tech-stack change. The only text beyond the items is the P27 title rewording in BACKLOG ("multi-tenant" → "multi-customer"), which is neutralisation under P35. |
+| 2. Consistency | pass with minor issues | Each new optional field is named once in the contract (artifact table or §4 result envelope) and defined once in the producing role's §4. That matches the library's existing pattern (e.g. `platform_conformance`). Consumers reference the fields consistently. Gate and authority rules are not weakened: P32 adds a constraint to §8 without removing anything. P29 still requires an immutable reference and still forbids a live URL. P34 leaves G1 unchanged ("resolved consequential ambiguities"). Findings M1–M4 are below. |
+| 3. Domain neutrality | pass | Reading the added text found no business-domain content. The replacement examples are generic: missing information after a proposed rejection, a confidential outcome on a shared device, turnaround time per customer organisation × order type, retention by jurisdiction, open items by status. The denylist scan result is below. |
+| 4. Length (P26) | pass | Definitions and contract grew by a net 93 lines (+134/−41) across 14 files: about 1–9 lines per role, 23 in the contract. Most role additions are pointers. Two definition sentences restate contract text (M4, N1). |
+| 5. Versions | pass | Every place that declared 0.5.1 at `cb28698` now declares 0.6.0: ten agent frontmatters, the contract, the platform profile, the template, and the README version line. The remaining "0.5.1" mentions are historical: the rollback point, P23–P25 status and the 0.5.x review. |
+
+## Findings
+
+| ID | Severity | File:line | Issue | Remedy (checked against contract) |
+|---|---|---|---|---|
+| M1 | minor | `contracts/operating-contract.md:227`; `agents/architecture.md:135`; `agents/branding.md:113`; `agents/experience.md:145-146` | "Contract question" is an undefined route. The contract's existing category for cross-owner mismatches is `contract_conflict` (§5 routing table, line 282). This also makes the author's review claim "no orphan references introduced" inaccurate. | Replace "routed as a contract question" with "routed as a `contract_conflict` (§5)" in the contract, and use the same term in the three roles. This is compatible: line 282 routes `contract_conflict` among Branding, Architecture and Experience (exactly the three reviewer roles) and sends intent changes back to Requirements. |
+| M2 | minor | `contracts/operating-contract.md:224-226`; `docs/definition-review-0.6.0.md:21,31` | The contract says review "findings" carry `remedy_checked_against`, but the result envelope only has `checks` and `issues`, so the field has no defined home. The author's review says "result `issues`", which the contract text does not say. | Write: "`issues` entries from `cross_review` or `conformance_review` carry optional `remedy_checked_against` …". This is consistent with line 224 (issues already carry owner/proposed route) and leaves the `checks` entry shape (ID, subject, outcome, evidence) unchanged. |
+| M3 | minor | `contracts/operating-contract.md:131-134` vs `:171-175`; `docs/definition-review-0.6.0.md:40` | `[K]` seed rules "need a named reviewer before it binds" under the source-tag rule. The new checklist says no approval depends on exhaustive legal review, but nothing defines how far the seed-rule review goes. The author's review states "by decision, that review covers broad applicability and labelling only", but no decision is recorded in the triage, the BACKLOG or the contract. This is an unsupported claim about a rule that isn't written down. | Do one of the following. (a) Get the workflow authority's confirmation, then add this to *variable obligations*: "The named `[K]` reviewer of seed rules checks broad applicability and labelling, not per-jurisdiction correctness." It narrows the review and doesn't remove it, so it is compatible with line 133. (b) Otherwise, delete "by decision" from the review doc and list this as an open question. |
+| M4 | minor | `agents/coordinator.md:75-76` | Restates contract §8 (`contract:450-452`) with drifted wording: "any gate claiming it" vs "any gate that claims to cover it". Two wordings of a severity rule invite divergent readings, and the restatement goes against P26. | Replace with "Assignments may narrow review scope but never set severity (contract §8)." §8 still binds, so the gate rule is not weakened. |
+| N1 | note | `agents/coordinator.md:100-102` | Restates the *variable obligations* checklist ("Never make approval conditional on exhaustive per-jurisdiction legal review") before pointing to it. | Keep only "Variable obligations follow contract §3 *variable obligations*." |
+| N2 | note | `contracts/operating-contract.md:192-195` | Line 192 already accepted an "immutable version", so the new sentence is a clarification. Two gaps remain: a named version has no `content_hash` (required by §3 line 95), and its save is recorded as a `decision_record`, whose payload (question / decision / `binding_on`) is a poor fit for an action. Both are as the triage specifies. | Add: "the design tool's file ID plus named-version ID stand in for `content_hash`." This is compatible with line 96 ("references resolve to immutable contents"). Keep the `decision_record` as approved. |
+| N3 | note | `agents/experience.md:148-150` | "Export required UI assets and immutable visual snapshots, or without export capability request a named version" can be read as the named version replacing the asset export too. A named version stands in only for snapshots; Development still needs the assets. | Write: "Export required UI assets; export immutable visual snapshots or, without export capability, request a named version through Coordinator." This is consistent with §4 `assets` (readiness dependency and approved fallback). |
+| N4 | note | `agents/branding.md:76,79` | Per-layer authority appears in both `brand_layers` ("each layer's brand authority") and `theming_contract` ("per-layer authority"), so the same data has two sources. | Keep authority in `brand_layers`, and have `theming_contract` reference "the layer authorities in `brand_layers`". |
+| N5 | note | `agents/requirements.md:72` | `configurable_rules` "generalises" `configurable_targets`, but both remain and nothing says when to use which. | Add: "numeric targets stay in `configurable_targets`; obligations go in `configurable_rules`." This doesn't conflict with Testing §6, which keeps separate checks for each. |
+| N6 | note | `docs/blueprint.md:252-253` | After the P22 fix, the paragraph still describes the abandoned proposal in the present tense ("It supersedes…", "The proposal includes…"). (Separately, and unrelated to this commit, `README.md:57` links `pilot/borrowbench/README.md`, which doesn't exist.) | Change those sentences to the past tense. Handle the README link under a separate backlog item, not in this release. |
+| N7 | note | `agents/requirements.md:56`; `agents/testing.md:123` | Edited lines weren't rewrapped (115 and ~120 characters, where the surrounding text wraps at ~85). | Rewrap. |
+
+## The author's review: claims checked
+
+- The scope, changes table, static checks for twelve sections ×10 and version 0.6.0, the template change, tech-stack being untouched, and the denylist result: **confirmed**.
+- "No orphan references introduced": **not quite**. See M1.
+- "`remedy_checked_against` optional in the result `issues`": **not in the contract text**. See M2.
+- Known limitation "by decision": **unsupported**. See M3.
+- "New fields defined in the contract": the contract **names** them and the producing roles define them. That is acceptable and consistent with the existing pattern.
+
+## Denylist scan
+
+Method: every added line in `git diff -U0 cb28698 076223d` (200 lines, all files including the author's review) was matched case-insensitively (Python `re`, `re.I`) against all 58 patterns in `/home/claude/ma060/denylist.txt`.
+
+Result: **no domain leaks.** The hits were:
+- `rent`: 6 hits, all substrings of "current" and "different" (README.md:9, architecture.md:134, experience.md:145, definition-review-0.6.0.md:36,44).
+- `lease`: 2 hits, both substrings of "release" (definition-review-0.6.0.md:36,44).
+- `owner`: 18 hits, all generic process uses: "Owner: Loren" in BACKLOG status lines, "rule owner", "owners of the shared root", and "owner or proposed route".
+
+No other pattern matched, including the `tenant` and ID patterns such as `DR-`, `BR-`, `ADR-00`, `A1`–`A6` and `E3`–`E6`.

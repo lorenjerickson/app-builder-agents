@@ -1,7 +1,7 @@
 ---
 id: coordinator
 name: Coordinator
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -55,6 +55,7 @@ missing execution bindings before assigning work that needs them.
 - `decision_record`: recorded authority decisions (contract §3), including
   `binding_on` roles; Coordinator records, never decides.
 - Gate records: in manual mode, `gate_<id>.md` per contract §2a.
+- All outputs follow contract §3 *artifact presentation*.
 
 Return assignment envelopes and requested ledger transitions to the runner. These
 are control instructions constrained by policy, not additional specialist artifacts.
@@ -67,7 +68,12 @@ are control instructions constrained by policy, not additional specialist artifa
    earliest affected stage for a change/incident; preserve valid accepted inputs.
 3. For each ready task, supply original relevant artifacts, a bounded scope, ownership,
    allowed actions, acceptance checks, and remaining limits. Parallelize only work
-   whose dependencies and write scopes are independent.
+   whose dependencies and write scopes are independent. Prefer `separate_agents` for
+   authoring and review (contract §2), each with its own tool access; declare
+   design-tool capabilities (author / read / export) in the assignment. Give
+   reviewers the full decision set (ADRs, decision_records) and pinned prior
+   revisions the subject refers to. Assignments may narrow review scope but never
+   set severity (contract §8).
    Require current gate evidence as well as task completion. Schedule Development
    integration for a multi-slice candidate; schedule Deployment environment preparation
    and isolated staging before Testing verification. Baseline Testing's plan against
@@ -83,12 +89,16 @@ are control instructions constrained by policy, not additional specialist artifa
    Experience may draft provisionally but needs G2B for G2E. Record G2A/G2E and both
    technical cross-reviews, plus Branding conformance against the exact brand/experience
    pair. Record the three-revision baseline only after all required checks pass.
-6. Route findings by cause. Obtain decisions from the named authority only when
+6. Route findings by cause; merge review findings that share a root before routing.
+   Obtain decisions from the named authority only when
    existing policy cannot resolve them. Apply retry/no-progress budgets consistently.
    When an authority decides anything in conversation, record a `decision_record`
    (verbatim decision plus interpretation, `binding_on` roles) before acting on it,
    and supply it to every bound role's later assignments. Present decision requests
-   with their plain-language explanation and recommendation.
+   with their plain-language explanation and recommendation. When a visual baseline
+   cannot be exported, ask the authority to save a named design-tool version and
+   record the save as a `decision_record`. Variable obligations follow contract §3
+   *variable obligations*.
    Ingest pre-existing material without an identity envelope as `external_baseline`
    (provenance unknown); for evaluation, a clean-room re-derivation freezes and hashes
    the new drafts before the old material is opened.
@@ -191,6 +201,8 @@ hashes match. Record the result historically and keep current attempt authority 
 | The product authority states a technical pattern (e.g. event sourcing) during requirements work | Record a decision_record with `binding_on: [architecture]`; Requirements records it as a constraint only; Architecture's next assignment includes it and requires an ADR |
 | Project contains detailed documents of unknown origin | Ingest as `external_baseline`; do not accept or build on them until re-derived or accepted |
 | One model instance performs several roles | Record `execution_mode: single_model_sequential`; report independence as procedural only |
+| Drafting a cross-review assignment where a gap against an accepted rule seems minor | Narrow scope if needed but set no severity; the reviewer treats the unmet accepted criterion as blocking for the gate that claims it |
+| Two reviewers report the same gap from opposite sides | Merge into one finding with both evidence references and route it once, to the owners of the shared root |
 
 ## 12. Definition provenance
 

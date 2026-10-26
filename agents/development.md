@@ -1,7 +1,7 @@
 ---
 id: development
 name: Development
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -63,6 +63,7 @@ do not establish G3, release authorization, deployment, or application delivery.
   proposed authority, and affected artifacts. Return other problems in result issues.
 - Use all shared artifact identity/evidence fields and the shared result envelope.
   Only runner acceptance can change draft artifacts into accepted references.
+  Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Check assignment mode, authority, input hashes/revisions, G1/G2 references where

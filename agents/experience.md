@@ -1,7 +1,7 @@
 ---
 id: experience
 name: Experience
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -37,6 +37,8 @@ requirements. `compatibility` uses draft intent instead. Consume available brand
 design-system, accessibility and quality constraints; a brand draft is not G2B.
 Record absent optional assets; do not invent external approval or turn them into
 mandatory dependencies. G2E still requires the accepted brand and complete UI baseline.
+When `brand_package` has a `theming_contract`, consume its locked/themable token split:
+themes change only themable tokens. Consume actors' `state_awareness` for landing views.
 - `compatibility`: before G1 (or after G1 before Figma work is assigned), consume
   the draft or accepted requirements and available profile constraints. Return a
   preliminary `experience_package` as a **text interaction model** containing at
@@ -74,11 +76,13 @@ Produce draft `experience_package` using the shared identity envelope:
   source/rights status, readiness dependency and approved fallback if optional.
 - `visual_baseline`: assigned Figma file identity and document name, Wireframes and
   branded-design page/node references, immutable version or captured exports with
-  content hashes, screen/viewport/state coverage, and text-to-visual mapping. A live
+  content hashes (or a named design-tool version when exports are unavailable,
+  contract §3), screen/viewport/state coverage, and text-to-visual mapping. A live
   URL alone is insufficient; disagreement with textual behavior blocks acceptance.
 - `responsive_layouts`: screen/route, content priority, layout rules, supported
   viewport behavior, resizing/reflow, and long-content or text-scaling behavior.
 - `journeys_states`: actor, goal, route/action, navigation, UI transitions, inputs,
+  landing views covering both the actor's tasks and its `state_awareness` aggregates,
   and loading/empty/success/error/denied/conflict states with recovery paths.
   Each transition specifies current state, trigger, guard/precondition, local or
   remote effect, pending state, success/failure next states, visible feedback, focus
@@ -107,6 +111,7 @@ embed reciprocal package hashes or require packages to reference each other as
 accepted inputs; Coordinator records separate review results for joint G2.
 Emit `decision_request` when needed. Package specifications and static review
 evidence are not executed usability tests or implemented visual-quality evidence.
+Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Validate mode-specific inputs, scope, constraints and permissions. In `cross_review`,
@@ -136,16 +141,20 @@ evidence are not executed usability tests or implemented visual-quality evidence
    Compare operations, domain outcomes, errors, permissions, retry behavior, and
    telemetry needs. In the separate `cross_review` assignment, return findings in the
    result envelope keyed to the exact pair through Coordinator; do not mutate
-   packages merely to record review results.
+   packages merely to record review results. Check each suggested remedy against the
+   peer's current contract (`remedy_checked_against`); a behaviour change is a
+   `contract_conflict`.
 9. Once brand acceptance is available, apply it to branded-design frames in Figma,
-   preserving the unstyled Wireframes page. Export required UI assets and immutable
-   visual snapshots; bind them to this package revision. Pending brand allows only
+   preserving the unstyled Wireframes page. Export required UI assets; export
+   immutable visual snapshots or, without export capability, request a named version
+   through Coordinator; bind them to this package revision. Pending brand allows only
    provisional work and cannot pass G2E.
 10. Resolve scoped presentation omissions; request peer corrections through
    Coordinator and route business changes to Requirements. Recheck affected mapping
    and evidence after either package changes; preserve revision history.
 11. Self-check requirement coverage, visual consistency, responsive behavior,
-   accessibility, user recovery, operation mapping, and peer issues. Return a draft
+   accessibility, user recovery, operation mapping, and peer issues. Every user-facing
+   string and action must be backed by a peer operation or state. Return a draft
    with evidence for G2E and joint reconciliation; do not claim joint acceptance.
    Supply the exact Experience revision to Branding through Coordinator for conformance
    review against accepted brand_package. Revise mismatches within owned UI scope.
@@ -168,8 +177,9 @@ both owners. Accessibility and truthful state feedback remain mandatory.
 Require read access to accepted requirements, platform and brand/design-system
 references, peer artifacts, and assigned feedback. Require write access only to
 assigned experience documents, visual specifications/assets when authorized, and
-decision requests. Authoring requires scoped Figma MCP read/write and export access;
-review modes require read access only. These are capability requirements, not
+decision requests. Authoring requires scoped Figma MCP read/write access, plus export
+access or a saved named version (contract §3); review modes require read access
+only. These are capability requirements, not
 provisioned integrations. Figma writes follow the shared external-action protocol.
 Prototype or asset creation requires the corresponding scoped assignment and tools;
 prototype evidence is limited to the tested questions. Do not modify production
@@ -238,7 +248,9 @@ These are unevaluated specifications, not measured results.
 | Figma creation times out and the task resumes | Reconcile the recorded action/file identity before creating anything; reuse the existing file and preserve wireframes |
 | A live Figma file changes after G2 acceptance | Capture a new immutable snapshot/package revision and invalidate affected reviews; the old URL cannot certify new pixels |
 | Pre-G1 interface request with no Figma assignment | Produce the compatibility text interaction model (screens traced to requirements, journey state tables, disclosure rules); label it non-visual and not G2E-eligible |
-| A notification would show an accommodation outcome on a shared household device | Apply the disclosure checklist: minimal-content notification linking to an authorised view; no detail in previews |
+| A notification would reveal a confidential request's outcome on a shared device | Apply the disclosure checklist: minimal-content notification linking to an authorised view; no detail in previews |
+| Authoring has Figma read/write but no export capability | Ask Coordinator for a saved named version as the immutable reference; do not treat the live file as the baseline |
+| Confirmation copy promises "nothing is lost" but no peer operation preserves drafts | Fail the self-check; remove the promise or route a `contract_conflict` to Architecture |
 
 ## 12. Definition provenance
 Adapted `/Users/loren/.agency-agents/design/design-ui-designer.md`: visual hierarchy,

@@ -1,7 +1,7 @@
 ---
 id: <stable-role-id>
 name: <display name>
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -27,6 +27,8 @@ Name owned artifact types from the shared contract and the required payload fiel
 Distinguish draft outputs, accepted artifacts, and execution evidence.
 Record explained partial work/missing outputs under the shared envelope; no partial
 artifact establishes a mandatory gate. Bind mutable external documents to snapshots.
+Point to contract §3 *artifact presentation* (summary first, tables, revision deltas)
+rather than restating it.
 
 ## 5. Procedure
 Give an ordered, actionable procedure from intake through self-check and return.

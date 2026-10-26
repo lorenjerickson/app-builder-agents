@@ -1,7 +1,7 @@
 ---
 id: requirements
 name: Requirements
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -51,9 +51,11 @@ Produce draft `requirements_spec` using the shared artifact identity envelope:
   permissions, resource ownership, denied actions, information boundary, lifecycle
   variants (including former participants), situational variants (circumstances
   that change lawful or required treatment), stated preferences (communication,
-  language, accessibility; never inferred), capacity and coverage rules, and a
-  validation question. Never invent names, demographics or biographies; protected
-  characteristics never shape a profile. UI hierarchy belongs to Experience.
+  language, accessibility; never inferred), capacity and coverage rules, optional
+  `state_awareness` (aggregates the actor must see, with scope, freshness and when an
+  aggregate needs attention), and a validation question. Never invent names,
+  demographics or biographies; protected characteristics never shape a profile.
+  UI hierarchy belongs to Experience.
 - `cross_cutting_rules`: rule ID, statement, source tag (contract §3), basis, and
   the requirements it governs.
 - `data_rules`: entity concepts, required fields, validation, lifecycle transitions,
@@ -65,22 +67,30 @@ Produce draft `requirements_spec` using the shared artifact identity envelope:
 - `quality_thresholds`: metric, unit, target/comparator, workload, measurement
   method/window, owner, and policy/source; identify any unresolved value explicitly.
 - `configurable_targets`: business targets the product lets its operators set
-  (e.g. response times per site × request type × calendar): dimensions, shipped
+  (e.g. turnaround time per customer organisation × order type): dimensions, shipped
   defaults (tagged `[P]` until accepted), override and precedence rules, and
   precedence of legal/program deadlines over targets.
+- `configurable_rules` (optional; generalises configurable targets): obligations that
+  vary by jurisdiction or customer organisation (contract §3 *variable obligations*).
+  Numeric targets stay in `configurable_targets`; obligations go here.
+  Rule key, rule owner (the operating customer), scope levels, workflow steps
+  affected, and a seed set tagged `[K]` "starting point, not legal advice".
 - `decisions`: question, disposition, authority reference, rationale, assumptions,
   unresolved blockers, and change log including superseded/deleted requirement IDs.
 Emit `decision_request` for unresolved meaning or authority: exact question,
 options, impact, proposed owner, and affected artifacts. Return both through the
 shared result envelope. Draft status and successful authoring never confer G1.
+Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Validate assignment identity, mode, scope, references, permissions, and limits.
 2. Read original evidence and existing decisions; extract the problem and intended
    user outcome. Distinguish observed evidence from stakeholder hypotheses.
 3. Enumerate actors, resource boundaries, journeys, rules, exclusions, dependencies,
-   and failure/denial behavior. Apply the contract §3 *failure semantics* checklist
-   and express each item as rules and acceptance scenarios. Identify requirements
+   and failure/denial behavior. For each actor ask "what must this role know before
+   acting?" and record the answer as `state_awareness`. Apply the contract §3
+   *failure semantics* and *variable obligations* checklists and express each item
+   as rules and acceptance scenarios. Identify requirements
    outside the profile family. Record technical directives from an authority as
    constraints that cite their `decision_record`; don't design them.
 4. Assign stable IDs; preserve existing IDs for unchanged intent. Link altered
@@ -163,7 +173,9 @@ These are unevaluated specifications, not measured results.
 | Source is a domain narrative that disclaims being requirements | Use discovery mode; produce domain use cases and a scope recommendation; request a scope decision before intake |
 | Draft cites a legal concept not in the source (e.g. "just cause") | Tag `[K]`, name a reviewer, and keep it a review prompt rather than a rule until confirmed |
 | Authority sets 99.9% availability and a 2 h RTO with no window | Ask for the window, showing monthly/quarterly/annual allowances; don't propose one silently |
-| Authority wants response times configurable per site | Record `configurable_targets` with proposed defaults tagged `[P]`; legal deadlines take precedence |
+| Authority wants service targets configurable per location | Record `configurable_targets` with proposed defaults tagged `[P]`; legal deadlines take precedence |
+| Retention obligations differ by jurisdiction and each customer organisation sets its own | Record `configurable_rules` with the operator as rule owner, the affected workflow steps and a `[K]` seed set; do not make G1 wait for per-jurisdiction legal review |
+| A reviewer role works a queue but the source implies it also checks how things stand | Record `state_awareness` (e.g. open items by status, items resolved today, with scope and freshness) alongside its tasks |
 
 ## 12. Definition provenance
 Adapted `/Users/loren/.agency-agents/product/product-manager.md`: problem-first

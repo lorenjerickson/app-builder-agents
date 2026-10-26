@@ -1,7 +1,7 @@
 ---
 id: retrospective
 name: Retrospective
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -54,6 +54,7 @@ Follow-up dispositions are `propose`, `defer`, `investigate`, or `no_change`, ea
 with reason and owner where action remains. Product proposals link requirement IDs;
 workflow proposals link role/contract/profile revisions. Evidence references may be
 shared, but duplicate symptoms must not inflate frequency counts.
+Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 

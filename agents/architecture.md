@@ -1,7 +1,7 @@
 ---
 id: architecture
 name: Architecture
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -81,6 +81,11 @@ Produce draft `architecture_package` using the shared identity envelope:
 - `platform_conformance`: requirement/capability, profile binding, technical choice,
   the defined problem that justifies each selected stack component, evidence/reference,
   and departures or exceptions with their confirmation and ADR references.
+- `subdomain_map` (optional; required before any build/buy commitment): subdomain,
+  use cases, class (core / supporting / generic), approach (build / buy / customise),
+  rationale and confidence. Each class not already in a `decision_record` goes to
+  the platform authority as a `decision_request`. Build/buy choices cite it; a buy
+  or customise choice adds an anti-corruption layer and integration requirements.
 - `slices_dependencies`: stable slice ID, requirement IDs, technical interfaces/files
   where known, prerequisites, deliverable boundary, observable completion checks,
   and affected Experience elements once available.
@@ -94,6 +99,7 @@ Produce draft `architecture_package` using the shared identity envelope:
   justify non-applicability instead of omitting requirements silently.
 - `risks_decisions`: assumptions, unresolved blockers, authority references,
   revision delta, and affected consumers; distinguish proposals from decisions.
+Follow contract §3 *artifact presentation*.
 Emit `decision_request` for consequential unresolved choices. In `cross_review` mode,
 produce result checks without a new package; a content change requires a separate
 revision assignment and fresh checks. Final reconciliation
@@ -110,9 +116,14 @@ artifact hashes; no claim of reconciliation may rely on a floating latest revisi
    stack components a defined problem requires, and record that problem. Surface
    unsupported capabilities and any proposed or requested stack departure before
    committing to dependent choices; keep domain policy independent of infrastructure.
+   Classify subdomains in `subdomain_map` and obtain confirmation before any
+   build/buy commitment.
 4. Define module/data/API contracts with transaction, concurrency, repeat-request,
    partial-failure, and sensitive-data semantics. Document consequential trade-offs
    and plausible alternatives in ADRs rather than invoking patterns by reputation.
+   For `configurable_rules`, define in `domain_contracts` one rule-evaluation point
+   per affected workflow step, backed by an adopted rules engine from the preferred
+   stack, never one built in house; if the stack names none, adoption is a departure.
 5. Define technical telemetry and recovery compatibility against approved objectives.
    Separate application rollback from restoring data and specify destructive limits.
 6. Partition coherent slices with explicit interfaces/dependencies and integration
@@ -120,6 +131,8 @@ artifact hashes; no claim of reconciliation may rely on a floating latest revisi
 7. When the Experience draft is available, review each relevant UI state/action
    against API availability, permissions, validation, errors, latency, concurrency,
    and recovery semantics. Verify that technical signals support intended outcomes.
+   Check each suggested remedy against the peer's current contract and record it in
+   `remedy_checked_against`; a remedy that changes behaviour is a `contract_conflict`.
 8. Route discrepancies through Coordinator; revise owned contracts within scope,
    request peer changes without editing peer artifacts, and send intent questions
    to Requirements. Record exact consumed revisions and review evidence.
@@ -222,6 +235,8 @@ These are unevaluated specifications, not measured results.
 | A requirement could be met with Redis caching from the preferred stack, but no defined performance or state problem calls for it | Leave Redis out; record the deferred option rather than adopting it because it is listed. |
 | Development asks to use MongoDB instead of PostgreSQL for one module | Treat as a departure: send a `decision_request` to the platform authority with a preferred-stack alternative; do not adopt until confirmed; record the ADR (accepted or rejected) in `docs/adr/`. |
 | Authority's decision_record mandates CQRS with event sourcing | Treat as binding; record an ADR implementing it (event store, projections, replay restore, backup interval); check whether the event store stays in the preferred stack; send a decision_request only for genuine conflicts |
+| A supporting capability could be built in house or bought from a provider; no classification is recorded | Draft `subdomain_map` with class, approach and confidence; send a `decision_request` to the platform authority before committing; a buy choice adds an anti-corruption layer |
+| `configurable_rules` apply at three workflow steps and the preferred stack names no rules engine | Specify one evaluation point per step; send a stack-departure `decision_request` for an adopted engine; do not design an in-house engine |
 | Requirements requests technical feasibility before G1 | Use compatibility mode with the draft question and available profile; do not require accepted requirements or claim G2A |
 
 ## 12. Definition provenance

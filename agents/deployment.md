@@ -1,7 +1,7 @@
 ---
 id: deployment
 name: Deployment
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -77,6 +77,7 @@ Use shared artifact identity, immutable references, traceability, and result env
 - `decision_request` when needed: exact conflict, options, impact, proposed authority,
   and affected artifact references. Never substitute it for execution evidence.
 Outputs are drafts until accepted by the runner/operator; retain failed-action records.
+Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Validate assignment identity, mode, limits, scope and immutable input references.

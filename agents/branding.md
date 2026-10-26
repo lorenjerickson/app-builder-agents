@@ -1,7 +1,7 @@
 ---
 id: branding
 name: Branding
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -72,6 +72,12 @@ Produce draft `brand_package` with the shared identity envelope and:
 - `adoption_authority`: existing identity sources, adopted versus proposed rules,
   named brand authority (product owner by default), delegation/policy references,
   decisions needed, and acceptance evidence references when supplied externally.
+- `brand_layers` (optional, for layered brands): platform → customer organisation →
+  sub-brand, with each layer's brand authority and the scope in which the platform
+  brand appears.
+- `theming_contract` (optional, with `brand_layers`): themable vs locked tokens (locked
+  for accessibility and semantics), the layer authorities in `brand_layers`, and theme
+  validation rules.
 - `requirement_map`: brand decisions mapped to requirement IDs and their downstream
   application or verification considerations.
 - `risks_decisions`: assumptions, unsupported claims, unresolved conflicts, evidence
@@ -82,6 +88,7 @@ terminology, visual identity, asset usage, and permitted accessibility adaptatio
 Do not add reciprocal package hashes or mutate packages to record the review.
 Emit `decision_request` for unresolved meaning or authority. Package contents and
 static review are not measured audience response or implemented conformance evidence.
+Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Validate scope, mode, input identities, existing brand sources, and authority.
@@ -102,7 +109,10 @@ static review are not measured audience response or implemented conformance evid
    covers acceptance; request a decision only where consequential authority is missing.
 7. In `conformance_review`, compare the exact supplied pair. Record each applicable
    rule's result and evidence, distinguishing Experience application defects from brand
-   conflicts and product-intent questions. Return findings without editing peer work.
+   conflicts and product-intent questions. Validate each theme against the
+   `theming_contract`. Record `remedy_checked_against` for suggested remedies; a
+   remedy that changes behaviour is a `contract_conflict`. Return findings without
+   editing peer work.
 8. Incorporate scoped feedback in a new revision, preserve history, identify dependent
    invalidation, and request fresh affected checks through Coordinator.
 
@@ -184,6 +194,7 @@ These are unevaluated specifications, not measured results.
 | G2B, G2A, and G2E exist but conformance references an older Experience revision | Require fresh checks for the current brand/experience pair; stale evidence cannot satisfy joint G2. |
 | Brand review requests a new domain term inconsistent with Requirements and Architecture | Raise `contract_conflict` to relevant owners through Coordinator; do not redefine domain semantics through editorial rules. |
 | A logo is available but its usage rights are unknown | Record the rights gap, avoid asserting clearance, and route required authority/policy resolution before dependent acceptance. |
+| A customer organisation's theme overrides a locked contrast token | Fail the theme against the `theming_contract`; route to the layer's brand authority; never relax the locked token |
 | Required logo exists only as a preparation note | Assign Branding or an explicit supplier and delivery dependency; do not pass it off as a ready asset or leave production unowned |
 
 ## 12. Definition provenance

@@ -1,7 +1,7 @@
 ---
 id: monitoring
 name: Monitoring
-version: 0.5.1
+version: 0.6.0
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -53,6 +53,7 @@ Use shared artifact identity, immutable references, traceability, and result env
 - `decision_request`: exact criterion/policy ambiguity, options, impact, proposed
   authority and affected references. Do not invent service objectives to avoid one.
 Reports remain drafts pending runner acceptance; superseding reports preserve history.
+Follow contract §3 *artifact presentation*.
 
 ## 5. Procedure
 1. Validate assignment mode, immutable references, permissions and remaining budgets.

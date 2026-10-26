@@ -246,10 +246,11 @@ application-specific requirements follow when preparing their validation exercis
 
 ## Subsequent pilot validation
 
-The current [pilot proposal](pilot-plan.md) uses BorrowBench, a small equipment
+An earlier pilot proposal (abandoned; pilots now live in their own repositories,
+see the [README](../README.md#pilot)) used BorrowBench, a small equipment
 checkout application with two roles, server-enforced authorization, concurrency,
-safe retries and audit history. It supersedes the original issue-tracker example.
-The proposal includes the selected TypeScript subset and measurable recovery/improvement criteria.
+safe retries and audit history. It superseded the original issue-tracker example.
+The proposal included the selected TypeScript subset and measurable recovery/improvement criteria.
 
 1. Use the defined Requirements agent and its template to specify one end-to-end
    equipment-checkout slice.

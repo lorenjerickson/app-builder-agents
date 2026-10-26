@@ -1,6 +1,6 @@
 # Shared operating contract
 
-Version: 0.5.1. Status: draft for definition review, not a deployed system.
+Version: 0.6.0. Status: draft for definition review, not a deployed system.
 
 ## 1. Purpose, roles, and precedence
 
@@ -33,7 +33,8 @@ Before dispatch, Coordinator records a run manifest containing:
 - `execution_mode`: `runner` (ledger-enforced), `separate_agents` (each role runs in
   its own isolated context) or `single_model_sequential` (one model plays roles in
   turn; independence is procedural only). The run report restates it and limits
-  independence claims accordingly.
+  independence claims accordingly. Prefer `separate_agents` for authoring as well as
+  review when available, with each author holding its own assigned tool access.
 - Accepted requirements revision when available; intake explicitly records it as
   absent. Later delivery/product-affecting stages require the accepted revision.
   Workflow-only evaluation instead uses its authorized proposal and frozen workflow
@@ -78,6 +79,11 @@ guidance file if it records the mapping.
 | `delivery/runs/<run_id>/` | run_manifest, task_graph, role drafts, `gate_<id>.md`, comparison/evaluation notes, run_report, `SHA256SUMS` |
 | `BACKLOG.md` | Product backlog (deferred or next scope); definition gaps go to the definition set's backlog |
 
+Pilot artifacts, IDs and evaluation outputs (including workflow-evaluation runs)
+are stored in the pilot's repository, under `delivery/runs/`. The definition set's
+repository stores only domain-neutral scorecards and records findings as generic
+mechanisms.
+
 With a runner, the ledger database is the authoritative state, and gate files are
 exported evidence. In manual mode the gate files *are* the acceptance record: each
 names gate ID, exact artifact revisions and hashes, authority statement, predicate
@@ -96,11 +102,11 @@ Keep secrets and unnecessary personal data out of stored evidence.
 
 | Artifact type | Sole producer | Minimum payload | Consumers |
 |---|---|---|---|
-| `requirements_spec` | Requirements | Scope, actor profiles, cross-cutting rules, data/rules, stable requirement IDs, acceptance scenarios, quality thresholds, configurable targets, exclusions, decisions; every rule source-tagged | All downstream roles |
+| `requirements_spec` | Requirements | Scope, actor profiles, cross-cutting rules, data/rules, stable requirement IDs, acceptance scenarios, quality thresholds, configurable targets, exclusions, decisions; every rule source-tagged. Optional: `state_awareness` per actor profile; `configurable_rules` | All downstream roles |
 | `decision_request` | Any assigned role | Exact question/conflict; plain-language `explanation` with an example; options with impact; `recommendation` and rationale; `consequence_of_deferral`; proposed owner; affected artifacts | Coordinator and external authority |
 | `decision_record` | Coordinator (recording only) | Question, decision as stated by the authority, interpretation applied, authority and date, source (conversation, document), affected artifacts, `binding_on` roles, supersedes | All roles named in `binding_on`; Requirements; Retrospective |
-| `brand_package` | Branding | Positioning/personality/values, naming and claims constraints, voice/tone examples, editorial/terminology rules, visual identity and asset usage, applicability/exception rules, provenance and decisions | Experience, Architecture, Development, Testing, Retrospective |
-| `architecture_package` | Architecture | Technical decisions, modules/data/domain states, APIs, authorization/concurrency, platform conformance, slices/dependencies, telemetry implementation, migration/recovery, requirement map | Experience, Development, Testing, Deployment, Monitoring |
+| `brand_package` | Branding | Positioning/personality/values, naming and claims constraints, voice/tone examples, editorial/terminology rules, visual identity and asset usage, applicability/exception rules, provenance and decisions. Optional: `brand_layers`, `theming_contract` | Experience, Architecture, Development, Testing, Retrospective |
+| `architecture_package` | Architecture | Technical decisions, modules/data/domain states, APIs, authorization/concurrency, platform conformance, slices/dependencies, telemetry implementation, migration/recovery, requirement map. Optional: `subdomain_map` (required before any build/buy commitment) | Experience, Development, Testing, Deployment, Monitoring |
 | `experience_package` | Experience | Accepted brand reference and application map, UI visual tokens/components/assets, layouts and responsive rules, journeys/UI states, interaction behavior/content, accessibility/motion, operation mapping, user-outcome signal needs, requirement map | Branding, Architecture, Development, Testing, Deployment, Monitoring |
 | `implementation_package` | Development | Source revision, changes, migration/configuration definitions, developer checks, build commands, immutable candidate identity, requirement map | Testing, Deployment |
 | `test_plan` | Testing | Requirement/scenario map, independent fixtures, required checks, environment needs, coverage/exclusions with policy basis | Development, Coordinator |
@@ -127,6 +133,11 @@ decision (cite the decision_record), `[P]` proposal awaiting decision, or `[K]`
 external domain knowledge (needs a named reviewer before it binds). Untagged `[K]`
 content fails the producer's self-check.
 
+**Artifact presentation.** Every artifact opens with a summary of one page or less
+(decisions, open items, gate-relevant results); detail goes in tables. Cite this
+contract by section rather than restating it. A revision reports its delta against
+the prior revision, not a full restatement.
+
 **Behavioural policies with fairness or authority risk** (permissions and denied
 actions, prioritisation/ranking factors and exclusions, eligibility rules) are
 Requirements-owned intent. Architecture owns their enforcement and computation;
@@ -144,8 +155,8 @@ age, appearance or perceived disability.
   at commit; handoff with recipient, follow-up and returned outcome; dependency
   outage and degraded operation; deadline provenance (legal/program vs target);
   facts that change after a consequential action is *proposed* but before it is
-  executed (e.g. a payment arrives after a notice is proposed) return the matter
-  to review, with no automatic continuation or cancellation.
+  executed (e.g. missing information arrives after a request's rejection is
+  proposed) return the matter to review, with no automatic continuation or cancellation.
 - *Disclosure surfaces:* lists, search and suggestions, counts, breadcrumbs,
   previews, attachments, messages, exports and print, notifications (lock screen,
   shared device), recipient selection; internal notes vs participant-facing
@@ -157,6 +168,12 @@ age, appearance or perceived disability.
   elicited from the authority with the arithmetic shown; availability, recovery,
   degraded-operation and maintenance limits are mutually consistent; degraded
   operation has an elicited essential-functions list.
+- *Variable obligations:* obligations that vary by jurisdiction or customer
+  organisation are `configurable_rules` the operating customer owns and configures at
+  workflow steps, not fixed requirements. Seed rules are tagged `[K]` and labelled
+  "starting point, not legal advice"; compliance stays with the operator. The named
+  `[K]` reviewer of seed rules checks broad applicability and labelling, not
+  per-jurisdiction correctness; no approval depends on exhaustive legal review.
 
 **Binding decisions.** A `decision_record` whose `binding_on` names a role is a
 mandatory input for that role's subsequent assignments. Architecture records an ADR
@@ -175,6 +192,9 @@ or further authoring. Reviews may return checks without creating new packages.
 
 External design documents need a stable file/node identity and immutable version or
 captured export with content hash; a live URL alone is not an accepted visual baseline.
+When exports are unavailable, a named version saved in the design tool is an
+acceptable immutable reference (file ID plus named-version ID stand in for
+`content_hash`); Coordinator records its save as a `decision_record`.
 Experience owns the Figma source and its snapshots. The accepted experience package
 binds visual snapshots to its textual state/interaction specification. Neither may
 silently override the other: conflicts prevent G2E/G2 acceptance until corrected.
@@ -203,7 +223,11 @@ optional. Lists may be empty only when meaningful and explained.
 **Result:** same run/task/trace/role/attempt identity, `consumed_refs`, `status`,
 `summary`, `output_refs`, `checks`, `issues`, `next_route`, `usage`, `checkpoint_ref`
 (nullable). `checks` entries contain check ID, subject, outcome, and evidence reference;
-`issues` include category, impact, evidence, and owner or proposed route. `usage` uses
+`issues` include category, impact, evidence, and owner or proposed route; `issues`
+entries from `cross_review` or `conformance_review` also carry optional
+`remedy_checked_against` (the peer revision a suggested remedy was checked against).
+A remedy that changes behaviour is routed as a `contract_conflict` (§5), not a copy fix.
+`usage` uses
 actual measurements; unavailable values are null with a reason, never fabricated.
 `missing_outputs` is a required list (empty when none): identify any expected artifact
 that could not be produced, why, and the owning next action. Non-success results may
@@ -427,7 +451,9 @@ checks. Record recovery deployment and monitoring evidence in either case.
 Development cannot approve its own candidate. Testing derives expectations from
 requirements and examines negative cases and independent fixtures. Coordinator cannot
 waive checks, change acceptance criteria to match output, or use agent confidence as
-evidence. Distinct roles do not guarantee independent judgment; held-out scenarios and
+evidence. Assignments may narrow review scope but never set severity: an unmet
+accepted criterion is blocking for any gate that claims to cover it. Distinct roles
+do not guarantee independent judgment; held-out scenarios and
 deterministic checks are needed in later evaluation.
 
 Retrospective proposes changes; it cannot edit active definitions, policy, or scoring.

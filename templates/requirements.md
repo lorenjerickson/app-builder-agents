@@ -20,8 +20,8 @@ Unfilled release-critical fields prevent acceptance; they are not permission to 
 ## Actors and data
 
 - Actor profiles (purpose, goals, responsibilities, pressures, information boundary,
-  lifecycle and situational variants, capacity/coverage, validation question; no
-  invented demographics):
+  lifecycle and situational variants, capacity/coverage, state awareness (aggregates,
+  scope, freshness, attention condition), validation question; no invented demographics):
 - Roles, resource ownership, and permission matrix:
 - Entities, fields, types, validation, relationships, and uniqueness rules:
 - State transitions and business invariants:
@@ -64,6 +64,8 @@ Unfilled release-critical fields prevent acceptance; they are not permission to 
 - Recovery time and acceptable data-loss limits (with measurement windows; consistent
   with availability and degraded-operation limits; essential functions listed):
 - Configurable targets (dimensions, shipped defaults, overrides, legal precedence):
+- Configurable rules (rule key, rule owner, scope levels, workflow steps, `[K]` seed set
+  labelled "starting point, not legal advice"):
 - Telemetry needed to measure user-task success:
 
 ## Traceability and decisions
