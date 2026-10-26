@@ -1,9 +1,9 @@
 # Definition-set review — version 0.5.1
 
-Date: 2026-10-25. Status: **promoted by the workflow authority (Loren), 2026-10-25**, for the rental-ops design run. Tags: `v0.4.0` (rollback), `v0.5.0` (evaluated), `v0.5.1` (current).
+Date: 2026-10-25. Status: **promoted by the workflow authority (Loren), 2026-10-25**, for the P-1 design run. Tags: `v0.4.0` (rollback), `v0.5.0` (evaluated), `v0.5.1` (current).
 
 ## Scope and method
-Implements the backlog items approved in [backlog-triage-0.5.0.md](backlog-triage-0.5.0.md) (all 18 open items plus P20). The evidence comes from the rental-ops pilot runs RUN-20261025-CR01 (clean-room comparison) and RUN-20261025-DEC01 (decisions and G1). Each change is small and tied to that evidence. This review is static inspection. The behavioural effect is measured separately by the evaluation run (below).
+Implements the backlog items approved in [backlog-triage-0.5.0.md](backlog-triage-0.5.0.md) (all 18 open items plus P20). The evidence comes from pilot P-1: the P-1 clean-room run (clean-room comparison) and the P-1 decision run (decisions and G1). Each change is small and tied to that evidence. This review is static inspection. The behavioural effect is measured separately by the evaluation run (below).
 
 Historical reviews: [v0.4](definition-review-v0.4.md), [v0.3](definition-review-v0.3.md), [v0.2](definition-review-v0.2.md), [v0.1](definition-review-v0.1.md).
 

@@ -2,7 +2,7 @@
 
 Date: 2026-10-25 · Prepared by: Claude (Coordinator, workflow_evaluation) · Decision authority: Loren (workflow/platform authority) · Status: **approved by Loren 2026-10-25 (all items); implemented in 0.5.0 draft**
 
-Evidence base: rental-ops runs RUN-20261025-CR01 (clean-room comparison) and RUN-20261025-DEC01 (decisions DR-01…DR-13, G1). Single domain, single-model sequential execution, so each change is kept small and tied to its evidence to avoid overfitting.
+Evidence base: pilot P-1, the P-1 clean-room run (clean-room comparison) and the P-1 decision run (authority decisions, G1). Single domain, single-model sequential execution, so each change is kept small and tied to its evidence to avoid overfitting.
 
 **Groups.** **A** — must land before the pilot's design run (Branding, Architecture, Experience → G2). **B** — Requirements-stage improvements; can land in the same release, or the next one, without blocking design.
 
@@ -34,18 +34,18 @@ Evidence base: rental-ops runs RUN-20261025-CR01 (clean-room comparison) and RUN
 | P7 (Requirements half) | Same checklist | Approve | requirements.md §5 step 3 | Same list, expressed as business rules and acceptance scenarios. | S |
 | P4 | Actor profiles (personas) | Approve | contract §3 (`requirements_spec` payload); requirements.md §4; templates/requirements.md | `actors` gains goals, responsibilities, pressures, information boundary, lifecycle variants (incl. former participants), situational variants, capacity/coverage rules and a validation question. Prohibits invented demographics and biographies; UI hierarchy is excluded (it belongs to Experience). | M |
 | P5 | Discovery mode | Approve | requirements.md §3–§5, §9; contract §6 note | New `discovery` mode for sources that aren't product requests (e.g. a domain narrative): domain use cases, data concepts, actors, a scope/priority recommendation and a mandatory scope `decision_request`. Cannot satisfy G1. This is the project's core premise (an app from a narrative), so it's worth naming. | M |
-| P6 | Source-tag classification | Approve | requirements.md §5 step 8, §9 checks; contract §3 traceability | Every rule and term is tagged [S] source / [D] derived / [P] proposal / [K] external knowledge (needs a named reviewer) / [A] authority decision. The self-check fails on untagged [K]. Matches the tags already used in rental-ops R1+. | S |
+| P6 | Source-tag classification | Approve | requirements.md §5 step 8, §9 checks; contract §3 traceability | Every rule and term is tagged [S] source / [D] derived / [P] proposal / [K] external knowledge (needs a named reviewer) / [A] authority decision. The self-check fails on untagged [K]. Matches the tags already used in the pilot's later requirements revisions. | S |
 | P8 | Cross-cutting rules section | Approve | templates/requirements.md; contract §3 payload | `cross_cutting_rules`: ID, rule, tag, basis, governed requirements. | S |
 | P15 | Usable decision requests | Approve | contract §3 (`decision_request` payload) | Add `explanation` (plain language plus an example), `recommendation` with rationale, and `consequence_of_deferral`. | S |
 | P17 | Configurable targets vs fixed thresholds | Approve | contract §3 payload; requirements.md §4; testing.md (one line) | `configurable_targets`: dimensions, defaults (tagged [P] until accepted), override/precedence rules, legal-deadline precedence. Testing verifies configurability and the shipped defaults. | S |
 | P18 | Threshold consistency | Approve | requirements.md §5 step 8 | Check thresholds against one another (availability ↔ RTO ↔ degraded limits ↔ maintenance windows); every percentage target needs a measurement window **elicited from the authority with the arithmetic shown**, never assumed; degraded operation requires an elicited essential-functions list. | S |
 
 ## Not recommended now
-None rejected. Everything above is small and evidence-backed. If you want a smaller 0.5.0, defer **P5** (discovery mode, the largest change) and **P4** to 0.6.0. The rental-ops requirements are already accepted, so they have no effect on the pilot's next stage.
+None rejected. Everything above is small and evidence-backed. If you want a smaller 0.5.0, defer **P5** (discovery mode, the largest change) and **P4** to 0.6.0. The P-1 requirements are already accepted, so they have no effect on the pilot's next stage.
 
 ## Release and evaluation plan (contract §8)
 1. P20 baseline commit and tag `v0.4.0` (rollback).
 2. Implement the approved items, bump every definition's `version` to 0.5.0, and update README and definition-review with a 0.5.0 findings table.
 3. **Static review:** consistency of role IDs, artifact owners and producers/consumers; every new field has a consumer; links; the twelve-section format.
-4. **Evaluation:** a fresh, separate agent (not this session's context) reruns the rental-ops clean-room requirements and preliminary experience pass under 0.5.0 with only the narrative as input. Metric: how many of the comparison findings 0.4.0 missed (personas P1–P7, use cases U7–U11, interface S4–S10, 20 findings) are now produced, and whether any new excess appears. That run is `separate_agents` mode, so it also tests P13.
+4. **Evaluation:** a fresh, separate agent (not this session's context) reruns the P-1 clean-room requirements and preliminary experience pass under 0.5.0 with only the narrative as input. Metric: how many of the comparison findings 0.4.0 missed (personas P1–P7, use cases U7–U11, interface S4–S10, 20 findings) are now produced, and whether any new excess appears. That run is `separate_agents` mode, so it also tests P13.
 5. You decide promotion of 0.5.0. The pilot's design run then pins 0.5.0.
