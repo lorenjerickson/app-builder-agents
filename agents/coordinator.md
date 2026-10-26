@@ -1,7 +1,7 @@
 ---
 id: coordinator
 name: Coordinator
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -73,7 +73,9 @@ are control instructions constrained by policy, not additional specialist artifa
    design-tool capabilities (author / read / export) in the assignment. Give
    reviewers the full decision set (ADRs, decision_records) and pinned prior
    revisions the subject refers to. Assignments may narrow review scope but never
-   set severity (contract §8).
+   set severity (contract §8). When Architecture and Experience compatibility passes
+   run together, give each the peer's available compatibility draft, or, after both
+   finish, assign each a further bounded `compatibility` pass with the peer's draft.
    Require current gate evidence as well as task completion. Schedule Development
    integration for a multi-slice candidate; schedule Deployment environment preparation
    and isolated staging before Testing verification. Baseline Testing's plan against
@@ -202,6 +204,7 @@ hashes match. Record the result historically and keep current attempt authority 
 | Project contains detailed documents of unknown origin | Ingest as `external_baseline`; do not accept or build on them until re-derived or accepted |
 | One model instance performs several roles | Record `execution_mode: single_model_sequential`; report independence as procedural only |
 | Drafting a cross-review assignment where a gap against an accepted rule seems minor | Narrow scope if needed but set no severity; the reviewer treats the unmet accepted criterion as blocking for the gate that claims it |
+| Architecture and Experience compatibility passes are scheduled in parallel | Supply each with the other's draft when available; otherwise assign each a further bounded compatibility pass with the peer's draft, so answered questions are not re-asked |
 | Two reviewers report the same gap from opposite sides | Merge into one finding with both evidence references and route it once, to the owners of the shared root |
 
 ## 12. Definition provenance

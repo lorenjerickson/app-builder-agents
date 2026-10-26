@@ -1,7 +1,7 @@
 ---
 id: deployment
 name: Deployment
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---

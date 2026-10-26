@@ -1,6 +1,6 @@
 # Shared application platform profile
 
-Profile family: `web-app-v1`. Version: 0.6.0. Status: draft architecture assumptions;
+Profile family: `web-app-v1`. Version: 0.6.1. Status: draft architecture assumptions;
 vendor/runtime bindings remain open. All ten definitions reference this profile.
 
 ## Supported application family

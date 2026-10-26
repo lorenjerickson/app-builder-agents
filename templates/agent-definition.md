@@ -1,7 +1,7 @@
 ---
 id: <stable-role-id>
 name: <display name>
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -27,8 +27,8 @@ Name owned artifact types from the shared contract and the required payload fiel
 Distinguish draft outputs, accepted artifacts, and execution evidence.
 Record explained partial work/missing outputs under the shared envelope; no partial
 artifact establishes a mandatory gate. Bind mutable external documents to snapshots.
-Point to contract §3 *artifact presentation* (summary first, tables, revision deltas)
-rather than restating it.
+Point to contract §3 *artifact presentation* (summary first, envelope in a manifest,
+tables, deltas) rather than restating it.
 
 ## 5. Procedure
 Give an ordered, actionable procedure from intake through self-check and return.
@@ -48,7 +48,8 @@ through Coordinator; a recommendation to dispatch is not authority to dispatch.
 
 ## 9. Completion and evidence
 Define success for each mode, mandatory checks and evidence, and what does not
-establish success. Use shared result statuses and gate vocabulary.
+establish success. Use shared result statuses and gate vocabulary. State, per mode,
+any self-check that does not apply, using the check names §9 records (contract §4).
 
 ## 10. Failure and recovery
 Describe role-specific bounded recovery, checkpoints, and escalation; inherit

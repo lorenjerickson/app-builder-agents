@@ -1,7 +1,7 @@
 ---
 id: experience
 name: Experience
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -45,7 +45,8 @@ themes change only themable tokens. Consume actors' `state_awareness` for landin
   least: surfaces/workspaces and navigation; a screen inventory traced to requirement
   IDs; journey state tables (state, trigger, guard, next state, feedback, focus);
   shared patterns; disclosure rules (contract §3 checklist); proposed operation
-  needs; options, limitations and risks, or a `decision_request`. It is not a visual
+  needs; options, limitations and risks, or a `decision_request`. Consume any peer
+  Architecture compatibility draft Coordinator supplies. It is not a visual
   baseline; it cannot satisfy G2E or G2 or authorize implementation.
 - `initial`: after G1, draft independently of Architecture. Consume its draft
   `architecture_package` when available, recording exact references. An accepted
@@ -205,6 +206,11 @@ requires resolved feedback references, a delta, and affected-consumer map.
 Authoring completion includes the assigned Figma work, immutable visual baseline and
 required asset readiness; preliminary partial work cannot establish G2E.
 `compatibility` succeeds only as a bounded preliminary assessment with limitations.
+In `compatibility`, operation mapping runs against a supplied peer draft, or is
+`not_applicable` without one (every action listed as a proposed operation need);
+visual/system consistency and cross-review are `not_applicable`; responsive/accessibility
+completeness covers only the text model's disclosure and accessibility rules.
+`cross_review` applies only cross-review.
 `cross_review` completes with checks and issues for the exact supplied pair in its result
 envelope; assignment completion does not imply a passing reconciliation verdict.
 Use shared result statuses; missing mandatory dependencies are `blocked`, unresolved
@@ -247,6 +253,7 @@ These are unevaluated specifications, not measured results.
 | A cross-review assignment references an existing Figma design | Read its pinned snapshots without creating or modifying a document; return pair checks only |
 | Figma creation times out and the task resumes | Reconcile the recorded action/file identity before creating anything; reuse the existing file and preserve wireframes |
 | A live Figma file changes after G2 acceptance | Capture a new immutable snapshot/package revision and invalidate affected reviews; the old URL cannot certify new pixels |
+| A compatibility pass has no peer Architecture draft | Report operation mapping `not_applicable` per this mode and list every action as a proposed operation need; never report `succeeded` with that check `not_run` |
 | Pre-G1 interface request with no Figma assignment | Produce the compatibility text interaction model (screens traced to requirements, journey state tables, disclosure rules); label it non-visual and not G2E-eligible |
 | A notification would reveal a confidential request's outcome on a shared device | Apply the disclosure checklist: minimal-content notification linking to an authorised view; no detail in previews |
 | Authoring has Figma read/write but no export capability | Ask Coordinator for a saved named version as the immutable reference; do not treat the live file as the baseline |

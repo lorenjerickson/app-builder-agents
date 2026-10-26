@@ -1,7 +1,7 @@
 ---
 id: development
 name: Development
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -126,7 +126,8 @@ Do not change production data, deploy, or publish/activate a workflow version.
 `implement`/`repair` succeeds when assigned changes, mandatory developer checks,
 reproducible candidate identity, and complete package evidence satisfy the assignment.
 `integrate` additionally requires the combined release scope, integration checks and
-one complete candidate manifest, including required assets and documentation.
+one complete candidate manifest, including required assets and documentation;
+integration checks are `not_applicable` to `implement`/`repair`.
 `workflow_change` succeeds when the authorized proposed change and comparison-ready
 package are complete; it does not imply evaluation success or promotion.
 An attempted required build/check failure returns `failed` with evidence; missing

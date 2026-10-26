@@ -1,7 +1,7 @@
 ---
 id: branding
 name: Branding
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -154,7 +154,12 @@ criteria for independent implementation verification. Feedback returns through
 Coordinator for scoped revision; recommend dispatch without assuming dispatch authority.
 
 ## 9. Completion and evidence
-`discovery` completes only a bounded preliminary assessment. `define` succeeds when
+Record checks for requirement traceability, claim support, accessibility constraints,
+existing-identity consistency, asset readiness and exact-pair conformance.
+`discovery` completes only a bounded preliminary assessment; it applies claim support,
+accessibility constraints and existing-identity consistency, and the others are
+`not_applicable`. `define` and `revise` exclude exact-pair conformance;
+`conformance_review` applies only exact-pair conformance. `define` succeeds when
 the assigned brand draft, traceability, and self-checks are complete; `revise` also
 requires feedback disposition, delta, and affected-consumer map. Neither means G2B
 has passed. `conformance_review` completes with exact-pair checks and issues in its

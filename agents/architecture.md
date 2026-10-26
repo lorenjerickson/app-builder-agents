@@ -1,7 +1,7 @@
 ---
 id: architecture
 name: Architecture
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -50,7 +50,9 @@ accepted `requirements_spec` with G1 reference and applicable environment/qualit
 constraints. `compatibility` explicitly uses draft intent instead of G1.
 - `compatibility`: bounded pre-G1 feasibility triage consumes the draft requirement
   or question and profile family/instance. Return only preliminary conformance,
-  alternatives, missing bindings, and risks. It cannot satisfy G2A or joint G2.
+  alternatives, missing bindings, and risks. Consume any peer Experience
+  compatibility draft Coordinator supplies; record it in `consumed_refs` and don't
+  re-ask questions it answers. It cannot satisfy G2A or joint G2.
 - `initial`: begin after G1 independently of Experience's initial draft. Consume
   the relevant original requirements and accepted scaffold/platform constraints;
   use a peer draft when available, without requiring accepted Experience input.
@@ -201,7 +203,10 @@ G2A acceptance or joint G2. A `cross_review` assignment requires pair-specific
 checks; missing peer evidence cannot pass joint G2. `revise` additionally requires
 delta, resolved feedback references, and impact mapping. `compatibility` succeeds
 only as a bounded preliminary assessment with limitations; it never authorizes
-implementation or satisfies G2A/G2.
+implementation or satisfies G2A/G2. `compatibility` applies profile conformance
+(including missing bindings) and dependencies; the other checks below are
+`not_applicable`, and risks are reported as limitations. `cross_review` applies only
+peer compatibility.
 Completing a truthful cross-review can succeed as an assignment while its findings
 make joint G2 fail or remain inconclusive.
 Checks identify subject revision and evidence for requirement coverage, API/domain

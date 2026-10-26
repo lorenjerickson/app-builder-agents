@@ -1,7 +1,7 @@
 ---
 id: requirements
 name: Requirements
-version: 0.6.0
+version: 0.6.1
 status: draft
 contract: ../contracts/operating-contract.md
 ---
@@ -143,7 +143,9 @@ recommend affected requirement IDs, leaving task/gate updates to Coordinator.
 
 ## 9. Completion and evidence
 For `discovery`, complete domain use cases, actor profiles, a scope recommendation
-and the scope decision_request support `succeeded`; G1 is never claimed.
+and the scope decision_request support `succeeded`; G1 is never claimed. In
+`discovery`, source traceability and internal consistency apply; scenario coverage
+and threshold completeness are `not_applicable`.
 For `intake`, a complete specification and successful consistency/coverage checks
 support `succeeded`; for `revise`, additionally require a revision delta and impact map.
 Record check IDs, subject revision, outcome, and evidence references for source

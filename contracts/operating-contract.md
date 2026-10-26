@@ -1,6 +1,6 @@
 # Shared operating contract
 
-Version: 0.6.0. Status: draft for definition review, not a deployed system.
+Version: 0.6.1. Status: draft for definition review, not a deployed system.
 
 ## 1. Purpose, roles, and precedence
 
@@ -134,9 +134,10 @@ external domain knowledge (needs a named reviewer before it binds). Untagged `[K
 content fails the producer's self-check.
 
 **Artifact presentation.** Every artifact opens with a summary of one page or less
-(decisions, open items, gate-relevant results); detail goes in tables. Cite this
-contract by section rather than restating it. A revision reports its delta against
-the prior revision, not a full restatement.
+(decisions, open items, gate-relevant results) as its first content; the identity
+envelope sits in a separate manifest (preferred) or a trailing block. Detail goes in
+tables. Cite this contract by section rather than restating it. A revision reports its
+delta against the prior revision, not a full restatement.
 
 **Behavioural policies with fairness or authority risk** (permissions and denied
 actions, prioritisation/ranking factors and exclusions, eligibility rules) are
@@ -243,6 +244,15 @@ Result `status` has exactly four values:
   succeed as an assignment; its check/gate verdict remains fail.
 - `blocked`: a dependency, capability, budget, or external condition prevents progress.
 - `needs_decision`: meaning or authority is unresolved; include a `decision_request`.
+
+A self-check is a role's own pre-handoff check of its output; checks a role performs
+on an assessed subject follow the gate rules below. A self-check applies to every mode
+unless that mode's definition excludes it, possibly conditional on the mode's inputs;
+checks a role's §9 names for one mode only are excluded from its other modes. An
+excluded check is reported `not_applicable` citing the mode. An applicable mandatory
+self-check reported `not_run` cannot yield `succeeded`: return `blocked`, `failed` or
+`needs_decision` per the definitions above, naming each unrun check and its missing
+input or failure.
 
 An accurate report can succeed as an assignment while reporting a failing release
 gate. Gate verdicts are `pass`, `fail`, or `inconclusive`; individual checks use

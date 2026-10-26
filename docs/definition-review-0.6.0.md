@@ -1,6 +1,6 @@
-# Definition-set review — version 0.6.0
+# Definition-set review — version 0.6.0 (with 0.6.1 increment)
 
-Date: 2026-10-26. Status: **evaluated draft**. Independent review: pass with minor issues, fixed in fd5676c. EVAL-060-01: 8/9 ([scorecard](evaluations/EVAL-060-01/scorecard.md)); follow-ups P37 and P38 proposed. Awaiting the workflow authority's promotion and the v0.6.0 tag. Rollback point: the 0.5.1 hygiene state (a94028f).
+Date: 2026-10-26. Status: 0.6.0 **promoted by the workflow authority (Loren), 2026-10-26** (tag `v0.6.0`); 0.6.1 is a static, not yet evaluated increment (below). Independent review: pass with minor issues, fixed in fd5676c. EVAL-060-01: 8/9 ([scorecard](evaluations/EVAL-060-01/scorecard.md)); follow-ups P37 and P38 are implemented in 0.6.1. Rollback point: the 0.5.1 hygiene state (a94028f).
 
 ## Scope and method
 Implements the items approved in [backlog-triage-0.6.0.md](backlog-triage-0.6.0.md): P22 and P26–P35, with the approval amendment that P34 uses an adopted rules engine from the preferred stack. P36 (adding an engine to the stack) stays proposed and is not implemented; docs/tech-stack.md is unchanged. Every change is a generic mechanism; new artifact fields are optional. This review is static; the behavioural effect is measured separately (below).
@@ -41,7 +41,7 @@ Previous review: [0.5.x](definition-review.md).
 - Evidence still comes from one pilot domain.
 
 ## Evaluation — EVAL-060-01
-Not yet run. Planned per the triage release plan: fresh separate agents run Requirements discovery and an Experience compatibility pass on a short narrative from a different domain, stored outside this repository; scoring checks P30, P34, P28 and P26 without prompting.
+Run on a narrative from a different domain, with outputs kept outside this repository: **8/9** ([scorecard](evaluations/EVAL-060-01/scorecard.md)). Its failure modes became P37 and P38.
 
 ## Independent review
 A separate agent reviewed `076223d`: **pass with minor issues**, nothing blocking, denylist scan clean.
@@ -63,3 +63,27 @@ A separate agent reviewed `076223d`: **pass with minor issues**, nothing blockin
 **Accepted notes (not changed in this release):**
 - N2: recording a named-version save as a `decision_record` is a loose fit for an action; kept as approved in the triage.
 - N6: the README link to `pilot/borrowbench/README.md` is outside this release; handle it in a separate backlog item.
+
+## 0.6.1 increment
+| Backlog | Change (delta) | Files |
+|---|---|---|
+| P37 | A self-check applies to every mode unless that mode excludes it (then `not_applicable` citing the mode). An applicable mandatory self-check reported `not_run` cannot yield `succeeded`: the status is `blocked` (or `needs_decision`), naming the check and its missing input. No new status; the existing four are kept. Modes state their exclusions | contract §4; template §9; experience §9, §11; architecture §9; requirements §9; branding §9 |
+| P38 | (a) Coordinator gives each parallel Architecture/Experience compatibility pass the peer's available draft, or runs a short reconciliation after both finish; both compatibility modes consume a supplied peer draft. (b) *Artifact presentation*: the summary is the first content, and the identity envelope sits in a separate manifest (preferred) or a trailing block | coordinator §5, §11; architecture §3; experience §3; contract §3; template §4 |
+| — | Contract, profile, template and all ten definitions at 0.6.1; README version line | frontmatter; README.md |
+
+Static checks for 0.6.1: ten definitions with twelve sections each at 0.6.1 (pass). The four result statuses are unchanged, and `not_applicable` keeps its policy basis, since the mode definition is that basis (pass). Roles without stated exclusions apply every self-check by default; see the review fixes below for mode-specific checks. Denylist scan of added lines: no domain leaks (pass). Not yet evaluated; a re-run of the EVAL-060-01 Experience compatibility pass would test both items.
+
+### 0.6.1 independent review
+A separate agent reviewed `b49d0ca`: **pass with minor issues**; denylist scan clean.
+
+| Finding | Disposition |
+|---|---|
+| M1 exclusions didn't use recorded check names | fixed: Experience, Architecture, Requirements and Branding exclusions use each role's §9 check names; Branding §9 now lists its checks |
+| M2 `failed` omitted | fixed: an unrun applicable self-check returns `blocked`, `failed` or `needs_decision` per the status definitions (contract §4) |
+| M3 "self-check" undefined | fixed: a role's own pre-handoff check of its output; checks on an assessed subject (Testing, Monitoring, reviews) follow the gate rules |
+| M4 roles with mode-specific checks stated no exclusions | fixed: checks §9 names for one mode only are excluded from other modes (contract §4); Development states its integration-check exclusion explicitly; Testing, Deployment and Monitoring checks are assessment or execution checks, and Coordinator and Retrospective have no mode-specific checks |
+| M5 no approval record | fixed: P37/P38 moved to *Approved work* with Loren's 2026-10-26 approval; P37 amendment (existing statuses, no new one) recorded |
+| N1 undefined reconciliation step | fixed: a further bounded `compatibility` pass with the peer's draft |
+| N2 use of the peer draft unstated | fixed: Architecture records it in `consumed_refs` and doesn't re-ask answered questions |
+| N3 trailing front matter | fixed: separate manifest preferred, otherwise a trailing identity block |
+| N4 conditional exclusions | fixed: contract §4 allows exclusions conditional on the mode's inputs |
