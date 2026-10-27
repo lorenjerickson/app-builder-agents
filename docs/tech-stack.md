@@ -17,7 +17,7 @@ This stack is designed for a full-featured web application that needs a strong p
 | Cache / events | Redis | Session storage, caching, queue coordination, rate limiting, and transient application state |
 | Identity | Auth0 | Authentication, authorization, user identity management, and enterprise SSO integration |
 | Graph data | Neo4j | Relationship-heavy data such as social graphs, recommendations, entity connections, and networked domain logic |
-| Business rules | GoRules ZEN Engine + JDM Editor (MIT) | In-process evaluation of operator-authored decision tables and expressions, with a trace, behind an application-owned port. Use only for configurable rules, not authorisation or plain settings |
+| Business rules | GoRules ZEN Engine + JDM Editor (MIT), run as a separate rules service | Evaluation of operator-authored decision tables and expressions, with a trace, in its own app behind a platform-owned, engine-neutral HTTPS contract. Use only for configurable rules, not authorisation or plain settings |
 | CMS | Payload CMS | Headless/content management system for structured marketing, editorial, and product content |
 | Language | TypeScript | Consistent typing and shared contracts across frontend, backend, and tooling |
 | Testing | Vitest | Fast unit, component, and integration testing across the monorepo |
@@ -31,8 +31,11 @@ The application follows a modular monorepo structure with independent runtime se
 - `apps/admin`: optional admin or internal dashboard application
 - `apps/api`: NestJS API layer for business logic and integrations
 - `apps/cms`: Payload CMS for authoring and content publication
+- `apps/rules`: optional rules service; the only app that contains the business rules engine, reached through `packages/rules-contract`
+- `apps/rules/authoring`: the rules service's engine-specific authoring UI, built as static assets for its own origin
 - `packages/ui`: shared React component library
 - `packages/types`: shared domain and API contract models
+- `packages/rules-contract`: engine-neutral rules service contract (OpenAPI document, generated types and client)
 - `packages/eslint-config`: lint and formatting standards
 - `packages/db`: shared Prisma-like or typed DB layer and migration tooling (if used)
 
@@ -133,13 +136,13 @@ Requirements:
 - explicit consistency and synchronization rules between Neo4j and PostgreSQL when both represent related facts
 - data ownership boundaries to avoid duplicated source-of-truth conflicts
 
-## Business rules engine: GoRules ZEN Engine
+## Business rules service: GoRules ZEN Engine
 
-ZEN is an open-source business rules engine written in Rust, with Node.js bindings that run in process. The npm package ships native builds for Linux (glibc and musl), macOS and Windows, plus a WASM fallback. Decisions are JSON Decision Model (JDM) documents: graphs of decision tables, switches, expressions and sub-decisions. The JDM Editor is an open-source React component for editing them visually, with a table editor and a simulator.
+Configurable business rules run in a dedicated **rules service** (`apps/rules`): its own app, process, container and deployment. Other apps reach it only through a platform-owned, engine-neutral, versioned contract. The engine inside it today is the GoRules ZEN Engine, an open-source rules engine written in Rust with Node.js bindings; decisions are JSON Decision Model (JDM) documents (graphs of decision tables, switches, expressions and sub-decisions). The JDM Editor is the matching open-source React editor. Because callers depend only on the contract, the engine can be replaced by changing the rules service, its stored content and its authoring UI alone.
 
 ### Use it when
 - Business rules must be **configured by non-developer operators** and change without a deployment.
-- Rules vary by **tenant, site or jurisdiction**, and each decision must record **which rule version** produced it.
+- Rules vary by **tenant, site, region or jurisdiction**, and each decision must record **which rule version** produced it.
 - A **"why" trace** for each decision is needed for audit or for explaining it to the user.
 - Rules are naturally **tables or conditions** that produce values, lists, targets or advisories.
 
@@ -148,23 +151,31 @@ ZEN is an open-source business rules engine written in Rust, with Node.js bindin
 - The setting is a **plain value** (a number, a list, a template) with layering. A versioned policy record in PostgreSQL is enough.
 - The logic is **core product behaviour** owned by developers and changed through releases. Write it as code, with tests.
 - The rule needs **side effects, I/O or long-running work**. Rules must be read-only and deterministic.
-- You only need a **single expression**. A full decision graph is unnecessary.
+- You only need a **single expression**. A full decision graph, and a service hop, are unnecessary.
 
 ### Integration pattern
-1. **Port first.** Define an application-owned evaluation port: request (point, scope, whitelisted facts, time) → result (state, values, rule references, advisories, engine version). No domain module imports the engine directly.
-2. **Rules are data in PostgreSQL.** Store each JDM document as an immutable, versioned record, with its digest, the engine version it was validated with, and example input/output cases. Resolve the scope layering in the application. Load documents through a custom loader keyed by version id. The engine never fetches rules itself.
-3. **Restrict node types.** Allow input, output, decision table, switch, expression and sub-decision nodes. Refuse function (custom JavaScript) nodes at publish time, and keep the function timeout and outbound HTTP disabled as a second line of defence.
-4. **Validate on the server.** At publish, check the document against the JDM schema, compile it with the server engine, and run its example cases. Don't rely on the editor's own validation.
-5. **Fail safe.** Map engine errors, timeouts and failures to load into an explicit `unavailable` result. Callers decide whether a missing result blocks the step. Evaluation is read-only, so retries are safe.
-6. **Audit.** Record the rule version ids, content digest, engine version and a result digest with every evaluation. Store a reduced trace (node and row ids) without fact values.
-7. **Observe.** Wrap evaluation in an OpenTelemetry span, with attributes for point, state, engine version and adapter. Emit counts and durations, and never fact values.
-8. **Authoring UI.** Embed the editor in an admin route of the Next.js app. Its in-browser features need COEP/COOP headers on that route only. Review its styling (Ant Design, Monaco) against the design system and accessibility requirements.
+1. **Separate service, standard contract.** The engine is installed only in `apps/rules`, and the editor only in `apps/rules/authoring`. The contract (`rules-service/v1`) is OpenAPI 3.1 over HTTPS with JSON bodies and problem-details errors, URL-major versioned and additive within a major version. It covers: evaluate, simulate, draft, validate and publish rule sets, versions and content export, per-tenant export and disposal, engine identity, regression status, and probes. Types and client live in `packages/rules-contract`.
+2. **Isolate builds and images.** Build every app image from a pruned workspace (`turbo prune <app> --docker`, install from the pruned lockfile, `pnpm --filter <app> deploy --prod` into the runner), so each image holds only its own dependency closure, never the workspace root `node_modules`. CI checks that (a) no other app's dependency closure contains an engine package, (b) the SBOM of every other app's image lists no engine package or native binary, and (c) an engine-only version bump leaves the other apps' pruned lockfiles unchanged.
+3. **Engine formats stay opaque.** Rule content crosses the contract only as `{format, content}`; the rules service registers the formats it accepts; callers store references and digests and never parse content.
+4. **Port in the caller.** The API defines an application-owned evaluation port: request (decision point, scope, whitelisted facts, time) → result (state, values, rule references with version and digest, advisories, engine identity). Its adapter is an HTTP client of the rules service, used by every runtime role of the API codebase that evaluates rules (for example request handlers and background workers). No domain module imports the client directly.
+5. **Content in the service, selection in the application.** The rules service stores drafts and immutable, content-addressed published versions (version id, monotonic publish sequence, SHA-256 digest, format, validating engine version, example cases) in its own PostgreSQL schema. The application keeps selection: scope layering, adoption, approval and effective dates, as versioned policy records holding only `{ruleSetKey, versionId, contentDigest}`. The caller passes the pinned references; the service never chooses versions.
+6. **Database roles that cannot bypass isolation.** Use a NOLOGIN schema-owning role, a migrator role used only by the migration job, a runtime role that does not own the schema and has no `BYPASSRLS`, and a read-only regression role. Enable `FORCE ROW LEVEL SECURITY` on every table. Set the tenant with a transaction-scoped setting (`SET LOCAL`) at the start of every transaction, so pooled connections carry no scope and a missing setting returns no rows. Shared seed content gets a SELECT-only policy. Take the tenant from one trusted header only, never from bodies or query strings.
+7. **Restrict node types.** Allow input, output, decision table, switch, expression and sub-decision nodes. Refuse function (custom JavaScript) nodes at validate and publish; keep the function timeout low and outbound HTTP disabled as a second line of defence.
+8. **Validate in the service.** At publish, check the document against the format schema, compile it with the service's engine and run its example cases. Publishing freezes content; it does not adopt it. Example cases are synthetic and contain no personal data; the validator warns on patterns that look like personal data.
+9. **Fail safe, within a budget.** Map every failure (connection, TLS, timeout, overload, open circuit breaker, authentication, contract or format skew, missing rule set, engine error) to an explicit `unavailable{reason}` within the caller's time budget. Clamp each attempt to the remaining budget, allow one retry in total and only for transient errors, refresh tokens in the background and fetch inline at most once, and count only transport errors, timeouts and 5xx toward a per-process circuit breaker. Report the rules capability as degraded while the breaker is open. Callers decide whether a missing result blocks the step.
+10. **Audit.** Record rule version ids, content digests, engine identity and a result digest with every evaluation in the caller's audit trail. The service returns a reduced trace (node and row ids) and never stores or logs fact values or full traces.
+11. **Secure the hop.** TLS is mandatory on every call to the rules service: a service mesh with mTLS where the platform has one, otherwise app-level TLS with certificates from the secret store. The service refuses plaintext outside a local development profile and fails to start if that exception is enabled in production. Keep the service API on the internal network with no edge route. Authenticate each calling role with its own Auth0 machine-to-machine client (one audience, least-privilege scopes), validated locally from JWKS.
+12. **Observe.** Propagate W3C trace context. Emit a `rules.evaluate` span on both sides with decision point, state, reason and engine version; count outcomes and durations, never fact values. Define alerts for missing rule sets (integrity), sustained authentication failures, an open breaker and no ready instance.
+13. **Authoring UI.** Build `apps/rules/authoring` to static assets served from their own origin (CDN or object storage, or a stateless static-file container with no secrets). Only that origin is edge-reachable; it sets a strict CSP and `frame-ancestors`. It signs in with its own Auth0 SPA client using redirect login and rotating refresh tokens kept in memory (no popup, no hidden-iframe renewal, no browser storage), and calls only the **API's** authoring endpoints, which authorise the user and forward to the service. Simulation runs in the service. Apply cross-origin isolation only if the editor needs it, preferring `COEP: credentialless` with `COOP: same-origin`. Review the editor's styling (Ant Design, Monaco) against the design system and accessibility requirements.
 
 ### Requirements
-- Pin the exact engine version. An upgrade re-runs all stored example cases and is blocked if any output changes.
-- Pick the native build that matches the container base image (musl for Alpine). Enforce lockfile integrity, produce an SBOM and scan dependencies. The packages carry no npm provenance attestations.
-- If the native module fails to load, report the rules capability as degraded instead of failing startup.
-- Keep exit cost low. Use tables and expressions only, which map to DMN decision tables, and keep each version's example cases as its portable specification.
+- **Engine upgrades are gated in each environment.** Pin the exact engine version. Each version's example cases run at publish. Before promoting a new rules-service image, a regression job runs that image without traffic, under the read-only regression role, over every published version's example cases in that environment, and records the result with a watermark (highest publish sequence checked). Publishing is paused from the start of the job until the rollout completes; a starting instance re-checks any version past the watermark before it reports ready. Any output change blocks a forward upgrade. CI runs seed and synthetic cases as an early check only.
+- **Migrations.** A migration job under the migrator role runs before each rules-service rollout. Use expand/contract changes only, so the previous image always works with the current schema; rollback is then image-only. Deploy the rules service before callers that need a new contract minor.
+- **Data lifecycle.** Include the rules schema in per-tenant export, offboarding disposal (with an auditable disposal record) and restore verification (every rule reference pinned in restored audit data resolves with a matching digest).
+- **Base image and native module.** Use a supported Node.js LTS line, pinned by image digest, from a registry the environment's egress allows. Build and runner stages use the same base image, so the engine's platform package matches the runner's libc (glibc or musl); the build fails if the engine cannot be loaded in the runner stage. Enforce lockfile integrity, produce an SBOM, scan dependencies and sign the image. The engine packages carry no npm provenance attestations.
+- **Probes.** Liveness checks the process only; readiness checks the database, the engine module, JWKS (live or a persisted last-known copy with bounded staleness) and the upgrade catch-up. An instance whose native module fails to load is live but not ready, and callers report the rules capability as degraded.
+- **Topology.** The rules service is a separately deployed service. Adding it departs from a single-server baseline, so record that in an ADR with the platform authority's confirmation.
+- **Exit cost.** Use tables and expressions only, which map to DMN decision tables, and keep each version's example cases as its portable specification. Keep published versions immutable and exportable, so historical traces (which hold engine-specific node ids) stay explainable after a swap.
 
 ## Authentication and identity: Auth0
 
@@ -255,7 +266,7 @@ Each component has a clear responsibility boundary so the system remains maintai
 | Redis | Cache and transient state | Session acceleration, throttling, queues, ephemeral job state | Performance and operational state |
 | Auth0 | Identity and access control | Login flow, token issuance, SSO, MFA, user claims | Security and identity governance |
 | Neo4j | Relationship graph data | Recommendation graphs, network data, graph traversals | Graph domain logic |
-| ZEN Engine + JDM Editor | Deterministic evaluation of published rule documents | Operator authoring UI (admin route), traces for "why" | Evaluation only; storage, versioning, scope layering and the publish/approve flow stay with the application |
+| Rules service (ZEN Engine + JDM Editor) | Deterministic evaluation of published rule sets through the engine-neutral contract | Rule-set content and immutable versions, validation and publish, upgrade regression, reduced traces for "why", the static engine-specific authoring UI | Evaluation and rule content only; authorisation, scope layering, adoption and approval stay with the API; no other app or image contains the engine |
 | Payload CMS | Editorial content workflows | Structured content authoring, content previews, content APIs | Content ownership and publishing |
 | TypeScript | Shared contracts and platform consistency | DTOs, API types, domain types, environment config validation | Engineering standards |
 | Vitest | Automated validation | Unit tests, integration tests, component tests, contract checks | Quality and regression prevention |
@@ -286,6 +297,13 @@ repo/
 │   │   ├── nest-cli.json
 │   │   ├── package.json
 │   │   └── tsconfig.json
+│   ├── rules/              # rules service (optional): engine, rule-set store, jobs
+│   │   ├── src/
+│   │   ├── authoring/      # separate workspace package: static engine-specific editor UI
+│   │   ├── migrations/     # own schema and roles only
+│   │   ├── test/
+│   │   ├── package.json
+│   │   └── tsconfig.json
 │   └── cms/                # Payload CMS instance
 │       ├── src/
 │       ├── collections/
@@ -296,6 +314,7 @@ repo/
 ├── packages/
 │   ├── ui/                 # shared React components and design primitives
 │   ├── types/              # shared TypeScript contracts and DTO types
+│   ├── rules-contract/     # engine-neutral rules service OpenAPI document, types and client
 │   ├── utils/              # shared helpers
 │   ├── eslint-config/
 │   ├── tsconfig/
@@ -321,8 +340,11 @@ repo/
 - `apps/admin`: internal operations or admin functions
 - `apps/api`: backend service that exposes authenticated APIs and orchestrates domain logic
 - `apps/cms`: content authoring and structured content publication
+- `apps/rules`: rules service; the only app with the rules engine; owns rule-set content, its schema, migration and regression jobs
+- `apps/rules/authoring`: static authoring UI for the rules service; the only package with the engine's editor
 - `packages/ui`: design-system components used across apps
 - `packages/types`: shared interfaces, enums, and DTOs for frontend/backend compatibility
+- `packages/rules-contract`: the rules service contract; the only rules dependency other apps may take
 - `packages/db`: migration and schema utilities shared across backend services when relevant
 - `infra`: local development environment, Docker setup, secrets templates, and helper scripts
 
@@ -339,6 +361,9 @@ The monorepo uses a containerized runtime model with dedicated services for each
 - `web`: containerized Next.js application
 - `api`: containerized NestJS backend
 - `cms`: containerized Payload CMS application
+- `rules`: containerized rules service (optional; internal network only, TLS, no edge route)
+- `rules-migrate` and `rules-regression`: one-off jobs run from the `rules` image before each rollout
+- rules authoring UI: static assets on their own origin (CDN or object storage)
 - `postgres`: PostgreSQL container
 - `redis`: Redis container
 - `neo4j`: Neo4j container
@@ -355,6 +380,9 @@ repo/
 │   │   ├── Dockerfile
 │   │   └── .dockerignore
 │   ├── api/
+│   │   ├── Dockerfile
+│   │   └── .dockerignore
+│   ├── rules/
 │   │   ├── Dockerfile
 │   │   └── .dockerignore
 │   └── cms/
@@ -404,6 +432,7 @@ services:
       - postgres
       - redis
       - neo4j
+      - rules             # start order only; the API runs while rules is unavailable (capability degraded)
 
   cms:
     build:
@@ -415,6 +444,29 @@ services:
       - .env
     depends_on:
       - postgres
+
+  rules:
+    build:
+      context: .
+      dockerfile: apps/rules/Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}        # supported Node.js LTS, pinned by digest
+    expose:
+      - '3010'                           # contract API: internal network only, no host port
+    environment:
+      RULES_ALLOW_PLAINTEXT: 'true'      # local profile only; refused with NODE_ENV=production
+    env_file:
+      - .env
+    secrets:
+      - rules_db_password
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ['CMD', 'node', 'dist/healthcheck.js']   # probes :3012/health/ready; no wget
+      interval: 10s
+      timeout: 2s
+      retries: 6
+      start_period: 60s
 
   postgres:
     image: postgres:16
@@ -445,6 +497,10 @@ services:
 volumes:
   postgres_data:
   neo4j_data:
+
+secrets:
+  rules_db_password:
+    file: ./infra/env/rules_db_password.txt   # local only; never committed
 ```
 
 ### Sample Dockerfiles
@@ -531,7 +587,40 @@ EXPOSE 3001
 CMD ["node", "apps/cms/dist/server.js"]
 ```
 
-These examples assume the repo uses pnpm workspaces and a build script defined per app. If the project uses npm instead, the same structure remains valid with `npm install` and `npm run build` in the corresponding app directories.
+These examples assume pnpm workspaces. Production images should be built from a pruned workspace so that an image contains only its own app's dependencies (the samples above copy the root `node_modules`, which with pnpm holds every workspace's packages). Pin a supported Node.js LTS base image by digest from a registry the build environment can reach; the `node:20-alpine` tag above is a placeholder, and Node.js 20 is past end of life. The rules service outline shows the pattern:
+
+#### `apps/rules/Dockerfile` (outline)
+
+```dockerfile
+ARG NODE_IMAGE                      # supported Node.js LTS, pinned by digest, from an allowed registry
+FROM ${NODE_IMAGE} AS base
+RUN corepack enable
+WORKDIR /repo
+
+FROM base AS pruned
+COPY . .
+RUN pnpm dlx turbo@<pinned> prune rules --docker          # out/json, out/pnpm-lock.yaml, out/full
+
+FROM base AS build
+COPY --from=pruned /repo/out/json/ .
+COPY --from=pruned /repo/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile                        # installs the engine's platform package for this image's libc
+COPY --from=pruned /repo/out/full/ .
+RUN pnpm --filter rules build \
+ && pnpm --filter rules deploy --prod /out/rules          # self-contained production closure
+
+FROM ${NODE_IMAGE} AS runner                              # same base image: same libc as the build stage
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build --chown=node:node /out/rules ./
+RUN node -e "require('@gorules/zen-engine')"              # fail the build if the native module cannot load
+USER node
+EXPOSE 3010 3012
+HEALTHCHECK CMD ["node", "dist/healthcheck.js"]
+CMD ["node", "dist/main.js"]
+```
+
+Notes: build one image per target architecture. Check the pnpm version's requirements for `deploy` (some versions need injected workspace packages or a legacy flag). The authoring UI is built separately (`pnpm --filter rules-authoring build`) and published as static assets.
 
 ### `.dockerignore` example
 
@@ -555,7 +644,10 @@ pnpm-debug.log*
 - Services should communicate over the Docker network, not the host machine, for internal traffic
 - Secrets must be injected as environment variables or mounted secret files at runtime
 - The app should fail fast on missing required config values
-- Health checks should be defined for API, web, CMS, Postgres, Redis, and Neo4j service readiness
+- Health checks should be defined for API, web, CMS, rules service, Postgres, Redis, and Neo4j service readiness, using the runtime (for example a small Node script) rather than tools a slim base image may not include
+- Map orchestrator probes explicitly: liveness (restart) to a process-only endpoint, readiness (traffic) to a dependency-checking endpoint, and a startup probe where start-up work is long, so an instance with a failed optional dependency is not restarted in a loop
+- Each app image contains only its own pruned dependency closure; an image SBOM check enforces that engine or other app-specific packages do not appear in other apps' images
+- Internal-only services publish no host or edge port, and internal service-to-service traffic is encrypted (mesh mTLS or app-level TLS)
 - Container startup should be documented and reproducible for local, staging, and production environments
 
 ### Production deployment diagram
@@ -571,6 +663,13 @@ flowchart LR
     API --> Redis[(Redis)]
     API --> Neo4j[(Neo4j)]
     API --> Auth0[Auth0 Identity]
+    API -->|HTTPS + M2M| Rules[Rules Service Container]
+    Worker[API worker role] -->|HTTPS + M2M| Rules
+    Rules --> PG
+    Rules --> Monitor
+    Registry --> Rules
+    CDN --> RulesUI[Rules authoring static origin]
+    User -. "authoring calls from the browser (CORS)" .-> API
 
     CMS --> PG
     CMS --> Storage[Object / Media Storage]
@@ -690,6 +789,23 @@ NEXT_PUBLIC_SITE_NAME=My App
 # NestJS API
 API_PORT=3005
 JWT_ALGORITHM=RS256
+
+# Rules service (callers)
+RULES_SERVICE_URL=https://rules:3010/v1
+RULES_SERVICE_AUDIENCE=rules-service
+RULES_SERVICE_CLIENT_ID=your_m2m_client_id          # one M2M client per calling role
+RULES_SERVICE_CLIENT_SECRET=your_m2m_client_secret
+
+# Rules service (service)
+RULES_DATABASE_HOST=postgres
+RULES_DATABASE_PORT=5432
+RULES_DATABASE_NAME=app_db
+RULES_DATABASE_USER=rules_runtime                   # search_path set on the role: ALTER ROLE rules_runtime SET search_path = rules
+RULES_DATABASE_PASSWORD_FILE=/run/secrets/rules_db_password
+RULES_TLS_CERT_FILE=/run/secrets/rules_tls_cert     # unset where a mesh terminates mTLS
+RULES_TLS_KEY_FILE=/run/secrets/rules_tls_key
+RULES_ALLOW_PLAINTEXT=false
+RULES_AUTHORING_ORIGIN=http://localhost:3011        # allowed CORS origin on the API
 ```
 
 ### Local services setup
@@ -744,6 +860,7 @@ This stack must enforce modern secure defaults:
 - Neo4j must not duplicate regulatory or transactional data without controlled synchronization
 - Payload CMS must separate editorial privileges from application admin privileges
 - all service-to-service communication should use environment-controlled secrets and validated tokens
+- the rules service is reached only by the API's runtime roles, over TLS, each with its own machine-to-machine token; it receives the tenant scope from the API, enforces forced row-level security with roles that cannot bypass it, and never stores or logs fact values
 
 ## Recommended delivery constraints
 
