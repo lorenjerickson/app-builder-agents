@@ -1,7 +1,9 @@
 # Project guidance
 
 Read BACKLOG.md at the start of substantive work and update status, evidence,
-blockers, and next actions before handoff. Preserve the user's standing personal
+blockers, and next actions before handoff. When an item's work is done (implemented and, where required, reviewed or
+evaluated and promoted), move it from "Approved work" to "Completed work" in the
+same change, with the version and date; "Approved work" holds only work not yet done. Preserve the user's standing personal
 workflow and agent-definition guidance.
 
 The primary activity is defining the ten reusable agents, their shared contracts,
