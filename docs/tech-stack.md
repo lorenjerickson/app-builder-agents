@@ -17,6 +17,7 @@ This stack is designed for a full-featured web application that needs a strong p
 | Cache / events | Redis | Session storage, caching, queue coordination, rate limiting, and transient application state |
 | Identity | Auth0 | Authentication, authorization, user identity management, and enterprise SSO integration |
 | Graph data | Neo4j | Relationship-heavy data such as social graphs, recommendations, entity connections, and networked domain logic |
+| Business rules | GoRules ZEN Engine + JDM Editor (MIT) | In-process evaluation of operator-authored decision tables and expressions, with a trace, behind an application-owned port. Use only for configurable rules, not authorisation or plain settings |
 | CMS | Payload CMS | Headless/content management system for structured marketing, editorial, and product content |
 | Language | TypeScript | Consistent typing and shared contracts across frontend, backend, and tooling |
 | Testing | Vitest | Fast unit, component, and integration testing across the monorepo |
@@ -132,6 +133,39 @@ Requirements:
 - explicit consistency and synchronization rules between Neo4j and PostgreSQL when both represent related facts
 - data ownership boundaries to avoid duplicated source-of-truth conflicts
 
+## Business rules engine: GoRules ZEN Engine
+
+ZEN is an open-source business rules engine written in Rust, with Node.js bindings that run in process. The npm package ships native builds for Linux (glibc and musl), macOS and Windows, plus a WASM fallback. Decisions are JSON Decision Model (JDM) documents: graphs of decision tables, switches, expressions and sub-decisions. The JDM Editor is an open-source React component for editing them visually, with a table editor and a simulator.
+
+### Use it when
+- Business rules must be **configured by non-developer operators** and change without a deployment.
+- Rules vary by **tenant, site or jurisdiction**, and each decision must record **which rule version** produced it.
+- A **"why" trace** for each decision is needed for audit or for explaining it to the user.
+- Rules are naturally **tables or conditions** that produce values, lists, targets or advisories.
+
+### Don't use it when
+- **Authorisation** is the problem. Enforce that in the API with the identity layer (Auth0 claims plus server-side checks).
+- The setting is a **plain value** (a number, a list, a template) with layering. A versioned policy record in PostgreSQL is enough.
+- The logic is **core product behaviour** owned by developers and changed through releases. Write it as code, with tests.
+- The rule needs **side effects, I/O or long-running work**. Rules must be read-only and deterministic.
+- You only need a **single expression**. A full decision graph is unnecessary.
+
+### Integration pattern
+1. **Port first.** Define an application-owned evaluation port: request (point, scope, whitelisted facts, time) → result (state, values, rule references, advisories, engine version). No domain module imports the engine directly.
+2. **Rules are data in PostgreSQL.** Store each JDM document as an immutable, versioned record, with its digest, the engine version it was validated with, and example input/output cases. Resolve the scope layering in the application. Load documents through a custom loader keyed by version id. The engine never fetches rules itself.
+3. **Restrict node types.** Allow input, output, decision table, switch, expression and sub-decision nodes. Refuse function (custom JavaScript) nodes at publish time, and keep the function timeout and outbound HTTP disabled as a second line of defence.
+4. **Validate on the server.** At publish, check the document against the JDM schema, compile it with the server engine, and run its example cases. Don't rely on the editor's own validation.
+5. **Fail safe.** Map engine errors, timeouts and failures to load into an explicit `unavailable` result. Callers decide whether a missing result blocks the step. Evaluation is read-only, so retries are safe.
+6. **Audit.** Record the rule version ids, content digest, engine version and a result digest with every evaluation. Store a reduced trace (node and row ids) without fact values.
+7. **Observe.** Wrap evaluation in an OpenTelemetry span, with attributes for point, state, engine version and adapter. Emit counts and durations, and never fact values.
+8. **Authoring UI.** Embed the editor in an admin route of the Next.js app. Its in-browser features need COEP/COOP headers on that route only. Review its styling (Ant Design, Monaco) against the design system and accessibility requirements.
+
+### Requirements
+- Pin the exact engine version. An upgrade re-runs all stored example cases and is blocked if any output changes.
+- Pick the native build that matches the container base image (musl for Alpine). Enforce lockfile integrity, produce an SBOM and scan dependencies. The packages carry no npm provenance attestations.
+- If the native module fails to load, report the rules capability as degraded instead of failing startup.
+- Keep exit cost low. Use tables and expressions only, which map to DMN decision tables, and keep each version's example cases as its portable specification.
+
 ## Authentication and identity: Auth0
 
 Auth0 provides centralized identity management and externalized authentication workflows.
@@ -221,6 +255,7 @@ Each component has a clear responsibility boundary so the system remains maintai
 | Redis | Cache and transient state | Session acceleration, throttling, queues, ephemeral job state | Performance and operational state |
 | Auth0 | Identity and access control | Login flow, token issuance, SSO, MFA, user claims | Security and identity governance |
 | Neo4j | Relationship graph data | Recommendation graphs, network data, graph traversals | Graph domain logic |
+| ZEN Engine + JDM Editor | Deterministic evaluation of published rule documents | Operator authoring UI (admin route), traces for "why" | Evaluation only; storage, versioning, scope layering and the publish/approve flow stay with the application |
 | Payload CMS | Editorial content workflows | Structured content authoring, content previews, content APIs | Content ownership and publishing |
 | TypeScript | Shared contracts and platform consistency | DTOs, API types, domain types, environment config validation | Engineering standards |
 | Vitest | Automated validation | Unit tests, integration tests, component tests, contract checks | Quality and regression prevention |
