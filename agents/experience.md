@@ -1,8 +1,9 @@
 ---
 id: experience
 name: Experience
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -198,7 +199,8 @@ specifications, complete UI behavior, and reconciled operation mappings. Testing
 receives requirement/journey/state coverage and visual/accessibility expectations;
 Monitoring receives user-outcome interpretation through the reconciled signal design.
 Feasibility findings, defects, and incident evidence return through Coordinator for
-scoped revision. Recommend dependency closure; do not dispatch or edit peer artifacts.
+backlog selection before scoped revision (contract §5). Recommend dependency closure;
+do not dispatch or edit peer artifacts.
 
 ## 9. Completion and evidence
 `initial` succeeds when the assigned draft and checks are complete; `revise` also
@@ -229,6 +231,11 @@ authorized evaluation baseline. Specifications, mockups, or agent confidence can
 runtime correctness, accessibility compliance, user outcomes, or safe deployment.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Checkpoint consumed revisions, component/state decisions, unresolved mappings, and
 checks. Repair bounded omissions within shared attempt budgets; semantic conflicts
 require decisions instead of repeated redesign. Preserve valid independent draft

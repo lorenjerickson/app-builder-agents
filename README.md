@@ -6,7 +6,12 @@ deliverable; the pilot is its subsequent proving exercise.
 
 ## Definition set
 
-Version 0.6.1 (current; static increment, not yet evaluated; the preferred stack in docs/tech-stack.md gained a business-rules engine on 2026-10-26, P36) makes unrun mandatory self-checks block success, wires peer compatibility drafts and puts summaries before front matter. Version 0.6.0 (promoted; EVAL-060-01 8/9) added output length discipline, layered brands and theming, subdomain classification, design-tool named versions, actor state awareness, separate-agent authoring, review-finding rules, configurable rules for variable obligations and a domain-neutrality guard; see the [0.6.0 review](docs/definition-review-0.6.0.md). Version 0.5.1 (rollback point; 0.5.0 evaluated by EVAL-050-01, plus three checklist fixes) added project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from pilot P-1; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
+**Active definition set: v0.7.0**, promoted by Loren on 2026-10-29. P57/P58 implement
+thin increments and planned remediation. Independent static review and
+[qualification](docs/evaluations/QUAL-070-01/scorecard.md) passed. New runs bind v0.7.0;
+existing runs retain their pins. Rollback: **v0.6.1**. See the [promotion record](docs/promotion-0.7.0.md).
+
+Version 0.6.1 (rollback; static increment, not yet evaluated; the preferred stack in docs/tech-stack.md gained a business-rules engine on 2026-10-26, P36) makes unrun mandatory self-checks block success, wires peer compatibility drafts and puts summaries before front matter. Version 0.6.0 (promoted; EVAL-060-01 8/9) added output length discipline, layered brands and theming, subdomain classification, design-tool named versions, actor state awareness, separate-agent authoring, review-finding rules, configurable rules for variable obligations and a domain-neutrality guard; see the [0.6.0 review](docs/definition-review-0.6.0.md). Version 0.5.1 (rollback point; 0.5.0 evaluated by EVAL-050-01, plus three checklist fixes) added project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from pilot P-1; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
 definition. Use both with a scoped assignment; each role inherits the common rules.
 These documents specify behavior and capability requirements, not installed agents.
 The audit repaired ownership and handoff gaps, including isolated staging before
@@ -32,6 +37,7 @@ Static definition reviews and the assisted ledger rehearsal are complete. Scoped
 
 ## Supporting documents
 
+- [0.7.0 candidate review](docs/definition-review-0.7.0.md): P57/P58 changes, independent review and the inconclusive evaluation.
 - [0.6.0 definition review](docs/definition-review-0.6.0.md): 0.6.0 and 0.6.1 changes and static checks.
 - [Definition review](docs/definition-review.md): 0.5.x changes and static checks; earlier reviews linked from it.
 - [0.6.0 backlog triage](docs/backlog-triage-0.6.0.md) and [0.5.0 backlog triage](docs/backlog-triage-0.5.0.md): dispositions and change sketches.
@@ -58,10 +64,18 @@ domain-neutral findings.
 
 Current evidence: 0.5.0 has a scoped clean-room comparison; 0.6.0 scored 8/9 in
 [EVAL-060-01](docs/evaluations/EVAL-060-01/scorecard.md), a second-domain pre-G1
-exercise. The 0.6.1 increment is implemented, reviewed and tagged, but not yet
-behaviourally reevaluated. None of these results proves full-cycle delivery.
-The next framework action is authority triage of the proposed backlog; no
-uncompleted framework work is currently listed as approved.
+exercise. The 0.6.1 increment is implemented, reviewed and tagged; its P37/P38-specific
+reevaluation is still absent. It served as the baseline for the P57/P58 comparison. None of these results proves full-cycle delivery.
+P57/P58 are implemented, qualified and promoted in v0.7.0; they are under Completed
+work. The two findings have been [investigated](docs/ef-070-investigation.md); no definition
+edit is established as necessary. The selected [diagnostic](docs/evaluations/DIAG-070-01/scorecard.md)
+passed 16/16 on unchanged 0.7.0. The subsequently selected
+[qualification run](docs/evaluations/QUAL-070-01/scorecard.md) passed its held-out
+comparison (80/80 versus 77/80) and completed all seven full-cycle checks after
+selected human-assisted native-input verification and actual recovery, release and
+finite observation. Independent final assessment qualified unchanged 0.7.0; services
+are stopped with evidence retained. This local cycle does not establish production
+reliability or causal efficiency. Other proposals remain unselected.
 
 The earlier BorrowBench pilot is abandoned; its scaffold remains in
 [pilot/borrowbench](pilot/borrowbench/README.md) for historical reference only.

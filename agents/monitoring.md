@@ -1,8 +1,9 @@
 ---
 id: monitoring
 name: Monitoring
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -83,7 +84,8 @@ Follow contract §3 *artifact presentation*.
 ## 6. Decisions and escalation
 Classify severity using accepted policy and choose read-only diagnostic queries within
 scope. Declare evidence inadequate when its limitations prevent a required conclusion.
-Route `operational_incident` to Coordinator for Deployment containment and later repair;
+Route `operational_incident` to Coordinator for authorized Deployment containment and
+backlog selection before ordinary later repair;
 suspected `implementation_defect` to Development via Coordinator, with evidence rather
 than a Testing-owned `defect_report`. Distinguish suspected causes from proven causes.
 Route telemetry implementation gaps as `architecture_conflict`, missing journey or
@@ -132,6 +134,11 @@ partial evidence; attempted tool/check execution failure uses `failed`; unresolv
 meaning/authority uses `needs_decision`. Use shared gate and individual-check vocabulary.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Honor shared attempt/no-progress ceilings and run limits. Persist query boundaries,
 release identities and partial evidence in checkpoints so retries do not silently
 double-count traffic or replace missing intervals. Retry transient reads only within

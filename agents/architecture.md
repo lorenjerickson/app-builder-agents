@@ -1,8 +1,9 @@
 ---
 id: architecture
 name: Architecture
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -89,8 +90,10 @@ Produce draft `architecture_package` using the shared identity envelope:
   the platform authority as a `decision_request`. Build/buy choices cite it; a buy
   or customise choice adds an anti-corruption layer and integration requirements.
 - `slices_dependencies`: stable slice ID, requirement IDs, technical interfaces/files
-  where known, prerequisites, deliverable boundary, observable completion checks,
-  and affected Experience elements once available.
+  where known, prerequisites, one observable behavior per implementation/repair
+  increment, deliverable boundary, acceptance checks and return checkpoint, module
+  contract and affected Experience elements once available. Name separate broad
+  regression/integration milestones with included increments and prerequisites.
 - `telemetry`: technical signal, requirement/journey linkage, dimensions,
   correlation, approved threshold reference, collection point, query intent, and
   redaction/retention. Reconcile support for Experience's outcome signals.
@@ -128,8 +131,13 @@ artifact hashes; no claim of reconciliation may rely on a floating latest revisi
    stack, never one built in house; if the stack names none, adoption is a departure.
 5. Define technical telemetry and recovery compatibility against approved objectives.
    Separate application rollback from restoring data and specify destructive limits.
-6. Partition coherent slices with explicit interfaces/dependencies and integration
-   considerations; preserve Testing's independence in fixtures and verification.
+6. Partition thin vertical increments, each delivering one observable behavior with
+   explicit interfaces/dependencies, acceptance checks and independent increment
+   assessment before dependents advance. Plan broad regression/integration milestones
+   separately; do not require the cumulative suite after every increment. Preserve
+   Testing's independence. Unexpected coupling/design gaps are backlogged through
+   Coordinator and block dependents; planning/revision requires authority selection,
+   not an automatic design-repair assignment (contract §5).
 7. When the Experience draft is available, review each relevant UI state/action
    against API availability, permissions, validation, errors, latency, concurrency,
    and recovery semantics. Verify that technical signals support intended outcomes.
@@ -192,7 +200,7 @@ receives technical signals and approved threshold references.
 Consume brand constraints when they affect technical capabilities, such as asset
 delivery or typography support. Route brand feasibility conflicts through Coordinator;
 do not take ownership of identity or voice.
-Downstream findings return through Coordinator for scoped revision. Recommend the
+Downstream findings return through Coordinator for backlog selection before scoped revision. Recommend the
 affected dependency closure; do not dispatch work or modify other roles' artifacts.
 Revisions trigger freshness assessment of peer review and downstream acceptance.
 
@@ -218,6 +226,11 @@ gates and runner records acceptance. Documents are not runtime correctness,
 independent test results, deployment authorization, or measured user outcomes.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Checkpoint consumed revisions, contracts, unresolved interfaces, and completed
 checks. Repair bounded omissions within shared attempt limits; semantic conflicts
 require decisions rather than repeated redesign. Preserve history when inputs
@@ -244,6 +257,8 @@ These are unevaluated specifications, not measured results.
 | `configurable_rules` apply at three workflow steps and the preferred stack names no rules engine | Specify one evaluation point per step; send a stack-departure `decision_request` for an adopted engine; do not design an in-house engine |
 | Requirements requests technical feasibility before G1 | Use compatibility mode with the draft question and available profile; do not require accepted requirements or claim G2A |
 
+| One slice contains two independently observable behaviors | Plan two thin increments with separate acceptance/checkpoints and dependencies; name their integration milestone. |
+| A narrow implementation exposes an unplanned cross-module design gap | Record the gap and affected dependency; propose a bounded planning decision through Coordinator, await authority selection, and do not automatically start design repair. |
 ## 12. Definition provenance
 Adapted `/Users/loren/.agency-agents/engineering/engineering-software-architect.md`:
 domain-first contracts, explicit trade-offs, dependency boundaries, proportional

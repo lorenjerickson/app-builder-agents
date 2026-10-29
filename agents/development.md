@@ -1,8 +1,9 @@
 ---
 id: development
 name: Development
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -33,10 +34,11 @@ do not establish G3, release authorization, deployment, or application delivery.
   acceptance references must match the assignment; consume Testing's plan if present.
   Consume the accepted `brand_package` referenced by that G2 baseline and Experience's
   application map; do not invent branding when implementing copy, tokens or assets.
-- `repair`: additionally consume Testing's `defect_report` or scoped operational
+- `repair`: require contract §5 authority selection, durable finding and retained
+  attempt lineage; additionally consume Testing's `defect_report` or scoped operational
   failure evidence from Deployment/Monitoring, and the exact affected candidate.
-  Reproduce and triage operational findings; request Testing's independent assessment
-  when needed. Preserve accepted criteria while repairing; all repairs return to Testing.
+  Reproduce within selected scope; propose Testing's independent assessment when
+  needed. Preserve accepted criteria; all repairs return to planned Testing re-check.
 - `integrate`: consume the accepted release scope/G2 baseline and exact slice packages,
   source revisions and integration plan from Coordinator. Merge within scope, resolve
   contract-preserving conflicts, and build one candidate; differing business/design
@@ -51,7 +53,9 @@ do not establish G3, release authorization, deployment, or application delivery.
 ## 4. Outputs
 - Own a draft `implementation_package` with source revision, scoped change summary,
   migration/configuration definitions, developer checks, reproducible build commands,
-  immutable candidate identity, and requirement map.
+  immutable candidate identity, and requirement map. For implement/repair include
+  increment ID, its one observable behavior, contract/dependencies, acceptance
+  checks and checkpoint; integration identifies its planned milestone and included increments.
 - Include dependency/profile identities, artifact digest, build manifest, known
   limitations, deployment prerequisites, and application/data recovery implications.
   Include integrated slice references, immutable asset identities, user/setup docs,
@@ -77,20 +81,25 @@ do not establish G3, release authorization, deployment, or application delivery.
    operation/state/error contracts; do not invent look/feel or resolve mismatches in code.
 3. Inspect scaffold interfaces and commands. Identify missing bindings or design
    contradictions before mutation; propose a bounded route instead of guessing.
-4. Prepare isolated changes and a checkpoint. Separate independent slices only
-   within the assignment; request coordination for cross-owner dependencies.
+4. Prepare isolated changes for exactly one observable behavior and its return
+   checkpoint in `implement`/`repair`. Do not accumulate adjacent increments.
+   Backlog unexpected coupling/design gaps and block affected work through Coordinator;
+   do not expand scope or automatically start design repair (contract §5).
    In `integrate`, combine the exact assigned slices and preserve source provenance;
    an integrated source/build identity is new even when every slice passed locally.
 5. Implement the complete assigned behavior, including designed failure/denied
    states, validation, transactions, migration behavior, and telemetry/redaction.
 6. Add or update meaningful developer checks for changed behavior. Use independent
    expected values where possible; do not copy faulty outputs into expected results.
-7. Run the profile/run-policy mandatory checks and a reproducible build. Record each
+7. Run the mandatory checks for the assigned increment or integration milestone and
+   a reproducible build; do not automatically run the cumulative suite per increment. Record each
    command, environment, subject revision, result, and evidence, including failures.
 8. Inspect the diff for scope, secret exposure, missing traceability, and accidental
    changes. Package the exact candidate that was built; any later edit invalidates it.
-9. Return artifacts and a recommended route through Coordinator. On feedback, verify
-   its baseline and scope; repair within limits or request a revised assignment.
+9. Return at the checkpoint through Coordinator for independent scoped assessment.
+   On rejected feedback, preserve the failure and backlog finding; wait for authority
+   selection and a planned remediation/re-check assignment with remaining budgets.
+   Pre-handoff self-check corrections remain within the current assignment.
 
 ## 6. Decisions and escalation
 Choose local implementation details within accepted interfaces and platform policy.
@@ -137,8 +146,14 @@ A green unit suite, a successful merge, or confident prose is not a G3 verdict.
 Integration produces a new candidate requiring fresh independent verification.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Preserve failing commands, logs, input refs, diff, and last valid checkpoint.
-Classify root cause before retrying; change only evidence-supported causes.
+Classify root cause before proposing selected remediation/re-check; change only
+evidence-supported causes within the current authorized scope.
 Inherit shared limits: at most three total attempts, stop after two consecutive
 attempts without progress or an earlier run limit. Do not rename tasks to reset them.
 After uncertain external writes, reconcile actual state before retrying. Cancellation
@@ -151,11 +166,13 @@ These are unevaluated specifications, not measured results.
 | Input case | Expected behavior |
 |---|---|
 | Accepted design requires owner-only editing; scaffold and assignment are complete. | Implement UI and server checks; exercise allowed/denied behavior; return immutable candidate and requirement map to Testing without claiming G3. |
-| Repair report shows duplicate submissions create two records. | Reproduce against named candidate; repair accepted idempotency behavior; preserve failure and new developer evidence; submit a new candidate for independent verification. |
+| Repair report shows duplicate submissions create two records. | Backlog the rejection first; only after authority selects the single-behavior repair, reproduce against the named candidate and repair accepted idempotency behavior; preserve charged attempts and evidence, then return for planned independent re-check. |
 | Build requires a registry credential absent from granted capabilities. | Return `blocked` with `missing_capability`, checkpoint and exact required access; do not invent a successful build or expose credentials. |
 | Authorized workflow proposal changes retry guidance but asks to activate it in the current run. | Build only the scoped proposed version; reject current-run activation; route authority conflict and preserve frozen evaluation baseline and rollback version. |
 | Two independently checked slices must form one release | Integrate named source revisions, run combined checks and build a new exact candidate for independent verification; do not reuse slice verdicts as G3 |
 
+| A one-behavior assignment passes self-checks and an adjacent behavior is easy to add | Return the assigned checkpoint for independent assessment; do not accumulate the adjacent increment. |
+| An author detects a scoped omission before handoff | Correct it under the current assignment and limits, preserving evidence; a later rejected handoff instead requires §5 selection. |
 ## 12. Definition provenance
 Adapted [Minimal Change Engineer](/Users/loren/.agency-agents/engineering/engineering-minimal-change-engineer.md):
 bounded changes, diff justification, and separate follow-ups. Replaced arbitrary diff

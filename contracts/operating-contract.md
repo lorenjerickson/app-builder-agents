@@ -1,6 +1,9 @@
 # Shared operating contract
 
-Version: 0.6.1. Status: draft for definition review, not a deployed system.
+Version: 0.7.0. Status: promoted definition set, not a deployed runtime.
+Promoted by Loren on 2026-10-29 after independent qualification. New runs bind
+v0.7.0; existing runs retain their pinned governing version. Preserve v0.6.1 as
+the rollback version. See [promotion record](../docs/promotion-0.7.0.md).
 
 ## 1. Purpose, roles, and precedence
 
@@ -106,11 +109,11 @@ Keep secrets and unnecessary personal data out of stored evidence.
 | `decision_request` | Any assigned role | Exact question/conflict; plain-language `explanation` with an example; options with impact; `recommendation` and rationale; `consequence_of_deferral`; proposed owner; affected artifacts | Coordinator and external authority |
 | `decision_record` | Coordinator (recording only) | Question, decision as stated by the authority, interpretation applied, authority and date, source (conversation, document), affected artifacts, `binding_on` roles, supersedes | All roles named in `binding_on`; Requirements; Retrospective |
 | `brand_package` | Branding | Positioning/personality/values, naming and claims constraints, voice/tone examples, editorial/terminology rules, visual identity and asset usage, applicability/exception rules, provenance and decisions. Optional: `brand_layers`, `theming_contract` | Experience, Architecture, Development, Testing, Retrospective |
-| `architecture_package` | Architecture | Technical decisions, modules/data/domain states, APIs, authorization/concurrency, platform conformance, slices/dependencies, telemetry implementation, migration/recovery, requirement map. Optional: `subdomain_map` (required before any build/buy commitment) | Experience, Development, Testing, Deployment, Monitoring |
+| `architecture_package` | Architecture | Technical decisions, modules/data/domain states, APIs, authorization/concurrency, platform conformance, single-behavior increments/dependencies and integration milestones, telemetry implementation, migration/recovery, requirement map. Optional: `subdomain_map` (required before any build/buy commitment) | Experience, Development, Testing, Deployment, Monitoring |
 | `experience_package` | Experience | Accepted brand reference and application map, UI visual tokens/components/assets, layouts and responsive rules, journeys/UI states, interaction behavior/content, accessibility/motion, operation mapping, user-outcome signal needs, requirement map | Branding, Architecture, Development, Testing, Deployment, Monitoring |
-| `implementation_package` | Development | Source revision, changes, migration/configuration definitions, developer checks, build commands, immutable candidate identity, requirement map | Testing, Deployment |
+| `implementation_package` | Development | Increment/milestone ID and checkpoint, source revision, changes, migration/configuration definitions, developer checks, build commands, immutable candidate identity, requirement map | Testing, Deployment |
 | `test_plan` | Testing | Requirement/scenario map, independent fixtures, required checks, environment needs, coverage/exclusions with policy basis | Development, Coordinator |
-| `verification_report` | Testing | Candidate and baseline identities, per-check evidence, pass/fail/not-run/not-applicable, defects, coverage, verdict | Coordinator, Deployment, Retrospective |
+| `verification_report` | Testing | Assessment scope (increment, candidate, readiness, workflow), candidate and baseline identities, per-check evidence, pass/fail/not-run/not-applicable, defects, coverage, verdict | Coordinator, Deployment, Retrospective |
 | `defect_report` | Testing | Expected/actual, reproducer, environment/build, severity, linked requirement, suspected routing | Coordinator, responsible role |
 | `release_plan` | Deployment | Candidate, targets, configuration, authorization reference, migration steps, smoke checks, recovery criteria/procedure | Coordinator, Testing, Monitoring |
 | `deployment_record` | Deployment | Actual artifact/environment identity, action IDs, migration and smoke evidence, recovery state, outcome | Monitoring, Coordinator, Retrospective |
@@ -221,6 +224,13 @@ optional. Lists may be empty only when meaningful and explained.
 `required_gate_refs`, `allowed_tools`, `write_scope`, `authorization_refs`, `limits`, `acceptance_checks`.
 `limits` includes maximum elapsed time, cost/compute, and remaining task/run attempts.
 
+Implementation/repair assignments also identify one observable behavior, its increment
+ID, acceptance checks, dependency/module contract, and return checkpoint. Integration
+assignments name the explicit milestone and exact included increments. Verification
+assignments name assessment scope and selected checks from the baselined plan.
+Remediation/re-check assignments additionally cite the durable finding, authority
+selection, original task/attempt lineage, already charged attempts and remaining limits.
+
 **Result:** same run/task/trace/role/attempt identity, `consumed_refs`, `status`,
 `summary`, `output_refs`, `checks`, `issues`, `next_route`, `usage`, `checkpoint_ref`
 (nullable). `checks` entries contain check ID, subject, outcome, and evidence reference;
@@ -268,7 +278,8 @@ Ledger task states: `pending -> ready -> running -> succeeded|failed|blocked|nee
 Only satisfied task dependencies AND current `required_gate_refs` make a task ready.
 For example, a completed failing verification report does not enable release.
 A resolved blocker/decision may return
-to ready; a failed attempt can return to ready only within limits. Resumed execution
+to ready; a rejected handoff or failed attempt can return to ready only after
+recorded authority selection of planned remediation/re-check and within limits. Resumed execution
 uses a new attempt record. Cancellation records `cancelled` and stops new dispatch.
 Gate status and artifact acceptance are separate from task success.
 
@@ -283,21 +294,73 @@ Cancellation is a runner state; no artificial fifth specialist result status is 
 Default ceiling: three total execution attempts per task, including the first;
 stop earlier after two consecutive attempts without progress or when a run limit
 is reached. Do not reset budgets by renaming a task. A new upstream revision may
-justify a new task but still consumes the run budget. New authority is required
+justify a new task but still consumes the run budget; remediation of the same failed
+work retains its already charged attempts and remaining task limits across task IDs. New authority is required
 to extend exhausted budgets. Semantic conflicts go to a decision, not repeated retry.
 
-| Failure category | Route through Coordinator |
+### Increment checkpoints and remediation selection
+
+Architecture plans thin vertical increments, each with one observable behavior,
+explicit acceptance checks, module/interface contract and dependencies. Development
+implements or repairs one such increment per assignment and returns at its checkpoint.
+Testing independently assesses the changed behavior, module contract, denial and
+failure cases before dependent work advances. Select proportionate checks from the
+baselined plan; do not rerun the cumulative suite at every increment. Required checks
+for that scope remain mandatory. Broad regression and integration are separately
+planned milestones with explicit scope and prerequisites; integrated-candidate G3
+remains mandatory before release. An increment pass establishes only the recorded
+increment checkpoint, never G3. It needs an exact scoped candidate and suitable
+isolated setup, not a future fully integrated release candidate.
+
+Unexpected coupling or a design gap becomes a durable backlog finding and blocks
+the dependent increment. Coordinator proposes an Architecture planning decision;
+recording or routing the gap does not automatically create a design-repair task,
+widen testing, rerun dependency modules, or waive evidence. Independent work with
+satisfied dependencies and gates may continue.
+
+For every rejected increment, review or verification, Coordinator records a durable
+backlog item in the appropriate project backlog/ledger (§2a), linked to the unchanged
+producer evidence: stable finding ID, source run/task/attempt and rejection,
+evidence references, affected artifact identities, responsible role, proposed size
+and bounded outcome, dependencies/blocking gates, disposition, and attempt lineage.
+The rejection and completed attempt remain recorded and charged; recording the item
+consumes no new execution attempt. No repair, design revision or re-check starts
+until the named authority selects remediation into planned work and that selection
+is recorded with the finding and assignment. Ordinary execution permission or a
+route recommendation alone is not selection. A documented delegated policy may
+select only when it explicitly covers that finding and planned scope. Selection
+does not extend budgets: retain charged failures, no-progress history and remaining
+task/run limits, including across new assignment IDs. Exhaustion still needs the
+existing budget-extension authority.
+
+Backlogging never converts failure into pass. A known mandatory failure keeps its
+affected gate failed; missing mandatory evidence is inconclusive only when no
+mandatory failure is known. Dependents remain blocked until the relevant current
+independent evidence and gates pass. Only selected, bounded remediation and its
+planned independent re-check can close the finding; a successful author self-check
+alone cannot do so.
+
+Author self-check corrections within the current authorized assignment may continue
+before handoff, preserving evidence and limits. Once the handoff is rejected, this
+is no longer author self-check work: use backlog selection before remediation or
+re-check, including fixture/harness and environment repairs. Existing explicitly
+authorized incident containment/recovery and reconciliation of uncertain external
+side effects remain available under §§7/10; their scope and evidence must be recorded.
+An incident label cannot authorize ordinary defect remediation or bypass its selection,
+verification or release gates. Containment is not a verified repair.
+
+| Failure category | Route through Coordinator (rejected work requires selection above) |
 |---|---|
-| `intent_ambiguity` | Requirements prepares decision for product authority |
-| `brand_conflict` | Branding revises identity/voice/style guidance within authority or requests brand decision |
-| `architecture_conflict` | Architecture revises technical design within profile or requests platform decision |
-| `experience_conflict` | Experience revises visual/interaction design within requirements or requests product decision |
-| `contract_conflict` | Coordinator routes mismatch among branding, architecture and experience to the affected owners for bounded reconciliation; intent changes return to Requirements |
-| `implementation_defect` | Development repairs; Testing verifies a new candidate |
-| `test_fault` | Testing corrects fixtures/harness with evidence; criteria unchanged |
-| `environment_fault` | Deployment repairs authorized environment; rerun affected checks |
-| `operational_incident` | Monitoring supplies evidence; Deployment performs authorized containment; repair follows normal gates |
-| `missing_capability`, `budget_exhausted`, `policy_conflict` | Coordinator records blocker or seeks the appropriate authority |
+| `intent_ambiguity` | Backlog question for Requirements/product authority; selected clarification preserves intent authority |
+| `brand_conflict` | Backlog for Branding/brand authority; selected revision preserves brand authority |
+| `architecture_conflict` | Backlog for Architecture/platform authority; block affected increment pending selected planning/revision |
+| `experience_conflict` | Backlog for Experience/product authority; selected revision preserves requirements |
+| `contract_conflict` | Backlog mismatch for affected owners; selected bounded reconciliation and fresh pair checks; intent changes return to Requirements |
+| `implementation_defect` | Backlog for Development; selected single-behavior repair then planned independent Testing re-check |
+| `test_fault` | Backlog for Testing; selected fixture/harness repair and re-check with original evidence and unchanged criteria |
+| `environment_fault` | Backlog for Deployment; selected scoped environment repair and affected-role re-checks |
+| `operational_incident` | Monitoring evidence; Deployment authorized containment/recovery; ordinary repair follows backlog selection and normal gates |
+| `missing_capability`, `budget_exhausted`, `policy_conflict` | Record blocker or seek the appropriate authority; no implicit repair authorization |
 
 All handoffs go through Coordinator. Agents may recommend work, not silently dispatch
 or expand scope. Independent tasks may continue while another is blocked; required
@@ -403,15 +466,23 @@ flowchart LR
     E --> C
     A --> J[Cross-review exact pair]
     E --> J
-    J -->|Mismatch through Coordinator| A
-    J -->|Mismatch through Coordinator| E
+    J -->|Mismatch| F[Coordinator durable backlog and dependency block]
+    C -->|Reject| F
+    F --> U[Authority selects planned remediation and re-check]
+    U -->|Design revision and pair checks| A
+    U -->|Design revision and pair checks| E
     J -->|Both checks pass| G[G2 accepted baseline]
     C -->|Pass| G
-    G --> D[Development and integration]
-    D --> S[Deployment isolated staging]
-    S --> T[Testing G3]
-    T -->|Defects| D
-    T --> H[Rehearsal and operations readiness]
+    G --> D[Development one behavior checkpoint]
+    D --> S[Deployment isolated staging as needed]
+    S --> I[Testing increment assessment]
+    I -->|Pass enables planned dependents| D
+    I -->|Reject or coupling| F
+    I -->|Planned integration milestone| V[Development integrated candidate]
+    V --> T[Testing integrated G3]
+    T -->|Reject| F
+    U -->|Selected repair and re-check| D
+    T -->|Pass| H[Rehearsal and operations readiness]
     H --> P[Deployment G4 and G5]
     P --> M[Monitoring G6]
     M --> X[Retrospective G7]
@@ -513,7 +584,9 @@ produce a blocker rather than expanding authority or claiming generation occurre
 
 Testing drafts the test_plan from G1 and finalizes it against G2 before verification.
 Every required check names its target gate, prerequisites, execution owner and evidence
-consumer. Candidate checks target G3; release/recovery/operational readiness checks
+consumer. Increment checks name their increment checkpoint and eventual target gate; they do
+not require future integrated-candidate prerequisites or satisfy G3 alone. Full
+candidate checks target G3; release/recovery/operational readiness checks
 target G4; actual migration/smoke/handoff checks target G5; observation targets G6.
 A future gate's not-yet-run check does not block an earlier gate, but cannot be silently
 dropped from its own gate. This prevents G3 from requiring a rehearsal authorized only

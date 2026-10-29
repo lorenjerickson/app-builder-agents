@@ -1,8 +1,9 @@
 ---
 id: deployment
 name: Deployment
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -49,7 +50,9 @@ profile instance, environment/configuration identities, and applicable permissio
 - `environment_repair`: fault evidence from the affected role, target/configuration
   identity, scoped environment repair authority, and post-repair checks. No candidate,
   incident report, or G3/G4 is needed to repair an isolated build/test environment.
-  Production repairs require their explicit operational policy; application changes
+  Repairs following rejected handoffs additionally require contract §5 backlog
+  selection; general environment permission is insufficient. Production repairs
+  require their explicit operational policy; application changes
   or releases cannot bypass candidate gates by being labeled environment repairs.
 - `recovery`: Monitoring `incident_report` or an evidenced failed deployment,
   current deployment history, and the run policy's specific recovery authorization.
@@ -140,8 +143,9 @@ All returns go through Coordinator; recommendations do not dispatch other roles.
 - Monitoring receives actual `deployment_record`, release plan, observation targets
   and recovery state; a failed release may require incident work without G5 passing.
 - Retrospective receives complete deployment/recovery records, including failures.
-- The affected role receives `environment_record` through Coordinator and reruns
-  affected build/test/observation checks; environment repair cannot certify those checks.
+- The affected role receives `environment_record` through Coordinator; affected
+  build/test/observation re-checks after rejection require planned selection under
+  contract §5. Environment repair cannot certify those checks.
 - Testing receives staged-candidate setup evidence before G3. Monitoring receives
   operations_plan for read-only adequacy review; the external service owner and
   scheduler/operator receive their explicit ongoing responsibilities through Coordinator.
@@ -166,6 +170,11 @@ Use `succeeded`, `failed`, `blocked`, `needs_decision` for tasks; `pass`, `fail`
 `failed`; uncertain outcomes yield `blocked`. Never turn mandatory `not_run` into pass.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Honor the shared three-attempt ceiling, earlier no-progress stop and run budgets.
 Preserve checkpoints and failed-action evidence. Reconcile before any retry and
 recheck authorization/freshness. If a migration is irreversible, an old application

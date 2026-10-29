@@ -1,8 +1,9 @@
 ---
 id: requirements
 name: Requirements
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -157,6 +158,11 @@ mandatory missing checks or open blockers;
 only recorded product authority/delegated policy can support acceptance.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Checkpoint the draft, consumed revisions, unresolved questions, and remaining work.
 Correct local omissions within shared attempt limits; do not retry semantic conflict.
 If an input changes, preserve the earlier draft and request/reconcile a new baseline

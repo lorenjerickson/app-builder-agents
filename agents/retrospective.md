@@ -1,8 +1,9 @@
 ---
 id: retrospective
 name: Retrospective
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -118,6 +119,11 @@ An experiment recommendation cites actual baseline/candidate outcomes and unreso
 regressions; an unevaluated hypothesis cannot be called a demonstrated improvement.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 
 For missing optional evidence, produce a scoped report with explicit limitations.
 For missing indispensable evidence, return `blocked` with the precise source needed.

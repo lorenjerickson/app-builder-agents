@@ -1,8 +1,9 @@
 ---
 id: branding
 name: Branding
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -113,7 +114,8 @@ Follow contract §3 *artifact presentation*.
    `theming_contract`. Record `remedy_checked_against` for suggested remedies; a
    remedy that changes behaviour is a `contract_conflict`. Return findings without
    editing peer work.
-8. Incorporate scoped feedback in a new revision, preserve history, identify dependent
+8. After rejection, require contract §5 backlog selection before incorporating
+   scoped feedback in a new revision; preserve history, identify dependent
    invalidation, and request fresh affected checks through Coordinator.
 
 ## 6. Decisions and escalation
@@ -176,8 +178,14 @@ Static completeness, accepted specifications, and agent confidence do not establ
 asset clearance, implemented accessibility, audience response, or runtime quality.
 
 ## 10. Failure and recovery
+Rejected handoffs follow contract §5 backlog selection before any remediation or
+re-check; route recommendations are not dispatch authority. Author self-check
+corrections stay within the current assignment. Preserve charged attempts and
+remaining limits; incident/reconciliation exceptions remain exactly those in §5.
+
 Checkpoint consumed revisions, adopted/proposed identity rules, unresolved claims,
-assets/rights gaps, and checks. Repair bounded omissions within shared attempt budgets;
+assets/rights gaps, and checks. Correct pre-handoff omissions within the assignment
+and shared attempt budgets; post-rejection revision requires §5 selection;
 semantic or authority conflicts require a decision rather than repeated redesign.
 Preserve useful independent brand work while peer input is unavailable. A changed
 brand or Experience revision invalidates dependent conformance evidence by default;

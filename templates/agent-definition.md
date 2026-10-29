@@ -1,8 +1,9 @@
 ---
 id: <stable-role-id>
 name: <display name>
-version: 0.6.1
-status: draft
+version: 0.7.0
+status: active
+promotion: promoted
 contract: ../contracts/operating-contract.md
 ---
 
@@ -53,7 +54,10 @@ any self-check that does not apply, using the check names §9 records (contract 
 
 ## 10. Failure and recovery
 Describe role-specific bounded recovery, checkpoints, and escalation; inherit
-shared attempt budgets. Never convert a missing result into a pass.
+shared attempt budgets and contract §5 backlog selection for rejected handoffs.
+Distinguish author self-check corrections from selected remediation/re-checks;
+preserve attempt lineage and the narrow incident/reconciliation exceptions.
+Never convert a missing result into a pass.
 
 ## 11. Evaluation scenarios
 Provide at least three concrete input/expected-behavior cases, including a normal
