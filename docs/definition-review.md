@@ -1,6 +1,13 @@
 # Definition-set review — version 0.5.1
 
-Date: 2026-10-25. Status: **promoted by the workflow authority (Loren), 2026-10-25**, for the P-1 design run. Tags: `v0.4.0` (rollback), `v0.5.0` (evaluated), `v0.5.1` (current).
+Date: 2026-10-25. Status: **promoted by the workflow authority (Loren), 2026-10-25**, for the P-1 design run. Tags at that time: `v0.4.0` (rollback), `v0.5.0` (evaluated), `v0.5.1` (then current).
+
+**Historical review:** the scope, checks, limitations and follow-ups below describe the
+0.5.x review on 2026-10-25. The active set is now 0.6.1; see the
+[0.6.x review](definition-review-0.6.0.md) and [current backlog](../BACKLOG.md).
+Later scoped second-domain evaluation does not retroactively change this review's
+one-domain evidence. P22's link repair was completed in 0.6.0; the limitation below
+records its earlier state.
 
 ## Scope and method
 Implements the backlog items approved in [backlog-triage-0.5.0.md](backlog-triage-0.5.0.md) (all 18 open items plus P20). The evidence comes from pilot P-1: the P-1 clean-room run (clean-room comparison) and the P-1 decision run (decisions and G1). Each change is small and tied to that evidence. This review is static inspection. The behavioural effect is measured separately by the evaluation run (below).
@@ -44,7 +51,7 @@ These fixes target the three EVAL-050-01 misses. They are static changes, not re
 | Checklists defined once (contract §3) and referenced by roles, not duplicated | pass |
 | Relative links in definition-set docs | pass, except the pre-existing `docs/blueprint.md → pilot-plan.md` (stale since P3) and absolute provenance paths to `~/.agency-agents` (outside this repo, by design) |
 
-## Known limitations
+## Known limitations at the 0.5.x review
 - **Runner** (`runner/`) still implements contract 0.4.0 rehearsal bookkeeping. It doesn't recognise `decision_record`, `execution_mode` or `external_baseline`. Updating it is runtime implementation and needs a separate request (backlog P21).
 - Only Requirements, Experience and Coordinator behaviour has been exercised by a run; the Architecture, Branding and Testing changes are untested until the pilot's design run.
 - Evidence comes from one domain. The checklists are generic, but their completeness is unproven.

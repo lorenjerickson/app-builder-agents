@@ -11,7 +11,7 @@ definition. Use both with a scoped assignment; each role inherits the common rul
 These documents specify behavior and capability requirements, not installed agents.
 The audit repaired ownership and handoff gaps, including isolated staging before
 verification, Figma baseline preservation, asset production, and continuing operations.
-Static review and the assisted ledger rehearsal are complete; full agent delivery behavior remains unverified until the pilot.
+Static definition reviews and the assisted ledger rehearsal are complete. Scoped pilot execution and selected behavioural evaluations have occurred; full-cycle delivery effectiveness remains unverified.
 
 - [Common definition format](templates/agent-definition.md)
 - [Shared operating contract](contracts/operating-contract.md)
@@ -42,16 +42,26 @@ Static review and the assisted ledger rehearsal are complete; full agent deliver
 - [Project backlog](BACKLOG.md): agent gaps, improvements and next work.
 
 The shared operating contract is authoritative for the draft's vocabulary and
-handoffs; the blueprint provides context. The assisted ledger rehearsal passes; real
-assignment bindings, tool adapters and execution authority/budgets remain open. The
-autonomous agent runtime is not implemented.
+handoffs; the blueprint provides context. The assisted ledger rehearsal passed for its
+0.4.0 scope. Manual runs bind assignments, authorities and limits per run; those
+bindings are not a general autonomous runtime. The rehearsal runner still needs
+contract alignment (P21), and autonomous dispatch, tool adapters and automatic
+enforcement remain unimplemented. See the [backlog](BACKLOG.md) for proposals and
+the [runner limits](runner/README.md) for the existing rehearsal boundary.
 
 ## Pilot
 
-The definitions are validated by pilot projects that live outside this repository
-and perform their lifecycle work through these agents. Pilot artifacts and
+The definitions are being evaluated through pilot projects that live outside this
+repository and perform their lifecycle work through these agents. Pilot artifacts and
 evaluation outputs stay in the pilot's own repository; this repository keeps only
 domain-neutral findings.
+
+Current evidence: 0.5.0 has a scoped clean-room comparison; 0.6.0 scored 8/9 in
+[EVAL-060-01](docs/evaluations/EVAL-060-01/scorecard.md), a second-domain pre-G1
+exercise. The 0.6.1 increment is implemented, reviewed and tagged, but not yet
+behaviourally reevaluated. None of these results proves full-cycle delivery.
+The next framework action is authority triage of the proposed backlog; no
+uncompleted framework work is currently listed as approved.
 
 The earlier BorrowBench pilot is abandoned; its scaffold remains in
 [pilot/borrowbench](pilot/borrowbench/README.md) for historical reference only.

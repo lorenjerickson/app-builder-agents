@@ -1,8 +1,17 @@
 # Project backlog
 
-Updated: 2026-10-28. 
+Updated: 2026-10-28.
+
+## Current state
+
+- Active definition set: **0.6.1**, implemented, independently reviewed and tagged; its increment has not yet been behaviourally reevaluated. See the [current review](docs/definition-review-0.6.0.md).
+- 0.6.0 was promoted after a scoped second-domain evaluation ([EVAL-060-01: 8/9](docs/evaluations/EVAL-060-01/scorecard.md)); 0.5.0 has its earlier scoped comparison. These results do not establish full-cycle delivery effectiveness.
+- P36 (adopted rules engine/service) and P37/P38 (0.6.1 changes) are completed below. P39–P58 and P21 remain **proposed**: 21 items, not execution authority. P45–P56 triage was deferred by the authority; that does not reject them or adopt their recommendations. Local use of a proposed practice does not promote the generic definition change.
+- Next: authority triage of these proposals, with evaluation/promotion for selected definition changes. P21 concerns the rehearsal runner; it is not implemented and needs an explicit runtime-work request. No autonomous runtime or completed delivery cycle is claimed.
 
 ## Approved work
+
+None outstanding. Completed items are recorded below; proposed work is not approved by this status reconciliation.
 
 ## Proposed work
 
@@ -32,6 +41,8 @@ Updated: 2026-10-28.
 ## Deferred work
 
 ## Completed work
+
+- **DOC-01 — Current-state documentation reconciliation (2026-10-28).** Reconciled README, backlog and review summaries with existing completion records and evaluation scorecards. Dated historical limitations explicitly; preserved evaluation results, proposal dispositions and definition versions. Verification: targeted reference checks, diff review and independent documentary review; no runtime or gate validation claimed. No definition, stack, runtime or proposal was activated by this task. Remaining next action: authority triage of proposed work.
 
 - **P36 — Add a general-purpose open-source rules engine to the preferred stack.** Source: P-1 follow-up, 2026-10-26. The authority ruled out building a rules engine inside a product. A configurable-rules capability (P34) should use an adopted open-source engine that is part of the target architecture. Proposed delta: survey at least two open-source, general-purpose rules engines that fit tech-stack.md (TypeScript/Node runtime or a sidecar service, PostgreSQL storage, versioned and auditable rule sets that fit event sourcing, per-tenant scoping, authoring by non-developers, licence, maturity); recommend one with an ADR-style rationale; the platform authority decides; add the chosen engine to tech-stack.md with "use when" guidance; Architecture uses it for `configurable_rules`, and a departure needs the usual confirmation plus an ADR. Not urgent; can run independently of a release. Owner: Loren. Status: completed 2026-10-26 (approved by Loren: GoRules ZEN Engine + JDM Editor, with conditions — no function nodes, pinned version with example-case regression, reduced trace, feasibility spike before dependent work). Added to docs/tech-stack.md. Revised 2026-10-26 under a follow-up authority decision: the engine now runs as a separately deployed rules service behind a platform-owned, engine-neutral HTTPS contract, with per-app pruned images (independently reviewed; approved by Loren 2026-10-26).
 - **P37 — A `not_run` mandatory self-check can't produce `succeeded`.** Source: EVAL-060-01. Experience reported `succeeded` with its operation-backing check `not_run`, because no peer contract was supplied. Proposed delta: contract result rules require one of two things. Either the status is `succeeded_with_gaps` (or `needs_input`), naming each check that didn't run and the input that's missing, or the check is explicitly out of scope for the mode. Mode definitions state which self-checks apply to them. Owner: Loren. Approved by Loren for 0.6.1 on 2026-10-26 ("fold in the two outstanding proposals as 0.6.1"). Amendment: uses the existing `blocked`, `failed` and `needs_decision` statuses instead of a new status. Status: completed in 0.6.1 (2026-10-26; approved by Loren 2026-10-26; tag v0.6.1).

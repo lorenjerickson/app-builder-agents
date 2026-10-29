@@ -2,8 +2,18 @@
 
 Date: 2026-10-26. Status: 0.6.0 **promoted by the workflow authority (Loren), 2026-10-26** (tag `v0.6.0`); 0.6.1 is a static, not yet evaluated increment (below). Independent review: pass with minor issues, fixed in fd5676c. EVAL-060-01: 8/9 ([scorecard](evaluations/EVAL-060-01/scorecard.md)); follow-ups P37 and P38 are implemented in 0.6.1. Rollback point: the 0.5.1 hygiene state (a94028f).
 
-## Scope and method
-Implements the items approved in [backlog-triage-0.6.0.md](backlog-triage-0.6.0.md): P22 and P26–P35, with the approval amendment that P34 uses an adopted rules engine from the preferred stack. P36 (adding an engine to the stack) stays proposed and is not implemented; docs/tech-stack.md is unchanged. Every change is a generic mechanism; new artifact fields are optional. This review is static; the behavioural effect is measured separately (below).
+## Current status — reconciled 2026-10-28
+
+The active set is **0.6.1** (approved and tagged). The 0.6.0 second-domain evaluation
+scored **8/9**, limited to selected pre-G1 behaviours; the 0.6.1 increment has not
+been behaviourally reevaluated. P36 was subsequently completed: GoRules ZEN Engine
+and JDM Editor were adopted, then specified as a separate service in the preferred
+stack. See [P36–P38 completion records](../BACKLOG.md#completed-work).
+The initial static-review statements below preserve what was true before those
+later actions. They are not current pending decisions or full-cycle evidence.
+
+## Initial 0.6.0 scope and method
+Implements the items approved in [backlog-triage-0.6.0.md](backlog-triage-0.6.0.md): P22 and P26–P35, with the approval amendment that P34 uses an adopted rules engine from the preferred stack. At this initial static-review point, P36 (adding an engine to the stack) was proposed and not implemented; docs/tech-stack.md was unchanged by this definition revision. P36 was completed separately afterward (current status above). Every change is a generic mechanism; new artifact fields are optional. This review is static; the behavioural effect is measured separately (below).
 
 Previous review: [0.5.x](definition-review.md).
 
@@ -23,7 +33,7 @@ Previous review: [0.5.x](definition-review.md).
 | P35 | Domain-neutrality rule and pre-commit leak scan against a denylist kept in the pilot repository; §2a stores pilot evaluation outputs in the pilot repository, with only domain-neutral scorecards here; domain-flavoured examples replaced with generic ones (stale facts, shared-device notification, configurable-targets field and scenario) | AGENTS.md; contract §2a, §3; experience §11; requirements §4, §11 |
 | — | Contract, profile, template and all ten definitions at version 0.6.0; README version line and links | frontmatter; README.md |
 
-## Static checks
+## Initial 0.6.0 static checks
 | Check | Result |
 |---|---|
 | Ten definitions, twelve numbered sections each, version 0.6.0; contract, profile and template at 0.6.0 | pass |
@@ -32,13 +42,13 @@ Previous review: [0.5.x](definition-review.md).
 | Templates match the contract (requirements template gains state awareness and configurable rules) | pass |
 | New checklist (*variable obligations*) defined once in contract §3 and referenced by Requirements and Coordinator | pass |
 | No orphan references introduced; P22 link fixed | pass |
-| No rules engine added to docs/tech-stack.md (P36 stays proposed) | pass |
+| No rules engine added by this definition revision (P36 was still proposed at this check) | pass at initial review; P36 subsequently completed separately |
 | Denylist scan of added lines (case-insensitive) | pass: no domain leaks. Remaining hits are process uses (owner of a rule or route) and substrings of ordinary words ("current", "different", "release") |
 
-## Known limitations
-- Static changes only; none is evaluated yet. P34's rule-evaluation point depends on P36; until then any engine adoption is a stack departure.
+## Limitations at the initial static review
+- At that point these were static changes only, not yet evaluated, and P34 depended on the then-proposed P36. EVAL-060-01 and P36 completion below/above supersede those pending statuses; the separate 0.6.1 increment remains unevaluated.
 - `[K]` seed rules still need a named reviewer under the source-tag rule; that review covers broad applicability and labelling only, as confirmed by the workflow authority (Loren) on 2026-10-26 and now stated in contract §3 *variable obligations*.
-- Evidence still comes from one pilot domain.
+- At the initial review, evidence came from one pilot domain. EVAL-060-01 subsequently added a second domain for selected pre-G1 checks, not full-cycle validation.
 
 ## Evaluation — EVAL-060-01
 Run on a narrative from a different domain, with outputs kept outside this repository: **8/9** ([scorecard](evaluations/EVAL-060-01/scorecard.md)). Its failure modes became P37 and P38.
@@ -82,7 +92,7 @@ A separate agent reviewed `b49d0ca`: **pass with minor issues**; denylist scan c
 | M2 `failed` omitted | fixed: an unrun applicable self-check returns `blocked`, `failed` or `needs_decision` per the status definitions (contract §4) |
 | M3 "self-check" undefined | fixed: a role's own pre-handoff check of its output; checks on an assessed subject (Testing, Monitoring, reviews) follow the gate rules |
 | M4 roles with mode-specific checks stated no exclusions | fixed: checks §9 names for one mode only are excluded from other modes (contract §4); Development states its integration-check exclusion explicitly; Testing, Deployment and Monitoring checks are assessment or execution checks, and Coordinator and Retrospective have no mode-specific checks |
-| M5 no approval record | fixed: P37/P38 moved to *Approved work* with Loren's 2026-10-26 approval; P37 amendment (existing statuses, no new one) recorded |
+| M5 no approval record | fixed at review: P37/P38 moved to *Approved work* with Loren's 2026-10-26 approval; P37 amendment (existing statuses, no new one) recorded. Both now appear under *Completed work* for tagged 0.6.1 |
 | N1 undefined reconciliation step | fixed: a further bounded `compatibility` pass with the peer's draft |
 | N2 use of the peer draft unstated | fixed: Architecture records it in `consumed_refs` and doesn't re-ask answered questions |
 | N3 trailing front matter | fixed: separate manifest preferred, otherwise a trailing identity block |
