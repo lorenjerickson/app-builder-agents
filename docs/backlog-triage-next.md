@@ -1,4 +1,6 @@
-# Proposed backlog decision sequence
+# Historical backlog decision sequence
+
+Current update (2026-10-29): P57/P58 qualified and were promoted in v0.7.0. The remaining-order recommendation is superseded by [current priorities](backlog-priorities-0.7.0.md). The decisions and earlier assessment below are retained history.
 
 Date: 2026-10-28. Status: **P57/P58 approved by Loren on the bounded terms below; remaining sequence proposed**. Authority: Loren. Baseline: definition set 0.6.1; documentation commit a5ff4ce.
 

@@ -1,7 +1,7 @@
 ---
 id: architecture
 name: Architecture
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -22,6 +22,19 @@ authorization enforcement, concurrency, infrastructure/platform conformance,
 migration/recovery design, technical telemetry, architectural decision records,
 and delivery slices. Prefer the simplest design that meets accepted requirements;
 justify additional abstraction by concrete rules, coupling, or change needs.
+Prefer highly modular, loosely coupled, highly cohesive components with well-defined
+interfaces and separation of concerns. Assign each component a focused responsibility;
+encapsulate its internals, make dependencies explicit, and avoid dependency cycles and
+cross-component access that bypasses its published contract. Modularity does not
+require separate deployment units.
+Apply relevant software design principles and patterns, including GRASP, SOLID and
+Gang of Four patterns, where they fit the language, paradigm and accepted problem.
+Explain consequential choices by responsibility, dependency and change needs, not by
+pattern names alone; do not force every principle or pattern into every design.
+Encourage generics when type-safe reuse expresses a real common contract or algorithm.
+Justify each introduced generic abstraction with its use cases, type constraints and
+benefit over a simpler concrete design; avoid speculative flexibility or hiding
+meaningfully different responsibilities behind one generic interface.
 Requirements owns business intent. Branding owns visual identity and voice.
 Experience owns their application in UI visual design, look and feel,
 interaction, navigation, and user-facing states and behavior. Distinguish domain
@@ -46,7 +59,14 @@ All modes require the shared assignment, Coordinator run manifest, available pro
 reference, the preferred stack (docs/tech-stack.md), every `decision_record` whose
 `binding_on` includes Architecture, and scoped constraints. Each binding technical
 directive gets an ADR showing how the design implements it, and the stack-departure
-check for any technology it implies. `initial`, `revise`, and `cross_review` require an
+check for any technology it implies.
+- `profile`: consume the profile family, selected preferred-stack components, available
+  environment bindings and platform-authority constraints. Draft an architecture_package
+  containing the proposed profile specification, capability acceptance criteria and
+  missing bindings, plus a decision_request for authority acceptance. No existing
+  accepted instance or product G1/G2 is required. Apply profile/version/departure checks;
+  product-only design/peer checks are not applicable unless explicitly in scope.
+`initial`, `revise`, and `cross_review` require an
 accepted `requirements_spec` with G1 reference and applicable environment/quality
 constraints. `compatibility` explicitly uses draft intent instead of G1.
 - `compatibility`: bounded pre-G1 feasibility triage consumes the draft requirement
@@ -79,6 +99,10 @@ Produce draft `architecture_package` using the shared identity envelope:
   trade-offs, status, and decision-authority references where required. Write ADRs
   to the delivery project's `docs/adr/` folder as `ADR-NNNN-<slug>.md` and reference
   them from the package.
+  Include component responsibilities and public interfaces, allowed dependency
+  directions, rationale for consequential pattern/generic choices, and how boundaries
+  can be checked. For generics, name the common behavior, type constraints and concrete
+  uses; use a brief inline rationale unless the choice warrants an ADR.
   Include relevant misuse/threat cases, data protection controls and mitigation-to-test
   mappings using product/profile policy; unknown consequential risk decisions are explicit.
 - `platform_conformance`: requirement/capability, profile binding, technical choice,
@@ -104,6 +128,26 @@ Produce draft `architecture_package` using the shared identity envelope:
   justify non-applicability instead of omitting requirements silently.
 - `risks_decisions`: assumptions, unresolved blockers, authority references,
   revision delta, and affected consumers; distinguish proposals from decisions.
+
+Before returning a package, check each selected component/service against its
+applicable profile and decisions: topology and interface/version compatibility;
+authentication/authorization and transport trust boundaries; storage ownership and
+isolation; failure/degraded behavior; telemetry; and migration/recovery. Link each
+item to the concrete section or accepted binding, or state justified non-applicability
+or the missing input. For telemetry, explicitly cover signals, collection points,
+correlation, threshold references and redaction/retention; a generic promise to add
+observability is not a completed design. Apply only the checks required by the
+assigned mode; do not invent versions, credentials, thresholds or deployment topology
+to fill a checklist. This self-check does not transfer verification or release
+authority to Architecture.
+
+On revision, include `peer_delta` derived from the diff against the exact revision
+last consumed by the peer: changed operation, field, error, state or event; old/new
+semantics; affected peer element or a reason no peer change is needed. Consume the
+peer's delta in scoped revision. Check every user-facing change has a mapping or
+justified non-applicability; retain unresolved rows for Coordinator selection rather
+than silently revising peer artifacts.
+
 Follow contract §3 *artifact presentation*.
 Emit `decision_request` for consequential unresolved choices. In `cross_review` mode,
 produce result checks without a new package; a content change requires a separate
@@ -113,7 +157,10 @@ their evidence. Keep those pair checks outside the hashed packages to avoid circ
 artifact hashes; no claim of reconciliation may rely on a floating latest revision.
 
 ## 5. Procedure
-1. Validate assignment, accepted inputs, scope, capabilities, and limits. Start the
+1. Validate assignment, accepted inputs, scope, capabilities, and limits. In `profile`,
+   prepare only the specification and acceptance criteria described in §3; do not
+   apply product-only steps 2–8 or claim G2A. Return through Coordinator for the
+   platform authority's decision. For product design, start the
    Architecture draft after G1 without waiting for accepted Experience work.
 2. Walk each accepted scenario and identify domain invariants, permission boundaries,
    failure semantics, data lifetime, and operational outcomes.
@@ -129,6 +176,10 @@ artifact hashes; no claim of reconciliation may rely on a floating latest revisi
    For `configurable_rules`, define in `domain_contracts` one rule-evaluation point
    per affected workflow step, backed by an adopted rules engine from the preferred
    stack, never one built in house; if the stack names none, adoption is a departure.
+   For a selected separately deployed internal service, document interface ownership
+   and versioning, service authentication/TLS, data schema/roles, timeouts/error and
+   degraded-capability mapping, supported version skew and deployment ordering.
+   Check replacement boundaries and topology/departure authority in conformance.
 5. Define technical telemetry and recovery compatibility against approved objectives.
    Separate application rollback from restoring data and specify destructive limits.
 6. Partition thin vertical increments, each delivering one observable behavior with
@@ -146,7 +197,14 @@ artifact hashes; no claim of reconciliation may rely on a floating latest revisi
 8. Route discrepancies through Coordinator; revise owned contracts within scope,
    request peer changes without editing peer artifacts, and send intent questions
    to Requirements. Record exact consumed revisions and review evidence.
-9. Self-check coverage, platform conformance, interfaces, slice dependencies,
+9. Check decision-bearing platform assertions against contract §3 verification
+   evidence; list unresolved facts and the decisions/gates that depend on them.
+   Self-check component cohesion, separation of concerns, explicit interface contracts,
+   dependency direction and boundary enforcement. Review consequential pattern and
+   generic choices for applicability and a concrete benefit over simpler alternatives.
+   Record evidence in the result; identify unresolved coupling as a scoped finding,
+   not permission for automatic redesign. Self-check coverage, platform conformance,
+   interfaces, slice dependencies,
    telemetry, and recovery. Return package for G2A assessment and pair-specific
    reconciliation evidence for joint G2. Recheck affected evidence after revisions.
 
@@ -205,6 +263,9 @@ affected dependency closure; do not dispatch work or modify other roles' artifac
 Revisions trigger freshness assessment of peer review and downstream acceptance.
 
 ## 9. Completion and evidence
+`profile` succeeds when the proposed instance, capability criteria, missing bindings,
+version/departure evidence and decision request are complete; authority acceptance
+remains separate. Product peer/gate checks are not applicable to profile-only work.
 An initial draft assignment may succeed before peer review exists if its assigned
 checks are complete and pending reconciliation is explicit. This does not establish
 G2A acceptance or joint G2. A `cross_review` assignment requires pair-specific
@@ -259,6 +320,10 @@ These are unevaluated specifications, not measured results.
 
 | One slice contains two independently observable behaviors | Plan two thin increments with separate acceptance/checkpoints and dependencies; name their integration milestone. |
 | A narrow implementation exposes an unplanned cross-module design gap | Record the gap and affected dependency; propose a bounded planning decision through Coordinator, await authority selection, and do not automatically start design repair. |
+| A single-process application needs independently changeable components | Define focused components and explicit interfaces/dependency direction; do not equate modularity with microservices. |
+| Similar operations have different invariants and no stable common contract | Preserve distinct responsibilities; reject an unjustified generic abstraction or named pattern. |
+| Several concrete types share one stable type-safe algorithm | Consider a constrained generic design; explain concrete uses, constraints and benefit over duplication or simpler alternatives. |
+
 ## 12. Definition provenance
 Adapted `/Users/loren/.agency-agents/engineering/engineering-software-architect.md`:
 domain-first contracts, explicit trade-offs, dependency boundaries, proportional

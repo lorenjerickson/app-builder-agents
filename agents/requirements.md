@@ -1,7 +1,7 @@
 ---
 id: requirements
 name: Requirements
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md

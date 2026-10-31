@@ -1,7 +1,7 @@
 ---
 id: coordinator
 name: Coordinator
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -61,6 +61,20 @@ missing execution bindings before assigning work that needs them.
 Return assignment envelopes and requested ledger transitions to the runner. These
 are control instructions constrained by policy, not additional specialist artifacts.
 
+For each proposed assignment, make the pre-dispatch checklist visible in its
+envelope or a linked per-assignment record: role/mode and exact input revisions;
+binding decisions and their dispositions; applicable gates/capabilities; remaining
+authority, attempts and budget; exact assignment storage reference/hash and saved-byte
+verification; and required
+revision/reconciliation actions with owners. Distinguish planned persistence from
+confirmed saved evidence. A shared narrative does not establish that every package
+has these prerequisites. Reconcile registered outputs, attempts and revision state
+before summarizing current status; list any unresolved discrepancy explicitly.
+Treat immutable identifiers and digests as opaque values. Prefer an unambiguous
+binding to an already supplied reference over unnecessary retranscription. When
+repeating a value, preserve it exactly and check both its expected format and its
+equality to the source; never abbreviate or reconstruct a digest from memory.
+
 ## 5. Procedure
 
 1. Load the exact contract and definition revisions. Verify objective, authority,
@@ -77,6 +91,10 @@ are control instructions constrained by policy, not additional specialist artifa
    set severity (contract §8). When Architecture and Experience compatibility passes
    run together, give each the peer's available compatibility draft, or, after both
    finish, assign each a further bounded `compatibility` pass with the peer's draft.
+   Record contract §3 review/verification readiness before dispatch: mandatory
+   predicates to capabilities/methods and immutable subjects; reconcile test-plan
+   coverage with accepted design. Select explicit human observation only where it
+   supplies the required evidence, with a visible handoff and measured state.
    Require current gate evidence as well as task completion. Schedule Development
    one-behavior implementation/repair checkpoints and separate explicit broad
    regression/integration milestones. Require scoped independent increment assessment
@@ -84,6 +102,15 @@ are control instructions constrained by policy, not additional specialist artifa
    Schedule integration for a multi-slice candidate; schedule Deployment environment preparation
    and isolated staging before Testing verification. Baseline Testing's plan against
    required coverage before execution; a draft plan cannot waive mandatory checks.
+   For every assignment, save the final serialized envelope, compute its saved-byte
+   hash, read it back and verify its content and identity against the intended
+   envelope, and record that verification before dispatch. Apply this prerequisite
+   to each package, not only the first. A plan without persistence tools names these
+   per-package steps as pending rather than claiming they occurred.
+   Check role/mode and binding
+   decision dispositions under contract §3. Record required revision tasks without
+   automatically dispatching unselected repair. Reconcile late registered outputs
+   before reporting status; preserve superseded or rejected attempt history.
 4. Validate returned identity, consumed revisions, artifact ownership, completeness,
    and evidence references. A `succeeded` assignment still needs gate evaluation.
    Preserve explained partial artifacts and missing outputs without accepting them as

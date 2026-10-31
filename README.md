@@ -6,10 +6,16 @@ deliverable; the pilot is its subsequent proving exercise.
 
 ## Definition set
 
-**Active definition set: v0.7.0**, promoted by Loren on 2026-10-29. P57/P58 implement
-thin increments and planned remediation. Independent static review and
-[qualification](docs/evaluations/QUAL-070-01/scorecard.md) passed. New runs bind v0.7.0;
-existing runs retain their pins. Rollback: **v0.6.1**. See the [promotion record](docs/promotion-0.7.0.md).
+**Active definition set: v0.7.1**, published at Loren's explicit direction on
+2026-10-30. Includes P39–P56 and P59: modular design guidance, clearer handoffs,
+preparation verification, evidence handling and bounded role responsibilities.
+New runs bind v0.7.1; existing pins remain unchanged. Rollback: **v0.7.0**.
+See the [promotion record](docs/promotion-0.7.1.md).
+
+Independent static reviews and the corrective textual evaluation passed
+(**80/80**, all **19 mandatory checks**, no baseline regressions or critical
+violations). This is a definition release; no completed end-to-end application
+qualification or deployed runtime is claimed. Further pilot work is outside scope.
 
 Version 0.6.1 (rollback; static increment, not yet evaluated; the preferred stack in docs/tech-stack.md gained a business-rules engine on 2026-10-26, P36) makes unrun mandatory self-checks block success, wires peer compatibility drafts and puts summaries before front matter. Version 0.6.0 (promoted; EVAL-060-01 8/9) added output length discipline, layered brands and theming, subdomain classification, design-tool named versions, actor state awareness, separate-agent authoring, review-finding rules, configurable rules for variable obligations and a domain-neutrality guard; see the [0.6.0 review](docs/definition-review-0.6.0.md). Version 0.5.1 (rollback point; 0.5.0 evaluated by EVAL-050-01, plus three checklist fixes) added project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from pilot P-1; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
 definition. Use both with a scoped assignment; each role inherits the common rules.

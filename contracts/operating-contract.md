@@ -1,9 +1,9 @@
 # Shared operating contract
 
-Version: 0.7.0. Status: promoted definition set, not a deployed runtime.
-Promoted by Loren on 2026-10-29 after independent qualification. New runs bind
-v0.7.0; existing runs retain their pinned governing version. Preserve v0.6.1 as
-the rollback version. See [promotion record](../docs/promotion-0.7.0.md).
+Version: 0.7.1. Status: active, promoted definition set; not a deployed runtime.
+Promoted by Loren on 2026-10-30. New runs bind immutable v0.7.1;
+existing runs retain their pins. Rollback reference: v0.7.0.
+Publication authority and evidence scope: [promotion record](../docs/promotion-0.7.1.md).
 
 ## 1. Purpose, roles, and precedence
 
@@ -25,6 +25,15 @@ versioned workflow change and the same authority as other workflow promotion.
 Roles return proposals and evidence. A runner enforces state, schema validation,
 permissions, and side-effect limits. During manual rehearsal, a recorded operator
 performs those runner duties. No runner is implemented by these documents.
+
+**Write-boundary enforcement.** Each assignment records its enforcement mechanism,
+protected inputs and writable outputs, responsible host/operator and validation
+receipt. Use read-only mounts/permissions or equivalent host isolation for protected
+sources. A separate copy reduces impact but is not by itself enforced read-only
+access. Missing required enforcement blocks the affected task until an authorized
+operator supplies it; do not claim these documents implement a sandbox or runner.
+An out-of-scope write is an incident even if reverted: stop the affected action,
+preserve evidence and reconcile under the existing incident policy; no silent cleanup.
 
 ## 2. Run baseline and external responsibilities
 
@@ -80,6 +89,7 @@ guidance file if it records the mapping.
 | `docs/_deprecated/` | Superseded documents, kept for history; never inputs |
 | `docs/<product>-decisions.md` | `decision_record` log |
 | `delivery/runs/<run_id>/` | run_manifest, task_graph, role drafts, `gate_<id>.md`, comparison/evaluation notes, run_report, `SHA256SUMS` |
+| Project root under version control (or recorded mapping) | Application source; preserve existing work and establish an initial committed rollback baseline before scaffold changes |
 | `BACKLOG.md` | Product backlog (deferred or next scope); definition gaps go to the definition set's backlog |
 
 Pilot artifacts, IDs and evaluation outputs (including workflow-evaluation runs)
@@ -106,14 +116,14 @@ Keep secrets and unnecessary personal data out of stored evidence.
 | Artifact type | Sole producer | Minimum payload | Consumers |
 |---|---|---|---|
 | `requirements_spec` | Requirements | Scope, actor profiles, cross-cutting rules, data/rules, stable requirement IDs, acceptance scenarios, quality thresholds, configurable targets, exclusions, decisions; every rule source-tagged. Optional: `state_awareness` per actor profile; `configurable_rules` | All downstream roles |
-| `decision_request` | Any assigned role | Exact question/conflict; plain-language `explanation` with an example; options with impact; `recommendation` and rationale; `consequence_of_deferral`; proposed owner; affected artifacts | Coordinator and external authority |
-| `decision_record` | Coordinator (recording only) | Question, decision as stated by the authority, interpretation applied, authority and date, source (conversation, document), affected artifacts, `binding_on` roles, supersedes | All roles named in `binding_on`; Requirements; Retrospective |
+| `decision_request` | Any assigned role | Exact question/conflict; plain-language `explanation` with an example; options with impact, implied parameter values (defaults labeled), consequential follow-on decisions with recommendations, and effects on accepted limits; `recommendation` and rationale; `consequence_of_deferral`; proposed owner; affected artifacts | Coordinator and external authority |
+| `decision_record` | Coordinator (recording only) | Question, decision as stated by the authority, interpretation applied, authority and date, source (conversation, document), affected artifacts, `binding_on` roles, supersedes, `required_revisions` (artifact, responsible role, proposed/selected task and disposition, or none with reason) | All roles named in `binding_on`; Requirements; Retrospective |
 | `brand_package` | Branding | Positioning/personality/values, naming and claims constraints, voice/tone examples, editorial/terminology rules, visual identity and asset usage, applicability/exception rules, provenance and decisions. Optional: `brand_layers`, `theming_contract` | Experience, Architecture, Development, Testing, Retrospective |
 | `architecture_package` | Architecture | Technical decisions, modules/data/domain states, APIs, authorization/concurrency, platform conformance, single-behavior increments/dependencies and integration milestones, telemetry implementation, migration/recovery, requirement map. Optional: `subdomain_map` (required before any build/buy commitment) | Experience, Development, Testing, Deployment, Monitoring |
 | `experience_package` | Experience | Accepted brand reference and application map, UI visual tokens/components/assets, layouts and responsive rules, journeys/UI states, interaction behavior/content, accessibility/motion, operation mapping, user-outcome signal needs, requirement map | Branding, Architecture, Development, Testing, Deployment, Monitoring |
 | `implementation_package` | Development | Increment/milestone ID and checkpoint, source revision, changes, migration/configuration definitions, developer checks, build commands, immutable candidate identity, requirement map | Testing, Deployment |
 | `test_plan` | Testing | Requirement/scenario map, independent fixtures, required checks, environment needs, coverage/exclusions with policy basis | Development, Coordinator |
-| `verification_report` | Testing | Assessment scope (increment, candidate, readiness, workflow), candidate and baseline identities, per-check evidence, pass/fail/not-run/not-applicable, defects, coverage, verdict | Coordinator, Deployment, Retrospective |
+| `verification_report` | Testing | Assessment scope (scaffold, increment, candidate, readiness, workflow), candidate and baseline identities, per-check evidence, pass/fail/not-run/not-applicable, defects, coverage, verdict | Coordinator, Deployment, Retrospective |
 | `defect_report` | Testing | Expected/actual, reproducer, environment/build, severity, linked requirement, suspected routing | Coordinator, responsible role |
 | `release_plan` | Deployment | Candidate, targets, configuration, authorization reference, migration steps, smoke checks, recovery criteria/procedure | Coordinator, Testing, Monitoring |
 | `deployment_record` | Deployment | Actual artifact/environment identity, action IDs, migration and smoke evidence, recovery state, outcome | Monitoring, Coordinator, Retrospective |
@@ -135,6 +145,13 @@ tag: `[S]` stated in the source, `[D]` derived from the source, `[A]` authority
 decision (cite the decision_record), `[P]` proposal awaiting decision, or `[K]`
 external domain knowledge (needs a named reviewer before it binds). Untagged `[K]`
 content fails the producer's self-check.
+
+A decision-bearing external platform fact additionally records verification status,
+primary source, observation date, relevant version/region/configuration and named
+reviewer. Use `[K-verified]` or `[K-unverified]` as refinements of `[K]`; verification
+means evidence supports the specific assertion, not universal truth. Decisions that
+rely on unverified consequential facts remain provisional and cannot satisfy their
+affected gate. Unrelated incidental facts do not create new blocking predicates.
 
 **Artifact presentation.** Every artifact opens with a summary of one page or less
 (decisions, open items, gate-relevant results) as its first content; the identity
@@ -184,6 +201,20 @@ mandatory input for that role's subsequent assignments. Architecture records an 
 implementing each binding technical directive, including the preferred-stack
 departure check.
 
+At decision capture, Coordinator records each required revision and its dependency
+impact in the task graph. Invalidation and recording are immediate; dispatch of
+repair/re-check still requires §5 selection, unless the authority decision explicitly
+selected that bounded work. Assignments include binding decisions newer than the
+role's consumed baseline; results record their dispositions. Before status reporting,
+reconcile registered task outputs, late results and checkpoints with manifest state;
+a file's modification time alone is not acceptance or authority.
+
+Save each assignment and its hash in the run before dispatch. Validate its mode against
+the pinned role definition; an unsupported mode is corrected before dispatch, never
+silently relabeled in returned evidence. Save all outputs, including feasibility/spike
+results, with identities in the run; a summary note alone is not executed evidence.
+Unplaced outputs follow §4 fallback handling and are not accepted pending reconciliation.
+
 Artifacts begin as `draft`. Runner acceptance records immutable artifact references,
 gate ID, predicate checks, authority if required, and time in the ledger. Roles do
 not make their own artifacts accepted merely by labeling them successful. Existing
@@ -212,6 +243,20 @@ Development explicitly owns integration: combine assigned slices, resolve integr
 conflicts within accepted designs, rerun developer checks, and produce one immutable
 release candidate. Coordinator schedules integration; it does not merge code itself.
 
+**Verification/review readiness.** Before dispatch, Coordinator records a scoped
+readiness map: mandatory accepted requirement/design predicates (or accepted scaffold
+preparation capability criteria for scaffold assessment), intended evidence
+method, available capability, immutable subject reference, and responsible executor.
+A test-plan omission cannot waive an accepted design predicate. Save named design
+versions before review begins. Missing capability blocks affected execution; missing
+mandatory evidence cannot pass its gate. Authority may select an alternative method,
+including explicit human observation, but cannot label unavailable evidence as passed.
+For visual/native-input checks, measure actual viewport/state rather than trusting
+requested settings. A human handoff names a visible, accessible subject and precise
+observable predicates; retain the response's provenance and limits. Record and restore
+temporary verification settings at closure. Keep these details in the applicable
+readiness evidence, not every unrelated assignment.
+
 ## 4. Assignment and result envelopes
 
 These are required field contracts for the draft; executable JSON Schema and runner
@@ -228,13 +273,24 @@ Implementation/repair assignments also identify one observable behavior, its inc
 ID, acceptance checks, dependency/module contract, and return checkpoint. Integration
 assignments name the explicit milestone and exact included increments. Verification
 assignments name assessment scope and selected checks from the baselined plan.
+For `scaffold` assessment only, Coordinator baselines the platform-authority-accepted
+preparation specification and its complete capability criteria as the check-selection
+basis instead of a product test_plan. Testing independently derives the concrete
+checks and records criterion coverage. Missing preparation criteria block assessment;
+no product G1/G2 or product `plan` assignment is required. This exception supplies a
+lawful preparation baseline, not a waiver of evidence or product gate acceptance.
 Remediation/re-check assignments additionally cite the durable finding, authority
 selection, original task/attempt lineage, already charged attempts and remaining limits.
 
 **Result:** same run/task/trace/role/attempt identity, `consumed_refs`, `status`,
 `summary`, `output_refs`, `checks`, `issues`, `next_route`, `usage`, `checkpoint_ref`
 (nullable). `checks` entries contain check ID, subject, outcome, and evidence reference;
-`issues` include category, impact, evidence, and owner or proposed route; `issues`
+`issues` include category, impact, evidence, owner or proposed route, `predicate_ref`
+(accepted criterion and gate claiming it, or no predicate with reason), and severity.
+Severity is blocking for a mandatory predicate of the gate claiming this scope;
+a later-gate/recorded-condition failure is major relative to the current gate and
+blocks that later gate; minor affects no mandatory predicate or recorded condition.
+A label cannot override predicate consequences. Scope and gate must accompany it; `issues`
 entries from `cross_review` or `conformance_review` also carry optional
 `remedy_checked_against` (the peer revision a suggested remedy was checked against).
 A remedy that changes behaviour is routed as a `contract_conflict` (§5), not a copy fix.
@@ -244,6 +300,15 @@ actual measurements; unavailable values are null with a reason, never fabricated
 that could not be produced, why, and the owning next action. Non-success results may
 omit unavailable outputs when this list explains them. Complete honest reports with
 failed/inconclusive verdicts are not partial merely because the product failed.
+
+**Fallback output placement.** If assigned storage is unavailable, a result may name a
+permitted fallback location, immutable content hash where computable and missing
+identity fields. Coordinator may copy the bytes unchanged to the assigned destination,
+verify source/destination identity and record a separate placement receipt with actor,
+method, time and any completed identity metadata. Never edit producer content to fill
+missing fields or claim the producer computed a Coordinator hash. If source identity
+cannot be verified, keep the output unaccepted and route to the producer; fallback
+placement does not itself pass content checks. Preserve original fallback evidence.
 
 Result `status` has exactly four values:
 
@@ -339,6 +404,13 @@ mandatory failure is known. Dependents remain blocked until the relevant current
 independent evidence and gates pass. Only selected, bounded remediation and its
 planned independent re-check can close the finding; a successful author self-check
 alone cannot do so.
+
+A passing review with only genuinely non-blocking findings ends that review loop by
+default. Record those findings and their explicit deferred/accepted disposition, not
+new gate conditions or implicit waivers. A recorded condition must be satisfied when
+its gate claims it; required fixes still need selection. A selected fix changes only
+what the findings and approved scope require; disclose additional `new_content` with
+its affected contracts/evidence and route it as new work, not a hidden repair expansion.
 
 Author self-check corrections within the current authorized assignment may continue
 before handoff, preserving evidence and limits. Once the handoff is rejected, this
@@ -443,6 +515,16 @@ explicit. Backend errors and permissions map to visible states; optimistic updat
 include pending, confirmation and failure recovery rules. Technical telemetry realizes
 Experience's user-outcome signal needs. Resolve disagreements through Coordinator;
 neither role can silently change the other's artifact or product intent.
+
+A scoped revision/re-check identifies changed guarantees, limits and exceptions and
+the artifacts each relies on, including unchanged dependencies. Review reports include
+a `consequence_sweep`: changed guarantee, required read set, exact references read and
+findings. This is evidence-scope reasoning, not authority for cumulative module retests.
+When revising accepted content, edit or explicitly supersede conflicting statements
+across the affected set and record a contradiction search. Content outside write
+scope is routed to its producer; unresolved contradictions keep dependent acceptance
+invalid. These rules apply even when revision occurs outside the ordinary pair flow;
+compatibility re-check dispatch still requires selected bounded work under §5.
 
 Either package changing invalidates the joint G2 and pair-review evidence. Preserve
 the unchanged peer package but reassess its compatibility with the new revision;
@@ -563,7 +645,7 @@ do not constitute evidence that they work in practice.
 
 | Work | Responsible producer / executor | Evidence and handoff |
 |---|---|---|
-| Initial profile and tested scaffold | External platform authority supplies/accepts them | Profile identity and scaffold verification are prerequisites, not assumed agent outputs; this delivery cycle starts from that platform |
+| Initial profile and tested scaffold | Architecture proposes profile; Development prepares scoped scaffold; Testing verifies; external platform authority accepts | Authority may supply them directly. Otherwise accept profile specification for preparation first, then final immutable profile/scaffold/evidence binding before product execution. Scaffold verification is not product G3 |
 | Brand identity assets | Branding authors/prepares them under a scoped asset assignment, or names the explicit external supplier | Asset manifest within brand_package: stable ID, required/optional, producer, source/rights status, immutable reference, readiness dependency and approved fallback |
 | UI-specific assets, wireframes and branded mockups | Experience prepares/exports from the assigned Figma document under granted design-tool permissions | experience_package binds file/page/node IDs, immutable snapshots, viewport/state coverage and asset manifest; Branding does not own application layouts |
 | Asset code integration | Development | Package/version/hash in candidate manifest; never replace missing assets with invented branding |

@@ -410,8 +410,15 @@ version: '3.9'
 services:
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+        PNPM_VERSION: ${PNPM_VERSION}
+        TURBO_VERSION: ${TURBO_VERSION}
+        APP_PACKAGE: ${WEB_PACKAGE}
+        APP_DIR: web
+        PORT: 3000
     ports:
       - '3000:3000'
     env_file:
@@ -423,8 +430,13 @@ services:
 
   api:
     build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+        PNPM_VERSION: ${PNPM_VERSION}
+        TURBO_VERSION: ${TURBO_VERSION}
+        APP_PACKAGE: ${API_PACKAGE}
     ports:
       - '3005:3005'
     env_file:
@@ -437,8 +449,15 @@ services:
 
   cms:
     build:
-      context: ./apps/cms
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/cms/Dockerfile
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+        PNPM_VERSION: ${PNPM_VERSION}
+        TURBO_VERSION: ${TURBO_VERSION}
+        APP_PACKAGE: ${CMS_PACKAGE}
+        APP_DIR: cms
+        PORT: 3001
     ports:
       - '3001:3001'
     env_file:
@@ -452,6 +471,9 @@ services:
       dockerfile: apps/rules/Dockerfile
       args:
         NODE_IMAGE: ${NODE_IMAGE}        # supported Node.js LTS, pinned by digest
+        PNPM_VERSION: ${PNPM_VERSION}
+        TURBO_VERSION: ${TURBO_VERSION}
+        APP_PACKAGE: ${RULES_PACKAGE}
     expose:
       - '3010'                           # contract API: internal network only, no host port
     environment:
@@ -506,122 +528,111 @@ secrets:
 
 ### Sample Dockerfiles
 
-#### `apps/web/Dockerfile`
+These are illustrative, unexecuted outlines, not verified scaffold builds. Resolve
+all build arguments to exact accepted versions before use: `NODE_IMAGE` is a supported
+Node LTS image with a real registry SHA256 digest; `PNPM_VERSION` and `TURBO_VERSION`
+are exact compatible versions. Record support evidence and validate the resulting
+images in the consuming project. Do not copy the workspace root node_modules into
+runtime images. Build from repository-root context; include only each app's closure.
+
+As checked 2026-10-29, the [official Node lifecycle](https://nodejs.org/en/about/previous-releases)
+marks Node20 end-of-life; verify support when pinning rather than copying an aging tag.
+[Turborepo prune](https://turborepo.com/docs/guides/tools/docker) provides scoped manifests,
+lockfile and sources. Preserve pnpm-workspace.yaml and required install configuration,
+patches and registry settings in that output; secrets use build-secret mechanisms,
+never copied credentials. The build must fail if required install inputs are missing.
+
+Use the following base/prune/build stages at the top of each app Dockerfile, replacing
+`APP_PACKAGE` with its actual package.json name. Build scripts must compile workspace
+dependencies; the Turbo graph and selected package scripts define that behavior.
 
 ```dockerfile
-FROM node:20-alpine AS base
-RUN corepack enable
-WORKDIR /app
+ARG NODE_IMAGE
+FROM ${NODE_IMAGE} AS base
+ARG PNPM_VERSION
+RUN test -n "$PNPM_VERSION" && npm install --global pnpm@${PNPM_VERSION}
+WORKDIR /repo
 
-FROM base AS deps
-COPY package.json pnpm-lock.yaml* ./
-COPY apps/web/package.json ./apps/web/package.json
-RUN pnpm install --frozen-lockfile
-
-FROM base AS builder
+FROM base AS pruned
+ARG TURBO_VERSION
+ARG APP_PACKAGE
 COPY . .
-RUN pnpm --filter web build
+RUN test -n "$TURBO_VERSION" && test -n "$APP_PACKAGE" \
+ && pnpm dlx turbo@${TURBO_VERSION} prune ${APP_PACKAGE} --docker
 
-FROM node:20-alpine AS runner
+FROM base AS build
+ARG APP_PACKAGE
+COPY --from=pruned /repo/out/json/ .
+COPY --from=pruned /repo/out/pnpm-lock.yaml ./pnpm-lock.yaml
+# Verify prune retained workspace config and all required install inputs.
+RUN test -f pnpm-workspace.yaml && pnpm install --frozen-lockfile
+COPY --from=pruned /repo/out/full/ .
+RUN pnpm exec turbo run build --filter=${APP_PACKAGE}...
+```
+
+#### `apps/web/Dockerfile` and `apps/cms/Dockerfile`
+
+For Next-based web and Payload CMS, append these stages to the common stages above.
+Configure Next `output: 'standalone'` and monorepo `outputFileTracingRoot`; verify the
+emitted relative server path. Supply `APP_DIR=web` or `cms` and the appropriate `PORT`.
+Ensure public/ exists or remove that copy. Include dynamic/native runtime assets through
+explicit tracing configuration. A profile-defined Node health probe must be staged at
+`apps/<app>/healthcheck.js` and target an actual bound readiness endpoint; no probe or
+endpoint is fabricated by this outline. See [Next output tracing](https://nextjs.org/docs/app/api-reference/config/next-config-js/output).
+
+```dockerfile
+FROM ${NODE_IMAGE} AS runner
+ARG APP_DIR
+ARG PORT
 WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=builder /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/web/node_modules ./apps/web/node_modules
-EXPOSE 3000
-CMD ["pnpm", "--dir", "apps/web", "start"]
+ENV NODE_ENV=production HOSTNAME=0.0.0.0 PORT=${PORT} APP_DIR=${APP_DIR}
+COPY --from=build --chown=node:node /repo/apps/${APP_DIR}/.next/standalone/ ./
+COPY --from=build --chown=node:node /repo/apps/${APP_DIR}/.next/static/ ./apps/${APP_DIR}/.next/static/
+COPY --from=build --chown=node:node /repo/apps/${APP_DIR}/public/ ./apps/${APP_DIR}/public/
+COPY --from=build --chown=node:node /repo/apps/${APP_DIR}/healthcheck.js ./healthcheck.js
+USER node
+HEALTHCHECK CMD ["node", "healthcheck.js"]
+CMD ["sh", "-c", "exec node apps/${APP_DIR}/server.js"]
 ```
 
 #### `apps/api/Dockerfile`
 
-```dockerfile
-FROM node:20-alpine AS base
-RUN corepack enable
-WORKDIR /app
-
-FROM base AS deps
-COPY package.json pnpm-lock.yaml* ./
-COPY apps/api/package.json ./apps/api/package.json
-RUN pnpm install --frozen-lockfile
-
-FROM base AS builder
-COPY . .
-RUN pnpm --filter api build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
-EXPOSE 3005
-CMD ["node", "apps/api/dist/main.js"]
-```
-
-#### `apps/cms/Dockerfile`
+Append the following to the common stages. `pnpm deploy --prod` packages an isolated
+production closure, including runtime workspace dependencies. Ensure package `files`
+includes dist/ and all runtime assets. Resolve entry/probe paths against actual build
+outputs. [Deploy requirements](https://pnpm.io/cli/deploy) vary by pinned pnpm version:
+[pnpm10](https://pnpm.io/10.x/cli/deploy) needs injected workspace packages or its
+explicit legacy option; do not apply that requirement blindly to newer versions.
+[Official Docker guidance](https://pnpm.io/docker) describes workspace packaging.
 
 ```dockerfile
-FROM node:20-alpine AS base
-RUN corepack enable
-WORKDIR /app
+RUN pnpm --filter=${APP_PACKAGE} deploy --prod /output
 
-FROM base AS deps
-COPY package.json pnpm-lock.yaml* ./
-COPY apps/cms/package.json ./apps/cms/package.json
-RUN pnpm install --frozen-lockfile
-
-FROM base AS builder
-COPY . .
-RUN pnpm --filter cms build
-
-FROM node:20-alpine AS runner
+FROM ${NODE_IMAGE} AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/apps/cms/dist ./apps/cms/dist
-COPY --from=builder /app/apps/cms/package.json ./apps/cms/package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/cms/node_modules ./apps/cms/node_modules
-EXPOSE 3001
-CMD ["node", "apps/cms/dist/server.js"]
-```
-
-These examples assume pnpm workspaces. Production images should be built from a pruned workspace so that an image contains only its own app's dependencies (the samples above copy the root `node_modules`, which with pnpm holds every workspace's packages). Pin a supported Node.js LTS base image by digest from a registry the build environment can reach; the `node:20-alpine` tag above is a placeholder, and Node.js 20 is past end of life. The rules service outline shows the pattern:
-
-#### `apps/rules/Dockerfile` (outline)
-
-```dockerfile
-ARG NODE_IMAGE                      # supported Node.js LTS, pinned by digest, from an allowed registry
-FROM ${NODE_IMAGE} AS base
-RUN corepack enable
-WORKDIR /repo
-
-FROM base AS pruned
-COPY . .
-RUN pnpm dlx turbo@<pinned> prune rules --docker          # out/json, out/pnpm-lock.yaml, out/full
-
-FROM base AS build
-COPY --from=pruned /repo/out/json/ .
-COPY --from=pruned /repo/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN pnpm install --frozen-lockfile                        # installs the engine's platform package for this image's libc
-COPY --from=pruned /repo/out/full/ .
-RUN pnpm --filter rules build \
- && pnpm --filter rules deploy --prod /out/rules          # self-contained production closure
-
-FROM ${NODE_IMAGE} AS runner                              # same base image: same libc as the build stage
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=build --chown=node:node /out/rules ./
-RUN node -e "require('@gorules/zen-engine')"              # fail the build if the native module cannot load
+COPY --from=build --chown=node:node /output/ ./
 USER node
-EXPOSE 3010 3012
+EXPOSE 3005
 HEALTHCHECK CMD ["node", "dist/healthcheck.js"]
 CMD ["node", "dist/main.js"]
 ```
 
-Notes: build one image per target architecture. Check the pnpm version's requirements for `deploy` (some versions need injected workspace packages or a legacy flag). The authoring UI is built separately (`pnpm --filter rules-authoring build`) and published as static assets.
+#### `apps/rules/Dockerfile`
+
+Use the same API packaging stages with its actual package name and entry/probe paths.
+Before `USER node`, verify the native engine loads in the final closure:
+
+```dockerfile
+RUN node -e "require('@gorules/zen-engine')"
+```
+
+Use matching build/runtime libc and target architecture; build and test each target
+architecture separately. Build/publish the authoring UI separately. Validate runtime
+write permissions (for example, Next cache paths) without broadening to root. Check
+image contents/SBOM for unexpected app-specific dependencies, run smoke/health tests,
+and verify clean-state reproducibility before treating any image as tested. No actual
+image digest, build result or deployment success is asserted here.
 
 ### `.dockerignore` example
 

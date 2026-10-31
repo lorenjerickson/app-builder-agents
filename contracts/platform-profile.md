@@ -1,6 +1,6 @@
 # Shared application platform profile
 
-Profile family: `web-app-v1`. Version: 0.7.0. Status: promoted architecture assumptions;
+Profile family: `web-app-v1`. Version: 0.7.1. Status: promoted architecture assumptions;
 vendor/runtime bindings remain open. All ten definitions reference this profile.
 
 ## Supported application family
@@ -26,6 +26,12 @@ a departure. A departure requires explicit confirmation from the platform author
 and an architecture decision record (ADR) before any dependent design is accepted;
 see [the Architecture definition](../agents/architecture.md).
 
+A selected adopted capability may run separately only with a recorded problem and
+accepted topology. Being listed in the stack is not itself approval to split deployment.
+Keep the engine/provider behind a platform-owned interface when replaceability is
+required; prevent provider-specific models leaking into consumers. Retain the modular
+server baseline for unrelated capabilities. Record any departure through Architecture.
+
 ## Required capabilities
 
 | Area | Contract assumed by agents |
@@ -34,6 +40,7 @@ see [the Architecture definition](../agents/architecture.md).
 | Identity | Existing identity-provider adapter; server-side role/resource authorization; independent denied-action tests |
 | Tenancy and scope | Hierarchical tenancy scope (e.g. organisation → group → site) carried on every role assignment; scope filtering applied to queries, search, counts, reports, notifications and exports; no cross-scope leakage tests |
 | Delegation and capacity | "Acting for" delegation with scope and validity; one person holding several capacities with explicit selection per action, never merged permissions; temporary coverage with an end date; invited external participants with item-scoped access |
+| Adopted internal service (when selected) | Platform-owned versioned interface, explicit component/data responsibility, service authentication/TLS, isolated schema/roles, timeout/error and degraded-capability mapping, compatible version skew and deployment order; a separately deployed topology needs recorded acceptance, including departure approval where required |
 | Domain/API | Explicit schemas, validation, transactions, consistent error semantics, concurrency and idempotency rules where needed |
 | Data | Versioned migrations, fixtures, backup/restore interfaces, migration compatibility and data-loss assessment |
 | Build | Reproducible documented commands, pinned dependencies, immutable candidate artifact and source/build manifest |
@@ -42,6 +49,24 @@ see [the Architecture definition](../agents/architecture.md).
 | Recovery | Explicit application rollback and data recovery procedures, compatibility checks, evidence of recovery rehearsal |
 | Telemetry | Correlated logs and metrics, health signals, audit events, user-journey signals; defined retention/redaction |
 | Design tooling | Scoped Figma MCP authoring/export for Experience, stable document/node identities and immutable visual snapshots; missing capabilities block required design work |
+
+## Profile/scaffold preparation
+
+Architecture `profile` may propose the specification from accepted platform constraints
+without product G1/G2. Coordinator records platform-authority acceptance for scaffold
+preparation. Development `scaffold` then prepares only the authorized capability/source
+scope; Testing `scaffold` independently verifies its exact candidate against the accepted
+specification and capability criteria. Authority accepts the final profile/scaffold/
+verification binding before product implementation. No role accepts its own output,
+and scaffold success is not a product gate or permission to implement product behavior.
+
+Select supported stable compatible versions using dated support evidence, exact
+package/tool versions and lockfiles, and immutable image digests. A minimum version-age
+rule must come from accepted policy, not agent invention. Record security exceptions
+and their authority. Supporting libraries are routine only when they preserve the
+approved stack/architecture and satisfy accepted security/license/version policy;
+new consequential service, data or authority boundaries require the existing decision
+and departure route. Do not infer blanket approval for an unlisted stack replacement.
 
 ## Profile instance required before execution
 

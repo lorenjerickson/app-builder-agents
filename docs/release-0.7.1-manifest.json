@@ -1,0 +1,21 @@
+{
+  "version": "0.7.1",
+  "date": "2026-10-30",
+  "files": {
+    "agents/architecture.md": "e91d970b0f1d79d15ca6af5a34fcb5bf8b981c15e4c7c8a5733c1b7dc3779300",
+    "agents/branding.md": "c94df4b761bb1babc3c6dbdfaabd727447d784319342c02a79e2555597d4639b",
+    "agents/coordinator.md": "90bd07510cab85bfdfb553e2e319887e494fb837a626f09953a458416e98cfdc",
+    "agents/deployment.md": "1bebd268d80705a6b988745c051b42aedaddbd968c6d53b9d7044984de89484a",
+    "agents/development.md": "114ec4503b1f69813719394614e4ea840052f9aa3bfb9887a0c58611aa246097",
+    "agents/experience.md": "c4c0302320d23035c0687d4766b8fa902acb42dd440f551c2cbf7fba2a79a1ab",
+    "agents/monitoring.md": "3354015c16eae77b4aed40fb83a33f0a9026c92f86594600935a20f65c294a87",
+    "agents/requirements.md": "b539202a2ad6ea3bcd9549958f12d6d09766246a61b6561dfd7f675bff633922",
+    "agents/retrospective.md": "8453eda4d0454eabc64d344fa83f38212da93e57ee3563fd2bee8c962b598270",
+    "agents/testing.md": "f987b0cbb1c2a2d76c701722b6a25f51dd4a24ecb07efe20782ffa52e0d1fab3",
+    "contracts/operating-contract.md": "6d716b857ad3fccf8779f5ab0f22da248190651c0ce84f3f14ff493f17893479",
+    "contracts/platform-profile.md": "7365b6c3a9b2ef99862edddfda198eee2a24458d799d9940a3d901c087f350f6",
+    "docs/tech-stack.md": "6ca4dabb2d646b7c9ad375a81207976d02a8861df0edaaf3ae122597370947d9",
+    "templates/agent-definition.md": "1185b62f182fccdcbcae84f8f74d51bb522928577039b3021abadaf3675c58cc",
+    "templates/requirements.md": "9dc8fdaaaf2f574d77e3a9d2038bfe96557b3c11df15f6d8526fbabf256e6d33"
+  }
+}

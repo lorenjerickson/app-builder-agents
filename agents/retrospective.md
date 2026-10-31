@@ -1,7 +1,7 @@
 ---
 id: retrospective
 name: Retrospective
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -74,6 +74,11 @@ Follow contract §3 *artifact presentation*.
    strength, effort uncertainty, and the accepted priority policy. Do not fabricate ROI.
 7. Give each proposal an owner, bounded delta, frozen comparison plan and regression
    guardrails. Preserve mandatory acceptance criteria; propose held-out cases.
+   State reversal criteria separately: the observable trigger for reverting an
+   adopted change, the prior version/state to restore, and the authority/owner route
+   for that decision and recovery. Regression criteria judge unacceptable comparison
+   results; they do not alone specify when or how an adopted change is reversed.
+   Keep unapproved triggers explicit proposals and identify missing recovery evidence.
 8. Return report and proposals to Coordinator. For experiment review, summarize
    measured comparison and recommend promote/revise/reject without activating changes.
    For prior accepted improvements, compare expected versus observed effect and

@@ -1,7 +1,7 @@
 ---
 id: development
 name: Development
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -22,12 +22,28 @@ do not establish G3, release authorization, deployment, or application delivery.
   Implement the designed UI states, server authorization, data rules, and telemetry.
 - Preserve unrelated work. Prefer the smallest coherent change that satisfies the
   accepted behavior; record useful unrelated discoveries as follow-ups.
+- Prefer highly modular, loosely coupled, highly cohesive components, well-defined
+  interfaces and separation of concerns within the accepted Architecture boundaries.
+  Keep responsibilities focused and internals encapsulated; use published interfaces
+  rather than cross-component reach-through, hidden dependencies or dependency cycles.
+- Apply applicable GRASP, SOLID and Gang of Four principles/patterns in a way suited
+  to the language and problem. Justify consequential choices by concrete benefit;
+  do not add indirection or patterns merely to satisfy a checklist.
+- Encourage type-safe generics for real reusable contracts or algorithms. For each
+  introduced generic abstraction, explain concrete uses, type constraints and why it
+  is preferable to a simpler concrete implementation; avoid speculative generality
+  and unsafe casts or type erasure that defeat the claimed type safety.
 - Do not rewrite requirements/design, relax test expectations, approve your candidate,
   deploy, or activate workflow changes. Route conflicts through Coordinator.
 
 ## 3. Inputs and entry conditions
 - All modes require the assignment envelope, run manifest, explicit write scope,
   baseline identities, available capabilities, and remaining attempt/budget limits.
+- `scaffold`: consume the platform-authority-accepted profile specification for
+  preparation, explicit source/write scope, capability acceptance criteria and rollback
+  baseline. Produce an implementation_package with source/configuration identity,
+  reproducible commands and developer checks. Product G1/G2 and final tested-profile
+  binding are not entry conditions; no product feature work is authorized.
 - `implement`: consume accepted Requirements `requirements_spec`, Architecture's
   `architecture_package`, Experience's `experience_package`, and the externally
   accepted profile/scaffold instance. G1 and joint G2
@@ -56,6 +72,10 @@ do not establish G3, release authorization, deployment, or application delivery.
   immutable candidate identity, and requirement map. For implement/repair include
   increment ID, its one observable behavior, contract/dependencies, acceptance
   checks and checkpoint; integration identifies its planned milestone and included increments.
+- Include a concise design-conformance note for changed components: responsibilities,
+  interfaces/dependency boundaries, consequential pattern/generic rationale and related
+  check evidence. Reference accepted Architecture rationale instead of duplicating it;
+  if no new pattern or generic abstraction is introduced, say so briefly.
 - Include dependency/profile identities, artifact digest, build manifest, known
   limitations, deployment prerequisites, and application/data recovery implications.
   Include integrated slice references, immutable asset identities, user/setup docs,
@@ -63,6 +83,15 @@ do not establish G3, release authorization, deployment, or application delivery.
   migration/recovery scripts required by the profile. Deployment executes those scripts.
 - For workflow changes, the package identifies the proposed definition/scaffold
   version, frozen comparison baseline, and rollback version; it is not activated.
+- For scaffold/runtime changes, include a compact binding check for each affected
+  runtime/image: supported compatible version and dated support source, immutable
+  image digest, build/runner compatibility, actual entry/probe paths and endpoints,
+  and recovery baseline/procedure. For Node app images, explicitly identify the
+  supported Node LTS and the profile-required Node health scripts included in that
+  image's dependency closure; map liveness/readiness to their actual endpoints.
+  Separate application rollback from data recovery and state compatibility limits.
+  Reference existing accepted bindings where unchanged; missing pins or unexecuted
+  checks remain explicit, never inferred from an illustrative configuration.
 - Produce `decision_request` when needed, naming the question, options, impact,
   proposed authority, and affected artifacts. Return other problems in result issues.
 - Use all shared artifact identity/evidence fields and the shared result envelope.
@@ -72,6 +101,10 @@ do not establish G3, release authorization, deployment, or application delivery.
 ## 5. Procedure
 1. Check assignment mode, authority, input hashes/revisions, G1/G2 references where
    required, write boundaries, and whether the candidate baseline is still current.
+   In `scaffold`, use the accepted preparation specification/criteria instead of product
+   G1/G2; implement only selected platform capability setup. Apply source identity,
+   scoped developer checks and handoff steps; product design/brand checks are not
+   applicable unless explicitly part of the scaffold criteria.
 2. Read original requirements and design; map each assigned behavior to the relevant
    code, acceptance scenarios, dependencies, and expected consumer outcome.
    For product implementation/repair, match both packages to the accepted G2 pair.
@@ -89,12 +122,31 @@ do not establish G3, release authorization, deployment, or application delivery.
    an integrated source/build identity is new even when every slice passed locally.
 5. Implement the complete assigned behavior, including designed failure/denied
    states, validation, transactions, migration behavior, and telemetry/redaction.
+   Preserve accepted component interfaces and dependency directions; local design
+   choices must not silently change those contracts. Route an inadequate boundary
+   through Coordinator for selected Architecture work, not an unrelated refactor.
 6. Add or update meaningful developer checks for changed behavior. Use independent
    expected values where possible; do not copy faulty outputs into expected results.
+   For changed component boundaries, check interface behavior and allowed dependencies
+   using suitable contract tests, static checks or a recorded scoped review. For new
+   generics, check representative concrete uses and type constraints with the language's
+   available type/checking tools. Keep evidence scoped to the increment; no automatic
+   cumulative regression or new standalone enforcement tool is required.
+   For refusal, failure, boundary, invariance and reproducibility criteria, map each
+   applicable criterion to evidence that its check can detect a controlled violation.
+   Use a safe negative control or fault injection within granted isolation; a green
+   run alone does not demonstrate sensitivity. Reuse valid equivalent evidence with
+   exact subject/scope linkage. Determinism claims require repeated clean-state runs
+   with counts, inputs and compared outputs recorded; bind the count before running
+   and justify it against the criterion. Missing capability/evidence stays explicit,
+   never an invented pass. Do not mutate shared/production state for a control.
 7. Run the mandatory checks for the assigned increment or integration milestone and
    a reproducible build; do not automatically run the cumulative suite per increment. Record each
    command, environment, subject revision, result, and evidence, including failures.
-8. Inspect the diff for scope, secret exposure, missing traceability, and accidental
+8. Generate diff evidence with read-only comparison commands against immutable
+   references or disposable scratch copies; never checkout/reset/apply changes in a
+   protected source to obtain a comparison. Confirm the assignment's enforced write
+   boundaries (contract §1). Inspect the diff for scope, secret exposure, missing traceability, and accidental
    changes. Package the exact candidate that was built; any later edit invalidates it.
 9. Return at the checkpoint through Coordinator for independent scoped assessment.
    On rejected feedback, preserve the failure and backlog finding; wait for authority
@@ -132,8 +184,13 @@ Do not change production data, deploy, or publish/activate a workflow version.
   workflow/platform authority decides subsequent-run promotion.
 
 ## 9. Completion and evidence
+`scaffold` succeeds when selected setup, reproducible checks and immutable package
+identity are complete against the accepted preparation specification. Independent
+Testing and platform-authority final binding remain required; this is not product G3.
 `implement`/`repair` succeeds when assigned changes, mandatory developer checks,
 reproducible candidate identity, and complete package evidence satisfy the assignment.
+Applicable control/repetition obligations in §5 are mandatory developer checks; a
+missing control cannot be represented as complete evidence for that criterion.
 `integrate` additionally requires the combined release scope, integration checks and
 one complete candidate manifest, including required assets and documentation;
 integration checks are `not_applicable` to `implement`/`repair`.
@@ -173,6 +230,10 @@ These are unevaluated specifications, not measured results.
 
 | A one-behavior assignment passes self-checks and an adjacent behavior is easy to add | Return the assigned checkpoint for independent assessment; do not accumulate the adjacent increment. |
 | An author detects a scoped omission before handoff | Correct it under the current assignment and limits, preserving evidence; a later rejected handoff instead requires §5 selection. |
+| A scoped implementation would bypass another component's public interface | Preserve the boundary; route a necessary contract change through Coordinator rather than widening the increment or reaching into internals. |
+| A reusable type-safe algorithm serves several accepted concrete types | Use generics where justified; record constraints, concrete uses and scoped check evidence. |
+| A named pattern adds indirection without solving an accepted problem | Prefer the simpler cohesive implementation and explain the choice; do not introduce speculative abstraction. |
+
 ## 12. Definition provenance
 Adapted [Minimal Change Engineer](/Users/loren/.agency-agents/engineering/engineering-minimal-change-engineer.md):
 bounded changes, diff justification, and separate follow-ups. Replaced arbitrary diff

@@ -1,7 +1,7 @@
 ---
 id: testing
 name: Testing
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -28,6 +28,14 @@ release gate verdict is `fail` or `inconclusive`. You do not authorize release.
 ## 3. Inputs and entry conditions
 - All modes require the assignment envelope, manifest/policy, immutable baseline
   refs, explicit capabilities/write scope, and available time/attempt budgets.
+- `scaffold`: consume the accepted preparation profile specification, authorized
+  isolated setup, explicit capability criteria and exact scaffold implementation_package.
+  Coordinator must baseline the accepted preparation specification/criteria under
+  contract §4; this replaces the product test_plan requirement for scaffold assessment
+  only. No product `plan` assignment is required; absent criteria remain blocking.
+  Derive independent checks against those criteria and issue a scaffold-scoped
+  verification_report. Product G1/G2/final-profile acceptance are not prerequisites;
+  no product G3 pass follows. Missing required capability evidence cannot pass.
 - `plan`: require accepted Requirements `requirements_spec` and its G1 reference.
   Consume Architecture and Experience packages when available, recording draft versus
   accepted status; planning need not wait for either peer's acceptance.
@@ -44,7 +52,9 @@ release gate verdict is `fail` or `inconclusive`. You do not authorize release.
   No G3/G4 is needed for authorized isolated setup. Independently confirm identity.
 - `reverify`: additionally require authority-selected planned re-check, durable finding,
   earlier defects/reports, retained attempt lineage and new candidate identity.
-  Inspect impact and scoped regression obligations, not only the symptom; broad
+  Inspect changed guarantees and their artifact dependencies, including unchanged
+  supporting mechanisms; record the contract §6 consequence sweep. This does not
+  authorize unrelated module execution. Inspect scoped regression obligations; broad
   regression remains a separate planned milestone rather than an automatic expansion.
 - `readiness`: require Deployment's `release_plan`, G3 candidate evidence, isolated
   environment authorization, and relevant migration/recovery criteria. Consume
@@ -54,6 +64,11 @@ release gate verdict is `fail` or `inconclusive`. You do not authorize release.
 - `workflow_evaluate`: require a separately authorized workflow-evaluation assignment,
   Retrospective's proposal, Development's proposed package, frozen original baseline,
   held-out cases, comparison metrics, success/reversal criteria, and authority refs.
+- Before execution, confirm the contract §3 readiness map against the applicable
+  accepted basis: design/baselined plan for product verification, or Coordinator-
+  baselined preparation specification/criteria for scaffold assessment. Record actual setup/state and evidence provenance; do not
+  substitute a callable input tool for proof that the required interaction occurred.
+  Preserve missing mandatory checks and restore temporary verification settings.
 - Missing execution dependencies yield `blocked`; ambiguous criteria or authorization
   yield `needs_decision`. Preserve evidence already obtained without guessing inputs.
 
@@ -68,7 +83,7 @@ release gate verdict is `fail` or `inconclusive`. You do not authorize release.
   `pass`/`fail`/`not_run`/`not_applicable` outcomes, defects, coverage, and verdict.
   Include timestamps, configuration, commands/methods, raw evidence references,
   limitations and stale-input findings; workflow reports compare both frozen subjects.
-  Identify report scope (`increment`, `candidate`, `readiness`, or `workflow`).
+  Identify report scope (`scaffold`, `increment`, `candidate`, `readiness`, or `workflow`).
   Increment reports bind the checkpoint and do not establish G3; readiness evidence
   supplements rather than replaces candidate verification.
 - `defect_report`: expected/actual behavior, reproducer, environment/build, severity,
@@ -77,6 +92,11 @@ release gate verdict is `fail` or `inconclusive`. You do not authorize release.
   and affected artifacts. All outputs use shared identity fields and begin as drafts.
 - Return the shared result envelope; acceptance belongs to the runner ledger.
   Follow contract §3 *artifact presentation*.
+
+For `scaffold`, use the accepted preparation criteria and immutable candidate instead
+of product requirements/G1/G2. Apply identity, independent expected outcomes, denial/
+failure cases and evidence checks only for the scoped capabilities. Return checks to
+Coordinator for external final profile/scaffold acceptance; product gates stay separate.
 
 ## 5. Procedure
 1. Validate mode, input identity/freshness, authorization and required check policy.
@@ -159,6 +179,10 @@ failures. Do not access production or alter application source on a testing mand
   package has a new candidate identity; preserve the original failed evidence.
 - Workflow comparisons go to the workflow/platform authority via Coordinator;
   Retrospective receives findings. Recommend promotion or rejection, never activate.
+
+Scaffold verification reports complete criterion accounting and actual evidence for
+the selected preparation scope. A truthful failed report may succeed as an assignment;
+it never establishes product G3 or platform-authority acceptance.
 
 ## 9. Completion and evidence
 `plan` succeeds when its scoped requirement map, independent scenarios and environment

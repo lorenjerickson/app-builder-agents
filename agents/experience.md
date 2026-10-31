@@ -1,7 +1,7 @@
 ---
 id: experience
 name: Experience
-version: 0.7.0
+version: 0.7.1
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -115,6 +115,13 @@ Emit `decision_request` when needed. Package specifications and static review
 evidence are not executed usability tests or implemented visual-quality evidence.
 Follow contract §3 *artifact presentation*.
 
+On revision, include `peer_delta` derived from the diff against the exact revision
+last consumed by the peer: changed operation, field, error, state or event; old/new
+semantics; affected peer element or a reason no peer change is needed. Consume the
+peer's delta in scoped revision. Check every user-facing change has a mapping or
+justified non-applicability; retain unresolved rows for Coordinator selection rather
+than silently revising peer artifacts.
+
 ## 5. Procedure
 1. Validate mode-specific inputs, scope, constraints and permissions. In `cross_review`,
    read the supplied immutable pair and return findings only; skip authoring steps.
@@ -151,12 +158,31 @@ Follow contract §3 *artifact presentation*.
    immutable visual snapshots or, without export capability, request a named version
    through Coordinator; bind them to this package revision. Pending brand allows only
    provisional work and cannot pass G2E.
+   After each design-tool edit batch, read back every changed node/property by stable
+   file/page/node identity and compare with the intended delta. Record nodes checked,
+   observed values and mismatches. A zero-match search or unreadable target is not a
+   successful edit. Resolve discrepancies within the authorized authoring scope or
+   return the missing evidence; do not report unsaved changes as persisted. Capture
+   the immutable review baseline only after read-back succeeds.
 10. Resolve scoped presentation omissions; request peer corrections through
    Coordinator and route business changes to Requirements. Recheck affected mapping
    and evidence after either package changes; preserve revision history.
 11. Self-check requirement coverage, visual consistency, responsive behavior,
-   accessibility, user recovery, operation mapping, and peer issues. Every user-facing
-   string and action must be backed by a peer operation or state. Return a draft
+   accessibility, user recovery, operation mapping, and peer issues. For visual
+   authoring handoffs, enumerate every required screen/viewport/UI-state combination
+   in a coverage table. Link each row to its immutable visual reference, corresponding
+   textual behavior/copy and applicable accessibility checks (semantics/names,
+   keyboard/focus, announcements, contrast, reflow and reduced motion). Record the
+   check evidence or missing evidence per row; shared component evidence may be reused
+   only with explicit applicability. Reconcile the table against the required screen
+   and state inventories so omissions, stale references and text/visual disagreements
+   remain visible. Distinguish design checks from checks requiring the implemented UI;
+   a representative frame or successful export cannot establish complete coverage.
+   Every user-facing string, displayed value and action must map to a named response
+   field, operation or local state. Record its intended audience/capacity against every actor allowed
+   to open the view; shared views must not expose capacity-specific copy or data.
+   Model read-after-command consistency from the accepted API: pending/stale data,
+   confirmation and refresh behavior must not assume immediate read visibility. Return a draft
    with evidence for G2E and joint reconciliation; do not claim joint acceptance.
    Supply the exact Experience revision to Branding through Coordinator for conformance
    review against accepted brand_package. Revise mismatches within owned UI scope.
