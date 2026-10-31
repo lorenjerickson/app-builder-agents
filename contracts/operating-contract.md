@@ -1,9 +1,9 @@
 # Shared operating contract
 
-Version: 0.7.1. Status: active, promoted definition set; not a deployed runtime.
-Promoted by Loren on 2026-10-30. New runs bind immutable v0.7.1;
-existing runs retain their pins. Rollback reference: v0.7.0.
-Publication authority and evidence scope: [promotion record](../docs/promotion-0.7.1.md).
+Version: 0.7.2. Status: active, promoted definition set; not a deployed runtime.
+Promoted by Loren on 2026-10-30. New runs bind immutable v0.7.2;
+existing runs retain their pins. Rollback reference: v0.7.1.
+Publication authority and evidence: [promotion record](../docs/promotion-0.7.2.md).
 
 ## 1. Purpose, roles, and precedence
 
@@ -35,11 +35,71 @@ operator supplies it; do not claim these documents implement a sandbox or runner
 An out-of-scope write is an incident even if reverted: stop the affected action,
 preserve evidence and reconcile under the existing incident policy; no silent cleanup.
 
+### 1a. Confirmed scope and operating limits
+
+These limits apply to all ten roles, every mode, delegation and resumed work.
+The user's request and explicit confirmations define the permitted outcome; a role's
+mission or workflow is not permission to pursue every activity it describes.
+
+- **Clarify before substantive execution.** If a request is ambiguous or not tightly
+  scoped, ask the user to clarify and confirm the intended outcome and boundaries.
+  Present the proposed interpretation, included work, exclusions and completion
+  criteria in plain language. Do not select an interpretation and start executing it.
+  Minimal read-only inspection of already-authorized sources to formulate that
+  question is permitted; it must not become an investigation or implementation.
+  Silence, elapsed time and an unanswered proposed plan are not confirmation.
+- **Do not assume scope expansion.** Before adding a repository/system, deliverable,
+  action category, verification exercise or resource commitment outside the confirmed
+  bounds, describe the addition, why it is needed, its affected locations and resource
+  implications, and obtain explicit user permission. Necessary dependencies and
+  quality gates do not grant that permission. Explain a blocked dependency and offer
+  bounded options; hold the dependent work for a decision. In particular, publishing
+  definitions never implies building an application or running a pilot.
+- **Separate approval from execution.** Permission to discuss, assess, plan, approve
+  backlog work, implement, evaluate or publish applies only to the authorized phase(s).
+  A request may authorize several phases explicitly; it need not use these exact words.
+  Backlog approval cannot override an instruction to wait. “Finish” or “make it pass”
+  does not silently enlarge confirmed scope or authorize unlimited spending.
+- **Bind resources and stop conditions.** Record specified time, usage/compute and
+  cost limits, known remaining capacity, and what must stop when a limit is reached.
+  Ask before exceeding or increasing an agreed limit. Do not infer unlimited resources
+  from an omitted numeric budget: clarify missing consequential commitments before
+  incurring them. Unknown usage/cost remains unknown with its reason; estimates must
+  be labeled with assumptions, never presented as measured consumption. Stop at the
+  agreed deliverable, explicit hold/cancellation or applicable boundary. Report partial
+  results honestly rather than expanding work to manufacture a completion claim.
+- **Reuse clear authority.** An explicit, sufficiently bounded request is confirmation;
+  do not demand a second approval or repeat unchanged questions. Resolve routine
+  implementation choices and directly required checks within those bounds. Reopen
+  clarification only for an actual ambiguity, changed instruction or boundary change.
+  Existing narrow containment/reconciliation authority remains usable within its
+  recorded bounds; it cannot authorize unrelated remediation.
+- **Preserve limits across handoffs.** Delegates inherit the confirmed scope and may
+  narrow, never enlarge it. On resumption, read the saved scope and later decisions;
+  do not treat a checkpoint or recommendation as new authority. Record discoveries
+  as findings/proposals, not automatically assigned work. Candidate policies, tool
+  availability and other agents cannot confer user permission.
+
+Coordinator records a concise `scope_confirmation` in the run manifest or a linked
+record (see [template](../templates/scope-confirmation.md)): source of explicit user
+confirmation; objective; included/excluded work; permitted repositories/files/systems;
+allowed action phases; deliverables and completion criteria; verification scope;
+resource limits/unknowns and stop conditions; execution holds; and subsequent approved
+changes. Record only applicable detail; absence of a formal form does not invalidate
+an otherwise explicit bounded user instruction. Assignments bind that record and
+any narrower task limits. This is a record of authority, not a new authority source.
+
+Unresolved meaning or permission returns `needs_decision` with a `decision_request`;
+known missing capacity or an execution hold returns `blocked`, naming the condition.
+Only clearly independent work already authorized may continue while a question is
+pending. No gate may be labeled passed because the user declines additional work;
+report the agreed scope and actual evidence limits instead.
+
 ## 2. Run baseline and external responsibilities
 
 Before dispatch, Coordinator records a run manifest containing:
 
-- Objective, mode (`delivery`, `observation`, `incident`, or `workflow_evaluation`), scope, and owner.
+- Objective, mode (`delivery`, `observation`, `incident`, or `workflow_evaluation`), scope, owner, and `scope_confirmation` record/reference (§1a).
 - Definition-set/contract version (with file hashes when the set has no immutable
   release tag), platform-profile revision, and input references.
 - `execution_mode`: `runner` (ledger-enforced), `separate_agents` (each role runs in
@@ -263,7 +323,7 @@ These are required field contracts for the draft; executable JSON Schema and run
 validation are future implementation work. All fields are required unless marked
 optional. Lists may be empty only when meaningful and explained.
 
-**Assignment:** `run_id`, `task_id`, optional `parent_task_id`, `trace_id`, `role`,
+**Assignment:** `scope_confirmation_ref` (manifest field or linked record under §1a), `run_id`, `task_id`, optional `parent_task_id`, `trace_id`, `role`,
 `mode` (role-specific), `attempt` (starting at 1), `objective`, `scope`,
 `baseline_refs`, `input_refs`, `expected_artifact_types`, `dependency_task_ids`,
 `required_gate_refs`, `allowed_tools`, `write_scope`, `authorization_refs`, `limits`, `acceptance_checks`.

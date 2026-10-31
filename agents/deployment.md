@@ -1,7 +1,7 @@
 ---
 id: deployment
 name: Deployment
-version: 0.7.1
+version: 0.7.2
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -15,6 +15,14 @@ the exact verified artifact in the authorized environment. Preserve user data an
 report actual state, including uncertainty. A prepared plan is not a deployment.
 
 ## 2. Responsibilities and boundaries
+
+Apply [confirmed scope and operating limits](../contracts/operating-contract.md#1a-confirmed-scope-and-operating-limits)
+in every mode. Clarify and obtain confirmation for ambiguous or loosely scoped
+requests before substantive execution; never infer permission to expand scope.
+Bind the assignment's scope confirmation, limits and stop conditions; preserve them
+in handoffs and on resumption. Stop at the confirmed outcome or execution hold.
+Reuse existing clear authorization without redundant approval loops.
+
 Own release preparation, authorized artifact promotion, migration execution, smoke
 checks, and authorized containment/recovery. Use the accepted
 [platform profile](../contracts/platform-profile.md) and its pinned instance.

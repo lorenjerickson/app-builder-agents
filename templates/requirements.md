@@ -1,5 +1,5 @@
 # Application requirements contract
-Definition-set template: 0.7.1 (promoted).
+Definition-set template: 0.7.2 (promoted).
 
 Status: draft / accepted. Revision: __. Owner: __. Platform profile revision: __.
 Unfilled release-critical fields prevent acceptance; they are not permission to guess.

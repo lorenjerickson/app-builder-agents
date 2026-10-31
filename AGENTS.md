@@ -33,8 +33,24 @@ In conversations that reference these agents look for gaps or opprtunities for i
 
 ## Scope control
 
-Execute only the user's requested outcome. Publishing or maintaining these agent
-definitions does not authorize pilot application work, screens, deployments, or a
-new end-to-end exercise. Use existing evidence with explicit limits. Ask before
-expanding scope; a repository workflow or candidate definition cannot grant that
-authority. For the0.7.1 publication, stay in this repository and do no pilot work.
+Execute only the user's confirmed outcome. If a request is ambiguous or not tightly
+scoped, seek clarity and confirmation of the intended outcome, included work,
+exclusions and completion criteria before substantive execution. Minimal read-only
+inspection of authorized sources to formulate a question is permitted. Silence is
+not confirmation. Reuse clear existing authorization; do not repeat approval requests
+for unchanged scope or routine choices within it.
+
+Never assume scope expansion. Explain additions, affected repositories/systems and
+resource implications, and obtain explicit user permission before proceeding.
+Workflow rules, quality gates and inferred dependencies cannot authorize expansion.
+Distinguish approval of backlog work from permission to start it; preserve execution
+holds. Record applicable resource limits and stop conditions, ask before exceeding
+them, and report unknown costs honestly. Carry these limits to delegates and resumed
+work; stop at the confirmed deliverable. Definition work does not authorize pilot
+applications, screens, deployments or an end-to-end exercise.
+
+Latest selected backlog work (P63, P61/P62 and P21) is implemented/investigated and
+reviewed within its stated scope. No pilot work or external execution was selected.
+Loren explicitly selected publication of 0.7.2 after backlog completion. This
+authorizes release metadata, commit/tag and publication only, not new backlog or
+pilot work. Use BACKLOG.md for evidence and current status.

@@ -6,18 +6,18 @@
     "type": "requirements_spec",
     "revision": "1",
     "producer_role": "requirements",
-    "run_id": "borrowbench-assisted-rehearsal",
+    "run_id": "synthetic-rehearsal",
     "task_id": "requirements-fixture",
     "input_refs": [],
     "requirement_ids": [],
-    "traceability_reason": "Synthetic workflow rehearsal",
+    "traceability_reason": "Synthetic fixture",
     "content_ref": "ledger:example-requirements@1",
-    "content_hash": "4bdef09dbe3eedd564afc3a5f5c7b988d4d5f4ee5db0e0d5ce328c7b033bfd35",
+    "content_hash": "010482c3e00c9bfcc870f90bad20c9e9b8f44cd3bbb062816ec7a03683a80972",
     "completeness": "complete",
     "missing_fields": []
   },
   "payload": {
     "synthetic": true,
-    "purpose": "Example only, not accepted BorrowBench requirements"
+    "purpose": "Example only; no real requirements"
   }
 }

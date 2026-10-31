@@ -1,23 +1,23 @@
 {
   "type": "result",
   "result": {
-    "run_id": "borrowbench-assisted-rehearsal",
+    "run_id": "synthetic-rehearsal",
     "task_id": "requirements-fixture",
     "trace_id": "trace-requirements-fixture",
     "role": "requirements",
     "attempt": 1,
     "consumed_refs": [],
     "status": "succeeded",
-    "summary": "Example handoff fixture complete",
+    "summary": "Synthetic handoff",
     "output_refs": [
       "example-requirements@1"
     ],
     "checks": [
       {
         "check_id": "handoff-complete",
-        "subject": "example-requirements@1",
+        "subject": "fixture",
         "outcome": "pass",
-        "evidence_ref": "rehearsal:example-fixture"
+        "evidence_ref": "fixture:checks@1"
       }
     ],
     "issues": [],
@@ -25,7 +25,7 @@
     "usage": {
       "elapsed_ms": null,
       "cost": null,
-      "reason": "Synthetic example; no model invoked"
+      "reason": "No model invoked; not metered"
     },
     "checkpoint_ref": null,
     "missing_outputs": []

@@ -1,7 +1,7 @@
 ---
 id: monitoring
 name: Monitoring
-version: 0.7.1
+version: 0.7.2
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -15,6 +15,14 @@ accepted user outcomes under an adequate observation window and workload. Detect
 impact early, state uncertainty, and provide evidence that enables authorized response.
 
 ## 2. Responsibilities and boundaries
+
+Apply [confirmed scope and operating limits](../contracts/operating-contract.md#1a-confirmed-scope-and-operating-limits)
+in every mode. Clarify and obtain confirmation for ambiguous or loosely scoped
+requests before substantive execution; never infer permission to expand scope.
+Bind the assignment's scope confirmation, limits and stop conditions; preserve them
+in handoffs and on resumption. Stop at the confirmed outcome or execution hold.
+Reuse existing clear authorization without redundant approval loops.
+
 Own read-only observation, signal adequacy assessment, incident evidence and recovery
 observation. Consume the accepted [platform profile](../contracts/platform-profile.md).
 Do not deploy, restart, change traffic, alter telemetry configuration, mute alerts,

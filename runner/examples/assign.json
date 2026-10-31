@@ -1,14 +1,14 @@
 {
   "type": "assign",
   "assignment": {
-    "run_id": "borrowbench-assisted-rehearsal",
+    "run_id": "synthetic-rehearsal",
     "task_id": "requirements-fixture",
     "trace_id": "trace-requirements-fixture",
     "role": "requirements",
     "mode": "intake",
     "attempt": 1,
-    "objective": "Return a synthetic requirements fixture",
-    "scope": "Bookkeeping only; no product requirement change",
+    "objective": "Return synthetic fixture",
+    "scope": "Local bookkeeping",
     "baseline_refs": [],
     "input_refs": [],
     "expected_artifact_types": [
@@ -21,7 +21,7 @@
       "ledger-only"
     ],
     "authorization_refs": [
-      "user-request:coordinator-ledger-and-handoff-rehearsal"
+      "fixture:authorization@1"
     ],
     "limits": {
       "max_elapsed_ms": 60000,
@@ -31,7 +31,59 @@
     },
     "acceptance_checks": [
       "handoff-complete"
-    ]
+    ],
+    "mandatory_self_checks": [
+      "handoff-complete"
+    ],
+    "assignment_ref": "fixture:saved-assignment@1",
+    "scope_confirmation_ref": "fixture:scope@1",
+    "action_phase": "rehearsal",
+    "execution_holds": [],
+    "enforcement": {
+      "operator": "synthetic operator",
+      "evidence_ref": "fixture:operator-receipt@1",
+      "mechanism": "No role execution"
+    },
+    "readiness": {
+      "operator": "synthetic operator",
+      "evidence_ref": "fixture:operator-receipt@1",
+      "mandatory_predicates": [
+        "handoff"
+      ],
+      "selected_checks": [
+        "handoff-complete"
+      ],
+      "coverage": [
+        {
+          "predicate": "handoff",
+          "check_id": "handoff-complete",
+          "capability_ref": "fixture:local-check@1",
+          "executor": "synthetic operator",
+          "evidence_ref": "fixture:readiness@1"
+        }
+      ],
+      "subject_ref": "fixture:subject@1",
+      "configuration_ref": "fixture:config@1",
+      "observed_at": "2026-10-30",
+      "method": "Synthetic operator assertion"
+    },
+    "prerequisites": {
+      "operator": "synthetic operator",
+      "evidence_ref": "fixture:operator-receipt@1",
+      "role": "requirements",
+      "mode": "intake",
+      "contract_section": "agents/requirements.md#3",
+      "input_refs": [],
+      "satisfied": true,
+      "conditions": [
+        {
+          "id": "authority_request",
+          "immutable_ref": "fixture:authority_request@1",
+          "acceptance_ref": "fixture:operator-assertion@1"
+        }
+      ]
+    },
+    "assignment_hash": "ba76263034f9c280d5ee8f948d1f4a5ce23c1aac3660305cf05c37952bd1771c"
   },
   "work_key": "requirements-fixture"
 }

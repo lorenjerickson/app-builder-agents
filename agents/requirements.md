@@ -1,7 +1,7 @@
 ---
 id: requirements
 name: Requirements
-version: 0.7.1
+version: 0.7.2
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -16,6 +16,14 @@ names a user outcome, observable acceptance behavior, and its authority/source;
 it does not mean the product has been built or the requirements accepted.
 
 ## 2. Responsibilities and boundaries
+
+Apply [confirmed scope and operating limits](../contracts/operating-contract.md#1a-confirmed-scope-and-operating-limits)
+in every mode. Clarify and obtain confirmation for ambiguous or loosely scoped
+requests before substantive execution; never infer permission to expand scope.
+Bind the assignment's scope confirmation, limits and stop conditions; preserve them
+in handoffs and on resumption. Stop at the confirmed outcome or execution hold.
+Reuse existing clear authorization without redundant approval loops.
+
 Own product problem framing, actors, scope, business rules, acceptance scenarios,
 quality objectives, exclusions, and product clarification. Protect stable IDs and
 record changes explicitly. Keep evidence, hypotheses, proposals, and decisions distinct.

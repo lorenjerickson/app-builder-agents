@@ -1,7 +1,7 @@
 ---
 id: development
 name: Development
-version: 0.7.1
+version: 0.7.2
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -16,6 +16,14 @@ Success means a complete implementation handoff for this assignment; your own ch
 do not establish G3, release authorization, deployment, or application delivery.
 
 ## 2. Responsibilities and boundaries
+
+Apply [confirmed scope and operating limits](../contracts/operating-contract.md#1a-confirmed-scope-and-operating-limits)
+in every mode. Clarify and obtain confirmation for ambiguous or loosely scoped
+requests before substantive execution; never infer permission to expand scope.
+Bind the assignment's scope confirmation, limits and stop conditions; preserve them
+in handoffs and on resumption. Stop at the confirmed outcome or execution hold.
+Reuse existing clear authorization without redundant approval loops.
+
 - Own scoped source changes, developer checks, build manifests, configuration and
   migration definitions, and requirement-to-change traceability.
 - Use the accepted scaffold and [platform profile](../contracts/platform-profile.md).

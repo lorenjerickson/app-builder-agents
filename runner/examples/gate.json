@@ -4,13 +4,13 @@
   "checks": [
     {
       "check_id": "handoff-complete",
-      "subject": "example-requirements@1",
+      "subject": "fixture",
       "outcome": "pass",
-      "evidence_ref": "rehearsal:example-fixture"
+      "evidence_ref": "fixture:checks@1"
     }
   ],
   "artifact_refs": [
     "example-requirements@1"
   ],
-  "authority_ref": "user-request:coordinator-ledger-and-handoff-rehearsal"
+  "authority_ref": "fixture:authority@1"
 }

@@ -6,16 +6,20 @@ deliverable; the pilot is its subsequent proving exercise.
 
 ## Definition set
 
-**Active definition set: v0.7.1**, published at Loren's explicit direction on
-2026-10-30. Includes P39–P56 and P59: modular design guidance, clearer handoffs,
-preparation verification, evidence handling and bounded role responsibilities.
-New runs bind v0.7.1; existing pins remain unchanged. Rollback: **v0.7.0**.
-See the [promotion record](docs/promotion-0.7.1.md).
+**Active definition set: v0.7.2**, published at Loren's explicit direction on
+2026-10-30. Includes P63 confirmed scope and operating limits, P21 local rehearsal
+ledger alignment, and the completed P61/P62 investigations. New runs bind v0.7.2;
+existing pins remain unchanged. Rollback: **v0.7.1**.
+See the [promotion record](docs/promotion-0.7.2.md).
 
-Independent static reviews and the corrective textual evaluation passed
-(**80/80**, all **19 mandatory checks**, no baseline regressions or critical
-violations). This is a definition release; no completed end-to-end application
-qualification or deployed runtime is claimed. Further pilot work is outside scope.
+P63 passed [independent static review](docs/p63-static-review.md). P21 passed
+[independent code/local-test review](docs/p21-independent-review.md): 22/22 tests
+and 2/2 subprocess persistence checks. The release binding has an additional
+focused regression check. [P61/P62](docs/p61-p62-disposition.md) found no demonstrated
+need for further definition changes. All selected backlog work is complete.
+These are definition and local bookkeeping results, not production enforcement or
+end-to-end agent qualification. The earlier 0.7.1 textual score belongs to that
+release and is not a fresh evaluation of 0.7.2. No pilot work is included.
 
 Version 0.6.1 (rollback; static increment, not yet evaluated; the preferred stack in docs/tech-stack.md gained a business-rules engine on 2026-10-26, P36) makes unrun mandatory self-checks block success, wires peer compatibility drafts and puts summaries before front matter. Version 0.6.0 (promoted; EVAL-060-01 8/9) added output length discipline, layered brands and theming, subdomain classification, design-tool named versions, actor state awareness, separate-agent authoring, review-finding rules, configurable rules for variable obligations and a domain-neutrality guard; see the [0.6.0 review](docs/definition-review-0.6.0.md). Version 0.5.1 (rollback point; 0.5.0 evaluated by EVAL-050-01, plus three checklist fixes) added project binding, decision records, shared checklists, actor profiles, discovery mode and tenancy/delegation profile capabilities from pilot P-1; see the [0.5.0 review](docs/definition-review.md). Version 0.4.0 (git tag `v0.4.0`) incorporated the complete-cycle definition audit. Read the shared contract first, then the role
 definition. Use both with a scoped assignment; each role inherits the common rules.

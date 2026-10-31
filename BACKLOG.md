@@ -4,79 +4,113 @@ Updated: 2026-10-30.
 
 ## Current state
 
-Active definition set: **v0.7.1**, promoted for publication by Loren on
-2026-10-30. Rollback: **v0.7.0**. P39–P56 and P59 are completed definition work.
-Independent reviews and the corrective textual evaluation passed80/80,
-including19/19 mandatory checks, without regressions or critical violations.
-No completed end-to-end application qualification is claimed. Loren explicitly
-ended pilot work and directed publication of the definitions only.
-See [promotion record](docs/promotion-0.7.1.md).
+Active definition set: **v0.7.2**, promoted for publication by Loren on
+2026-10-30. Rollback: **v0.7.1**. All selected backlog work is complete:
+P63 definitions and static review, P61/P62 bounded investigations, and P21 local
+rehearsal ledger implementation and independent review. No approved, proposed or
+deferred items remain. See [promotion record](docs/promotion-0.7.2.md).
+
+Evidence: P63 static review passed; P21's 22/22 author/independent tests and
+2/2 subprocess persistence checks passed. Release verification adds the published
+0.7.2 binding regression. [P21 review](docs/p21-independent-review.md),
+[P63 review](docs/p63-static-review.md), [P61/P62 disposition](docs/p61-p62-disposition.md).
+No behavioral or end-to-end qualification of0.7.2 is claimed. No pilot work was
+performed for this release. Earlier scores remain attributed to their original versions.
 
 ## Prior qualification history — superseded scope
 
 The following records preserve earlier results and decisions. They do not
 authorize continued pilot work or block the explicitly selected definition release.
 
-### Current state
+### Release state before 0.7.1 publication
 
-- Active definition set: **0.7.0**, promoted by Loren on 2026-10-29 after independent static review and QUAL-070-01 qualification. P57/P58 are completed below. New runs bind v0.7.0; existing pins stay unchanged. Rollback: v0.6.1. See [promotion record](docs/promotion-0.7.0.md).
+- Then-active definition set: **0.7.0**, promoted by Loren on 2026-10-29 after independent static review and QUAL-070-01 qualification. P57/P58 are completed below. At that checkpoint, new runs bound v0.7.0; existing pins stayed unchanged. Rollback: v0.6.1. See [promotion record](docs/promotion-0.7.0.md).
 - 0.6.0 was promoted after a scoped second-domain evaluation ([EVAL-060-01: 8/9](docs/evaluations/EVAL-060-01/scorecard.md)); 0.5.0 has its earlier scoped comparison. These results do not establish full-cycle delivery effectiveness.
-- P36 (adopted rules engine/service) and P37/P38 (0.6.1 changes) are completed below. P57/P58 are implemented, evaluated and promoted below. P39–P56 are now **selected** for the prioritized definition work; P21 remains proposed runtime work. The earlier P45–P56 triage deferral was followed by Loren’s request to prioritize the remaining backlog on 2026-10-29; the recommended order is recorded below, and subsequently selected execution of that order. Local use of a proposed practice does not promote the generic definition change.
-- P57/P58 approved (2026-10-28): [decision sequence and terms](docs/backlog-triage-next.md). Candidate 0.7.0 is implemented and independently reviewed. Original [EVAL-070-01](docs/evaluations/EVAL-070-01/scorecard.md) remains inconclusive (78/80 versus 68/80; 31/32 guardrails), and the [investigation](docs/ef-070-investigation.md) found no demonstrated need for a definition repair. The selected [diagnostic](docs/evaluations/DIAG-070-01/scorecard.md) passed 16/16 on unchanged source. [QUAL-070-01](docs/evaluations/QUAL-070-01/scorecard.md) passed the held-out comparison (80/80 versus 77/80, no regressions or critical failures). Its selected continuation closed the native-input evidence gap with recorded human observations independently assessed by Testing. Actual recovery/readiness, same-artifact release, finite observation, refreshed retrospective and independent stop-only closeout are complete; G1–G7 pass. Final independent qualification assessment passed: **0.7.0 qualified**. Loren subsequently authorized promotion on 2026-10-29. Only activation metadata changes from the qualified definitions. This is a human-assisted local cycle, not evidence of production reliability or causal efficiency. P21 remains proposed and unimplemented; no autonomous runtime is claimed.
+- P36 (adopted rules engine/service) and P37/P38 (0.6.1 changes) are completed below. P57/P58 are implemented, evaluated and promoted below. P39–P56 were **selected** for the prioritized definition work; P21 was then proposed runtime work. The earlier P45–P56 triage deferral was followed by Loren’s request to prioritize the remaining backlog on 2026-10-29; the recommended order is recorded below, and subsequently selected execution of that order. Local use of a proposed practice does not promote the generic definition change.
+- P57/P58 approved (2026-10-28): [decision sequence and terms](docs/backlog-triage-next.md). Candidate 0.7.0 is implemented and independently reviewed. Original [EVAL-070-01](docs/evaluations/EVAL-070-01/scorecard.md) remains inconclusive (78/80 versus 68/80; 31/32 guardrails), and the [investigation](docs/ef-070-investigation.md) found no demonstrated need for a definition repair. The selected [diagnostic](docs/evaluations/DIAG-070-01/scorecard.md) passed 16/16 on unchanged source. [QUAL-070-01](docs/evaluations/QUAL-070-01/scorecard.md) passed the held-out comparison (80/80 versus 77/80, no regressions or critical failures). Its selected continuation closed the native-input evidence gap with recorded human observations independently assessed by Testing. Actual recovery/readiness, same-artifact release, finite observation, refreshed retrospective and independent stop-only closeout are complete; G1–G7 pass. Final independent qualification assessment passed: **0.7.0 qualified**. Loren subsequently authorized promotion on 2026-10-29. Only activation metadata changes from the qualified definitions. This is a human-assisted local cycle, not evidence of production reliability or causal efficiency. P21 was then proposed and unimplemented; no autonomous runtime was claimed.
 
-- Working-tree candidate increment: **0.7.1 / P59**, selected by Loren and expanded by the selected prioritized sequence to the role definitions, shared contracts, templates and platform examples. Candidate files are not active; new delivery runs still bind immutable v0.7.0 until separately promoted.
+- Then-working-tree candidate increment: **0.7.1 / P59**, selected by Loren and expanded by the selected prioritized sequence to the role definitions, shared contracts, templates and platform examples. Those files were not active at that checkpoint. They were subsequently promoted in v0.7.1 on 2026-10-30.
 
-### Recommended priorities — 2026-10-29
+### Historical priority sequence — selected 2026-10-29, completed in 0.7.1
 
-Loren requested reprioritization after the P59 agent updates. P59 static review passed; focused evaluation passed 32/32 for both baseline and candidate, no regressions or demonstrated improvement. The remaining selected definition increments are implemented. Broader textual comparison passed76/80 versus71/80 without regressions. Selected P43 repair passed static re-check but failed fresh behavioral re-check7/8; candidate is not qualified. Remaining proposed order:
+Loren requested reprioritization after the P59 agent updates. P59 static review passed; focused evaluation passed 32/32 for both baseline and candidate, no regressions or demonstrated improvement. The remaining selected definition increments are implemented. Broader textual comparison passed76/80 versus71/80 without regressions. Selected P43 repair passed static re-check but failed fresh behavioral re-check7/8; the candidate had not qualified at that checkpoint. The proposed order was:
 **P55 → P51 → P42/P47 → P56 → P39 → P46/P53 → P52 → P48/P50 → P45/P49 → P54/P44 → P43/P41/P40**.
 P21 remains a separate runtime decision. Loren selected this definition sequence on 2026-10-29; P21 remains outside scope. [Rationale, scope, effort and conditional dependencies](docs/backlog-priorities-0.7.0.md).
-The two qualification investigations join the relevant triage: coverage interpretation
+The two unselected qualification investigations were associated with the relevant triage: coverage interpretation
 with P55, allowed-mode validation with P42/P47. EF-071-03 investigation complete: original failure supported, existing rule sufficient; the selected unchanged-candidate diagnostic is complete (all status distinctions correct;15/16 overall per format, same evidence-detail omission); the listed definition increments are already implemented.
 
-### Remaining qualification work — 0.7.1
+### Historical qualification checkpoints — superseded by publication decision
 
-Current direction (2026-10-30): Loren explicitly authorized completing0.7.1 without circular re-selection stops and rejected use of candidate guidance as governance for engineering itself. External software-architecture/testing guidance governs implementation/review; candidate roles remain evaluation subjects. Necessary definition/harness changes, qualification execution and budget continuation are selected. Acceptance thresholds remain unchanged; no pass without measured evidence. Current work: transparent evaluator-context deduplication, supported output-completeness reinforcement, fresh paired qualification and actual isolated full-cycle execution. Earlier entries below are historical checkpoints, not current authorization blockers. Current textual result: independently verified80/80 (40target,40guardrail),19/19mandatory,zero baseline regressions and zero critical violations; baseline75/80. This is incremental post-feedback evaluation with mechanically selected dependency closure, not fresh held-out evidence. Current source and exact response provenance are bound in the delivery evidence. Actual Architecture and Requirements outputs exist; Loren authorized sending qualification workflow records and generated synthetic artifacts to OpenAI on2026-10-30, resolving the prior payload-consent boundary. Credentials and real customer data remain excluded. End-to-end execution and final assessment are continuing. Fresh initialization, preparation-profile acceptance, G1 requirements, G2B branding and test-plan baseline acceptance are complete. The actual scaffold builds and its current six tests, type checks and boundary check pass; container preparation verification continues. All32 wireframes and32 branded state/viewport designs exist, with actual property readbacks; visual and interaction findings are being addressed before design acceptance. Full qualification and promotion are not claimed. See the current [scorecard](docs/evaluations/QUAL-071-01/scorecard.md).
+Checkpoint recorded before the scope correction (2026-10-30): the assistant
+interpreted the completion request as including definition/harness changes and
+full-cycle execution. Loren subsequently rejected that expanded scope, stopped
+pilot work and directed publication of the definitions only. This checkpoint is
+history, not continuing authority.
 
-Status assessed 2026-10-30. Implementation and static review (including selected P43
+The corrective textual evaluation reached independently verified 80/80
+(40 target, 40 guardrail), 19/19 mandatory checks, zero baseline regressions and
+zero critical violations; baseline 75/80. This was incremental post-feedback
+evidence, not a fresh held-out trial. External engineering guidance governed
+maintenance; candidate policies were evaluation subjects. Recorded transmission
+consent excluded credentials and real customer data.
+
+At that checkpoint, initialization, preparation-profile acceptance, G1 requirements,
+G2B branding and the test-plan baseline were recorded as complete. The scaffold
+build, six tests, type checks and boundary check passed. The record described
+32 wireframes and 32 branded state/viewport views with property readbacks, while
+container verification and design findings were still being addressed. These are
+historical partial results, not a completed end-to-end qualification. That work is
+stopped; no further pilot activity is assigned. Publication is complete under the
+explicit decision linked above. See the [scorecard](docs/evaluations/QUAL-071-01/scorecard.md).
+
+
+Earlier assessment recorded on 2026-10-30 (before the final textual result): Implementation and static review (including selected P43
 repair) are complete. P59 focused comparison and the original broader comparison
 passed their frozen thresholds. The broad comparison predates the two-file P43 repair;
 its results must not be relabeled as a final repaired-candidate pass. Original narrow
 7/8 and diagnostic15/16 failures remain; all diagnostic status distinctions passed.
 
-1. **Disposition complete (2026-10-29):** EF-071-01/02 structural closures retained; EF-071-03/04 require fresh mandatory evidence under existing rules. No further definition repair is justified by current evidence. Earlier failed scores remain unchanged.
+1. **Disposition complete (2026-10-29):** EF-071-01/02 structural closures retained; EF-071-03/04 were referred for fresh mandatory evidence under the then-selected qualification scope. No further definition repair is justified by current evidence. Earlier failed scores remain unchanged.
 2. **Frozen plan and harness preparation complete (2026-10-30):** [qualification plan](docs/qualification-plan-0.7.1.md) remains unchanged apart from the previously selected Q01/provenance overlays. Their rejected attempts and failed preflight are retained. QP-071-01 and QUAL071-INTEGRITY-01 are resolved for the effective packet. Loren selected harness capability resolution. Independent review passed the verified tool-free, clean-context textual transport and custom per-role filesystem isolation primitive. Native transient HTTP retries are not claimed disabled; no semantic case reruns occurred. Full-cycle role bindings remain stage-specific.
-3. **Qualification comparison executed; candidate failed its textual prerequisite:** all40 fresh responses completed without timeouts, maximum86.9sec; independent evaluator scored B then A. Reported candidate28/40target +40/40guardrail =68/80, baseline20/40 +38/40 =58/80; no reported regressions or candidate critical violations. Candidate passes14/19mandatory checks. Required>=36/40target and all mandatory predicates are unmet. **QUAL071-BEHAVIOR-01:** mandatory omissions/status failures concern compatible Node LTS, Node-based probes, preparation-criteria ownership, readiness on complete authorized inputs, and saved hashed assignment/revision bookkeeping. **QUAL071-EVIDENCE-01:** non-verbatim quotations in one judgment per version are retained; reported positive scores are not fully evidence-validated. All12failed candidate target judgments have matching quotes and consistent clause verdicts, so citation correction cannot remove the demonstrated target shortfall. Owner: Coordinator/Testing, with affected role owners after disposition. Disposition selected and completed2026-10-30: two Node omissions are substantive under existing rules; Architecture routing is stricter in the rubric than the shared authority-supply alternative; readiness/persistence judgments are confounded by missing evaluator instructions and scenario/exercise scope. Coordinator per-package planning completeness also needs attention. Both evaluator packets omitted the subjects' hypothetical/no-tools instructions. Citation defects are evaluator paraphrase/formatting, not new subject behavior. Next recommended selection: prospective evaluation-packet/mode clarification and deterministic citation extraction/errata, then independent preflight; optional role checklist hardening must be explicitly selected. Do not change real blocked semantics or force Architecture authorship. No repair, score change or rerun performed. Five hypothetical fixes alone yield33/40target<36; seven other reported target failures need disposition. [Detailed disposition](docs/qualification-disposition-0.7.1.md). [Scorecard](docs/evaluations/QUAL-071-01/scorecard.md).
-4. **Full-cycle dispatch withheld:** actual all-ten-role profile/scaffold, verification, release/recovery/observation and closeout remain unexecuted. No application services started. The comparison cannot replace this requirement, and its failed prerequisite cannot be waived.
-5. Independent final qualification assessment and Loren's promotion decision remain later steps. Active v0.7.0 remains; candidate definitions, cases, rubric, thresholds and budgets were not changed. P39–P56 and P59 remain Approved work; P21 stays outside scope.
+3. **Qualification comparison executed; candidate failed its textual prerequisite:** all40 fresh responses completed without timeouts, maximum86.9sec; independent evaluator scored B then A. Reported candidate28/40target +40/40guardrail =68/80, baseline20/40 +38/40 =58/80; no reported regressions or candidate critical violations. Candidate passes14/19mandatory checks. Required>=36/40target and all mandatory predicates are unmet. **QUAL071-BEHAVIOR-01:** mandatory omissions/status failures concern compatible Node LTS, Node-based probes, preparation-criteria ownership, readiness on complete authorized inputs, and saved hashed assignment/revision bookkeeping. **QUAL071-EVIDENCE-01:** non-verbatim quotations in one judgment per version are retained; reported positive scores are not fully evidence-validated. All12failed candidate target judgments have matching quotes and consistent clause verdicts, so citation correction cannot remove the demonstrated target shortfall. Owner: Coordinator/Testing, with affected role owners after disposition. Disposition selected and completed2026-10-30: two Node omissions are substantive under existing rules; Architecture routing is stricter in the rubric than the shared authority-supply alternative; readiness/persistence judgments are confounded by missing evaluator instructions and scenario/exercise scope. Coordinator per-package planning completeness was also identified for attention. Both evaluator packets omitted the subjects' hypothetical/no-tools instructions. Citation defects are evaluator paraphrase/formatting, not new subject behavior. Recommendation recorded at that checkpoint: prospective evaluation-packet/mode clarification and deterministic citation extraction/errata, then independent preflight; optional role checklist hardening must be explicitly selected. Do not change real blocked semantics or force Architecture authorship. No repair, score change or rerun performed. Five hypothetical fixes alone yield33/40target<36; seven other reported target failures awaited disposition then. [Detailed disposition](docs/qualification-disposition-0.7.1.md). [Scorecard](docs/evaluations/QUAL-071-01/scorecard.md).
+4. **Dispatch was withheld at that checkpoint:** the full cycle had not executed and no application services had started. The then-current plan required its textual prerequisite. Later partial execution is recorded above; Loren subsequently stopped that scope. No full-cycle pass is claimed.
+5. At that checkpoint, final assessment and promotion were future steps; v0.7.0 was active and P39–P56/P59 were Approved work. The later publication decision promoted those definition items in v0.7.1 and moved them to Completed. P21 was not selected.
 
-Selected continuation 2026-10-30: evaluation-packet/citation repair implemented additively; complete subject context transferred, exact source-span citation validation and two errata produced. All443 protected evidence files verified unchanged; forty diagnostic packets assembled, no subject/evaluator rerun or score change. Independent scoped review passed (four test methods, eight additional negative controls, exact packet/errata verification). All seven additional failures dispositioned: telemetry and reversal criteria are supported omissions under existing rules; asset identity, operation/permission/navigation schemas, service topology/version, repetition execution mode and monitoring coverage semantics need prospective fixture/criteria clarification. Optional checklist hardening remains unselected. Next: prepare a separately versioned feasible qualification freeze before any fresh execution. Original failed comparison remains failed; no promotion. [Disposition](docs/qualification-disposition-0.7.1.md).
+Selected continuation 2026-10-30: evaluation-packet/citation repair implemented additively; complete subject context transferred, exact source-span citation validation and two errata produced. All443 protected evidence files verified unchanged; forty diagnostic packets assembled, no subject/evaluator rerun or score change. Independent scoped review passed (four test methods, eight additional negative controls, exact packet/errata verification). All seven additional failures dispositioned: telemetry and reversal criteria are supported omissions under existing rules; asset identity, operation/permission/navigation schemas, service topology/version, repetition execution mode and monitoring coverage semantics need prospective fixture/criteria clarification. Optional checklist hardening remains unselected. Next step recorded at that checkpoint: prepare a separately versioned feasible qualification freeze before any fresh execution. Original failed comparison remains failed; no promotion. [Disposition](docs/qualification-disposition-0.7.1.md).
 
-Selected planning continuation 2026-10-30: revised qualification plan frozen with20 fresh parallel-form cases and40 exact prompts; all80check IDs,19mandatory predicates,40guardrails and numeric thresholds preserved. Independent review **failed** on **PR02-R01** (Testing/test_fault, XS): Coordinator reconciliation guardrail requires reconciliation before summary, but its clause ledger permits summary after only a reconciliation plan. Require explicit in-response reconciliation of supplied fictional facts before scenario summary, separate from planned real persistence; align the clause ledger and delta map in a new amendment. All54 frozen payloads,498 protected files and15 candidate source files verified unchanged. Owner: Testing via Coordinator. Next: select narrow PR02-R01 amendment and independent re-check. Rejected author/review attempt1 and original qualification failure remain charged; plan acceptance and execution are blocked. No subjects/evaluators ran. [Plan status](docs/qualification-plan-0.7.1.md).
+Selected planning continuation 2026-10-30: revised qualification plan frozen with20 fresh parallel-form cases and40 exact prompts; all80check IDs,19mandatory predicates,40guardrails and numeric thresholds preserved. Independent review **failed** on **PR02-R01** (Testing/test_fault, XS): Coordinator reconciliation guardrail requires reconciliation before summary, but its clause ledger permits summary after only a reconciliation plan. Require explicit in-response reconciliation of supplied fictional facts before scenario summary, separate from planned real persistence; align the clause ledger and delta map in a new amendment. All54 frozen payloads,498 protected files and15 candidate source files verified unchanged. Owner: Testing via Coordinator. Next step recorded at that checkpoint: select narrow PR02-R01 amendment and independent re-check. Rejected author/review attempt1 and original qualification failure remain charged; plan acceptance and execution were blocked at that checkpoint. No subjects/evaluators ran. [Plan status](docs/qualification-plan-0.7.1.md).
 
-Selected Q20 amendment completed 2026-10-30: **PR02-R01 closed; independent re-check passed.** Effective qualification plan is revision02 plus the selected Q20 overlay: in-response fictional fact reconciliation must precede scenario summary; actual persistence remains planned and mandatory in the full cycle. All562 protected files,40 packet hashes,80criterion strings/thresholds/19mandatory predicates and15 candidate files verified unchanged;38 other prompts unchanged. Rejected revision02 and original failed comparison remain intact and charged. Coordinator accepted the effective plan for later execution preparation only. Next: selected adapter implementation/independent preflight, exact attempt/subject binding and cumulative budget/authority/isolation reconciliation before fresh qualification. No subjects/evaluators ran;0.7.0 remains active and0.7.1 unqualified. [Plan status](docs/qualification-plan-0.7.1.md).
+Selected Q20 amendment completed 2026-10-30: **PR02-R01 closed; independent re-check passed.** Effective qualification plan is revision02 plus the selected Q20 overlay: in-response fictional fact reconciliation must precede scenario summary; actual persistence remains planned and mandatory in the full cycle. All562 protected files,40 packet hashes,80criterion strings/thresholds/19mandatory predicates and15 candidate files verified unchanged;38 other prompts unchanged. Rejected revision02 and original failed comparison remain intact and charged. Coordinator accepted the effective plan for later execution preparation only. Next step recorded at that checkpoint: selected adapter implementation/independent preflight, exact attempt/subject binding and cumulative budget/authority/isolation reconciliation before fresh qualification. No subjects/evaluators ran;0.7.0 was then active and0.7.1 had not yet qualified. [Plan status](docs/qualification-plan-0.7.1.md).
 
-Selected adapter continuation completed 2026-10-30: implementation frozen; independent preflight **failed** on **ADAPTER01-R01** (Testing/test_fault, S). Full frozen evaluator input exceeds the host command-line argument limit; small-fixture tests and native context capture passed but cannot establish full-size transport readiness. Thirteen author tests and nine independent checks ran; no qualification/model calls. Proposed repair: byte-preserving full-size input transport, full frozen-context synthetic preflight and measured model input/output capacity, preserving all context and criteria. Owner: Testing via Coordinator. Rejected implementation/preflight and581 protected prior files preserved. Authority for preparation verified; native tools[]/exact-context and per-role own-write/peer-denial primitives passed. Budget remains blocked:2916.885 known execution seconds charged; response remainder at most2330.113 versus4800 needed for full fresh reservation, original elapsed anchor retained. Next: select narrow adapter repair/re-check, then explicitly resolve budget and exact execution bindings. No qualification or promotion. Generic harness improvement: preflight full frozen request sizes, not only tiny probes. [Plan status](docs/qualification-plan-0.7.1.md).
+Selected adapter continuation completed 2026-10-30: implementation frozen; independent preflight **failed** on **ADAPTER01-R01** (Testing/test_fault, S). Full frozen evaluator input exceeds the host command-line argument limit; small-fixture tests and native context capture passed but cannot establish full-size transport readiness. Thirteen author tests and nine independent checks ran; no qualification/model calls. Proposed repair: byte-preserving full-size input transport, full frozen-context synthetic preflight and measured model input/output capacity, preserving all context and criteria. Owner: Testing via Coordinator. Rejected implementation/preflight and581 protected prior files preserved. Authority for preparation verified; native tools[]/exact-context and per-role own-write/peer-denial primitives passed. Budget was blocked at that checkpoint:2916.885 known execution seconds charged; response remainder at most2330.113 versus4800 needed for full fresh reservation, original elapsed anchor retained. Next step recorded at that checkpoint: select narrow adapter repair/re-check, then explicitly resolve budget and exact execution bindings. No qualification or promotion. Generic harness improvement: preflight full frozen request sizes, not only tiny probes. [Plan status](docs/qualification-plan-0.7.1.md).
 
-Selected transport repair/budget preparation completed 2026-10-30: stdin removes OS argv limit, but independent re-check **failed**; **ADAPTER01-R01 remains open** because native CLI rejects the full frozen request above its character limit before HTTP. Fifteen deterministic tests pass;648 protected prior references unchanged; no qualification/model calls. Model token/provider capacity and output headroom remain unmeasured. Attempt1 and repairattempt2 preserved/charged, no automatic third attempt. Next proposed scope: bounded supported-input/model-capacity feasibility before another immutable repair/re-check; no truncation or frozen-plan changes. Budget proposal separately **reviewed/pass, not approved**: new6600active seconds (4800subjects +1800scoring/independent semantic review),14400elapsed seconds; preserve measured2916.885 prior seconds and retire unused old capacity as nontransferable, not measured use. Requires explicit selection plus reviewed policy/gate integration; neither applied. Owner: Coordinator for selection; Testing for capacity/transport. Generic readiness lesson: full-size preflight must cover native application limits as well as OS argument limits. [Plan status](docs/qualification-plan-0.7.1.md).
+Selected transport repair/budget preparation completed 2026-10-30: stdin removes OS argv limit, but independent re-check **failed**; **ADAPTER01-R01 was still open at that checkpoint** because native CLI rejects the full frozen request above its character limit before HTTP. Fifteen deterministic tests pass;648 protected prior references unchanged; no qualification/model calls. Model token/provider capacity and output headroom remain unmeasured. Attempt1 and repairattempt2 preserved/charged, no automatic third attempt. Proposed next scope at that checkpoint: bounded supported-input/model-capacity feasibility before another immutable repair/re-check; no truncation or frozen-plan changes. Budget proposal separately **reviewed/pass, not approved**: new6600active seconds (4800subjects +1800scoring/independent semantic review),14400elapsed seconds; preserve measured2916.885 prior seconds and retire unused old capacity as nontransferable, not measured use. At that checkpoint, explicit selection and reviewed policy/gate integration had not occurred. Owner: Coordinator for selection; Testing for capacity/transport. Generic readiness lesson: full-size preflight must cover native application limits as well as OS argument limits. [Plan status](docs/qualification-plan-0.7.1.md).
+
+These earlier recommendations and blocking statuses are retained to explain the
+sequence; they are not open assignments after publication. The later 80/80 textual
+result supersedes earlier aggregate status without rewriting earlier scores. The
+unfinished full cycle is stopped, not passed or deferred for automatic resumption.
 
 ## Approved work
 
-None remaining from the selected0.7.1 definition increment.
+None. Loren selected the remaining backlog in efficient dependency order on
+2026-10-30; P61/P62 were investigated together before P21 implementation. The
+selected work and verification are completed below. Loren subsequently authorized publication of0.7.2 only; no new work is inferred
+from backlog completion.
 
-## Candidate 0.7.1 findings — status investigation complete
+## Historical 0.7.1 findings — outcomes retained, no open assignment
 
-| ID | Affected item / blocker | Responsible role / proposed size | Next action |
+| ID | Affected item / blocker | Responsible role / proposed size | Recorded disposition |
 |---|---|---|---|
 | EF-071-01 | P43: scaffold verification scope absent from shared and Testing output vocabulary (platform review: blocking; general review: minor ambiguity) | Development workflow-change / XS | Selected repair passed static re-check; first rejected handoff retained. |
 | EF-071-02 | P43: scaffold checks still require a baselined plan whose only preparation path requires product G1 | Development workflow-change / S | Selected preparation-criteria baseline repair passed static re-check; no product G3 claimed. |
 | EF-071-03 | P43 repaired-path behavioral re-check: missing criteria returned `needs_decision` instead of required `blocked`;7/8 fails8/8 | Testing/Coordinator / S investigation | Investigation completed 2026-10-29: original7/8 supported; existing rule covers absent criteria. Possible status/escalation conflation, no proven internal cause or necessary edit. Selected contrast diagnostic complete: correct statuses in all4cases in both formats;15/16 each overall due to an evidence-detail omission. Original7/8 retained; no status-rule repair established. [Diagnostic](docs/evaluations/DIAG-071-01/scorecard.md). [Investigation](docs/ef-071-03-investigation.md). |
-| EF-071-04 | Four original broader-suite target omissions: supporting-library policy; health/source rollback evidence; health evidence; saved assignments/revision mapping | Architecture/Development/Deployment/Coordinator / S triage | Preserve per-check evidence and passing original aggregate threshold; DIAG-071-01 also omitted explicit identity/configuration check planning in both formats. No executed failure inferred. Disposition complete 2026-10-29: existing clauses cover all five categories; require fresh mandatory checks and actual cycle evidence, no definition repair established. Qualification plan revision 2 passed the selected QP-071-01 amendment re-check; execution remains unselected. |
+| EF-071-04 | Four original broader-suite target omissions: supporting-library policy; health/source rollback evidence; health evidence; saved assignments/revision mapping | Architecture/Development/Deployment/Coordinator / S triage | Preserve per-check evidence and passing original aggregate threshold; DIAG-071-01 also omitted explicit identity/configuration check planning in both formats. No executed failure inferred. Disposition complete 2026-10-29: existing clauses cover all five categories; fresh mandatory checks and cycle evidence were requested then; no definition repair was established. Qualification plan revision 2 later passed its amendment re-check. Current disposition: textual evaluation passed 80/80; further cycle work was stopped, and publication is complete. |
 
 EF-071-01/02 are retained original static findings, not executed application defects. The reviewers differ on EF-071-01 severity; both agreed EF-071-02 blocked the original P43 candidate. EF-071-03/04 are subsequent textual behavior findings.
-Original P43 review failed; selected narrow repair passed independent static re-check. The candidate is not yet qualified for promotion. Original broader evaluation passed; fresh narrow repair cases failed7/8 and remain separate. Loren explicitly selected the narrow repair/re-check; attempt2 is implemented and static re-check passed; narrow behavioral re-check failed7/8 against8/8. Original failure/evaluation remain preserved. [Candidate review](docs/definition-review-0.7.1.md).
+Original P43 review failed; selected narrow repair passed independent static re-check. At that stage the candidate had not qualified for promotion; v0.7.1 was subsequently published with the evidence limits recorded above. Original broader evaluation passed; fresh narrow repair cases failed7/8 and remain separate. Loren explicitly selected the narrow repair/re-check; attempt2 is implemented and static re-check passed; narrow behavioral re-check failed7/8 against8/8. Original failure/evaluation remain preserved. [Candidate review](docs/definition-review-0.7.1.md).
 
-## Evaluation findings — investigation and qualification complete
+## Historical 0.7.0 evaluation findings — investigation and qualification complete
 
 Loren selected investigation of both findings in this chat. The bounded evidence audit
 is complete: both historical zeros are supported, both obligations already exist,
@@ -93,11 +127,101 @@ reset original attempts. The subsequent selected [four-case diagnostic](docs/eva
 
 ## Proposed work
 
-- **P21 — Update the rehearsal runner to contract 0.5.0.** Source: 0.5.0 static review, 2026-10-25. runner/ recognises 0.4.0 artifact types only (no decision_record, execution_mode or external_baseline). Runtime implementation; needs an explicit request. Owner: Loren. Status: proposed.
+None. All previously approved items are completed below.
 
 ## Deferred work
 
+None.
+
 ## Completed work
+
+- **P61 — Investigate design-to-test coverage interpretation.** Previously unselected
+   retrospective follow-up, assigned an ID for tracking. Owner: workflow
+   authority, with Testing/Experience expertise. Status: **completed and independently reviewed, 2026-10-30**.
+   Existing definitions suffice; no causal definition defect established from the
+   available local records. [Disposition](docs/p61-p62-disposition.md).
+   Scope: determine why an accepted design predicate was misread or omitted when
+   selecting checks; distinguish missing inputs, interpretation and validation.
+   Deliverable: evidence-backed disposition and any recommended change, or a finding
+   that existing guidance suffices. No definition edit or pilot execution included.
+- **P62 — Investigate allowed-mode validation before dispatch.** Previously unselected
+   retrospective follow-up, assigned an ID for tracking. Owner: workflow
+   authority/Coordinator. Status: **completed and independently reviewed, 2026-10-30**.
+   Existing definitions suffice; no causal definition defect established from the
+   available local records. [Disposition](docs/p61-p62-disposition.md). Scope: assess the
+   recorded mode-label mismatch against the0.7.1 role modes and entry conditions;
+   identify the appropriate validation boundary. Deliverable: disposition and
+   mode-validation requirements for P21, without pre-authorizing definition edits.
+- **P21 — Align the rehearsal ledger with contract0.7.1.** Original proposal:
+   update the0.4.0 ledger to0.5.0 (2026-10-25), adding decision records, execution
+   mode and external-baseline handling. Owner: Loren. Status: **implemented and independently reviewed, 2026-10-30**, for the
+   published 0.7.2 release. Schema-2 ledger supports published0.7.1 and explicit
+   candidate bindings; legacy ledgers remain read-only. 22/22 local tests and
+   2/2 subprocess reopen checks passed; both independent findings were corrected
+   and rechecked. [Review](docs/p21-independent-review.md). No production/runtime
+   authority or pilot qualification is claimed.
+   Scope reassessment documented2026-10-30; execution was subsequently selected. The updated target also
+   requires scoped mode/readiness validation, increment and verification bindings,
+   remediation selection/lineage, mandatory self-check semantics, evidence and
+   freshness records, legacy compatibility and focused synthetic tests. Preserve
+   the local trusted-operator bookkeeping boundary; no autonomous runtime or pilot.
+   Consumed the completed P61/P62 disposition; P63 scope/hold validation is included.
+   See [required delta and acceptance evidence](docs/p21-0.7.1-delta.md).
+
+- **P63 — Explicit agent operating limits, scope clarification and confirmation.**
+   Source: Loren's explicit request, 2026-10-30, following unauthorized scope
+   expansion and reported additional expenditure of $100. Owner: Loren (workflow
+   authority); affected definitions: all ten roles and their shared contract.
+   Status: **selected implementation and static review completed, 2026-10-30**
+   (promoted in0.7.2 on2026-10-30). Shared contract §1a, all ten roles,
+   Coordinator dispatch guidance and scope-confirmation template updated. Independent
+   static review passed with no actionable findings; eight scenario-to-clause mappings
+   reviewed. Local checks passed for role metadata, links and unchanged published
+   release records. [Review](docs/p63-static-review.md). No behavioral evaluation,
+   runtime enforcement is claimed. Loren subsequently authorized publication of0.7.2.
+
+   Required constraints:
+   - Never assume or undertake scope expansion. Describe the proposed addition,
+     why it is needed, its affected repositories/systems and expected resource
+     implications; obtain explicit user permission before proceeding.
+   - Whenever a request is ambiguous or not tightly scoped, seek clarity and
+     confirmation of the intended outcome and boundaries before substantive
+     execution. State the proposed interpretation, included work, exclusions and
+     completion criteria in plain language. Silence is not confirmation.
+   - Bind work to the confirmed objective, permitted repositories/files/systems,
+     allowed actions, deliverables, verification scope, time/usage/cost limits
+     where specified, and stop conditions. Missing consequential bounds require
+     clarification; agents must not invent permission or an unlimited budget.
+   - Distinguish permission to discuss, assess, plan, approve a backlog item,
+     implement, evaluate and publish. Backlog approval does not override an
+     explicit instruction to wait. “Finish” or “make it pass” does not authorize
+     unrelated work or silently expand an already agreed scope.
+   - A workflow, candidate definition, inferred dependency or quality gate cannot
+     grant additional user authority. If the requested outcome appears to require
+     out-of-scope work, explain the dependency and offer bounded options; wait for
+     a decision before doing that work. Never turn definition publication into
+     application or pilot development without express permission.
+   - Carry the same limits into delegated assignments and resumed conversations.
+     Delegates cannot enlarge scope; newly discovered work is reported for a
+     decision. Stop at the agreed deliverable or boundary, retain truthful status,
+     and obtain permission before exceeding an agreed resource limit. Unknown
+     cost/usage is reported as unknown, not an estimate presented as measured fact.
+
+   Deliverables when execution is selected: consistent operating-limit guidance
+   in the shared contract and affected role/assignment templates, with a concise
+   scope-confirmation record and examples that a user can understand. Preserve
+   existing explicit authorizations; do not repeatedly seek approval for unchanged,
+   clearly confirmed work. Relevant P21 bookkeeping requirements must be reconciled
+   with this approved scope once the definition changes are designed.
+
+   Acceptance evidence: bounded, domain-neutral checks demonstrate clarification
+   for ambiguous requests; permission before new repositories, deliverables, pilot
+   work or resource-limit increases; approval-with-execution-hold respected;
+   delegated scope preserved; and stopping at the confirmed outcome. Clear requests
+   within existing confirmed bounds proceed without redundant approval loops.
+   No live pilot, paid evaluation or external execution is authorized by this item.
+   Implementation is limited to definition/shared-guidance edits and static review;
+   no behavioral model evaluation or runtime enforcement is claimed.
 
 - **P59 — Modular components, explicit interfaces and justified design abstractions.** Source: Loren's request, 2026-10-29. Require Architecture and Development to prefer highly modular, loosely coupled, highly cohesive components with well-defined interfaces and separation of concerns; apply applicable design principles/patterns including GRASP, SOLID and Gang of Four; encourage generics with a concrete justification. Scope: two role definitions, their outputs/self-checks and evaluation scenarios; retain accepted contracts, thin increments and selected remediation. No mandatory microservices, pattern checklist or speculative generic framework. Owner: Loren; implementation: Architecture/Development definition maintainers. Status: **completed and promoted in0.7.1 on2026-10-30 by explicit publication authority**; independent static reviews and current textual qualification80/80 passed. Historical evaluation results remain in the scorecards. Acceptance: responsibilities/interfaces/dependencies explicit; pattern/generic choices justified with concrete uses and constraints; scoped evidence for conformance; inadequate boundaries routed without unselected refactoring. Next: none for this completed definition increment. See [review](docs/definition-review-0.7.1.md). Related: P57, P51, P46, P48/P50.
 
@@ -186,12 +310,18 @@ reset original attempts. The subsequent selected [four-case diagnostic](docs/eva
 ## Rejected work
 
 
-## Qualification continuation — selected 2026-10-29
+## Historical qualification continuation and follow-up provenance
 
 - QUAL-070-01 continuation: selected 2026-10-29 and executed against unchanged candidate 0.7.0. Owner: Coordinator, Testing, Deployment and Monitoring. Native selection/dismissal confirmed by Loren at measured desktop and narrow viewports, then independently accepted. Original failed/inconclusive attempt retained; selected additional attempt did not reset it. Width concern matched the accepted centered content layout and temporary browser sizing was reset without source edits. Actual recovery/readiness, release, one frozen 60-second observation and refreshed retrospective passed G3–G7. All expected outcomes and durable changes reconciled; independent stop-only closeout retained data/evidence. Final independent qualification assessment passed: **unchanged 0.7.0 qualified**. P57/P58 subsequently promoted by Loren on 2026-10-29 and moved to Completed.
 
-- Qualification retrospective follow-ups (unselected): investigate design-to-test coverage interpretation and allowed-mode validation before dispatch. Evidence is one preserved coverage-reading correction and one mode-label mismatch, not proof that a definition edit is needed. Owner: Coordinator/workflow authority, with Testing/Experience for coverage. Keep the controlled negative branch unchanged; completed stop-only cleanup needs no further action. Any proposed implementation or evaluation requires separate selection.
+- Qualification retrospective follow-ups: originally unselected investigations
+  into design-to-test coverage interpretation and allowed-mode validation before
+  dispatch. Evidence was one coverage-reading correction and one mode-label
+  mismatch, not proof that a definition edit was needed. On2026-10-30 Loren
+  approved these as **P61/P62**, initially with execution on hold, then selected
+  their efficient completion before P21. Both investigations are now completed
+  above with their bounded evidence/dispositions. No pilot work was performed.
 
 - Qualification harness observations (2026-10-30; existing P55/P56 evidence): configuration flags alone did not establish readiness. Model metadata injected nested tools despite absent top-level tools; the default workspace profile allowed writes to a sibling temporary directory. Provider-request capture and explicit per-role permission probes detected both during author self-check. Final restricted configuration passed independent readiness review; no candidate-definition defect or new scope inferred from these harness observations.
 
-- Qualification evaluation-context follow-up (2026-10-30; existing P55/P42/P47): the evaluator received case text/responses but not the exact shared subject instructions, allowing actual exercise constraints to be confused with scenario facts. Proposed repair is complete immutable subject-context transfer and independent packet feasibility review. Evidence quoting should use validated source spans rather than generated quotation strings. These are evaluation-harness findings; no generic semantic-rule defect is established. See the selected disposition above.
+- Historical qualification evaluation-context finding (2026-10-30; existing P55/P42/P47): the evaluator received case text/responses but not the exact shared subject instructions, allowing actual exercise constraints to be confused with scenario facts. The proposed treatment was complete immutable subject-context transfer, independent packet feasibility review and validated source-span quotations. The evaluation-packet/citation continuation recorded above implemented that treatment and passed scoped review. This is retained evaluation-harness history, not another outstanding backlog item; no generic semantic-rule defect was established.

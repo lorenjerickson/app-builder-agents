@@ -1,7 +1,7 @@
 ---
 id: experience
 name: Experience
-version: 0.7.1
+version: 0.7.2
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -16,6 +16,14 @@ interactions, and Testing can assess complete user journeys, without inventing
 presentation rules, recovery behavior, or business intent.
 
 ## 2. Responsibilities and boundaries
+
+Apply [confirmed scope and operating limits](../contracts/operating-contract.md#1a-confirmed-scope-and-operating-limits)
+in every mode. Clarify and obtain confirmation for ambiguous or loosely scoped
+requests before substantive execution; never infer permission to expand scope.
+Bind the assignment's scope confirmation, limits and stop conditions; preserve them
+in handoffs and on resumption. Stop at the confirmed outcome or execution hold.
+Reuse existing clear authorization without redundant approval loops.
+
 Own application of Branding's identity to UI design tokens, component presentation and interaction states,
 asset specifications, responsive layouts, information hierarchy, navigation, UI
 transitions, content, validation feedback, accessibility, focus, keyboard behavior,

@@ -1,18 +1,76 @@
 {
   "type": "init",
   "manifest": {
-    "run_id": "borrowbench-assisted-rehearsal",
-    "contract_version": "0.4.0",
+    "run_id": "synthetic-rehearsal",
+    "contract_version": "0.7.1",
+    "ledger_schema": 2,
     "mode": "workflow_evaluation",
     "rehearsal": true,
-    "objective": "Exercise coordinator bookkeeping with synthetic artifacts and no external actions",
-    "authorization_ref": "user-request:coordinator-ledger-and-handoff-rehearsal",
+    "objective": "Synthetic ledger bookkeeping",
+    "authorization_ref": "fixture:authorization@1",
     "max_attempts": 20,
-    "gates": { "R1": ["handoff-complete"] },
-    "environment_context": {
-      "auth0": "deferred",
-      "accounts": ["member-a", "member-b", "custodian"],
-      "live_application_actions": false
+    "gates": {
+      "R1": [
+        "handoff-complete"
+      ]
+    },
+    "owner": "fixture operator",
+    "scope": "synthetic local ledger only",
+    "profile_ref": "fixture:profile@1",
+    "policy_ref": "fixture:policy@1",
+    "execution_mode": "single_model_sequential",
+    "definition_binding": {
+      "version": "0.7.1",
+      "release_ref": "v0.7.1"
+    },
+    "input_refs": [],
+    "accepted_requirements_ref": null,
+    "authorities": {
+      "product": "fixture authority",
+      "workflow_platform": "fixture authority",
+      "environment": "fixture authority",
+      "brand": "fixture authority"
+    },
+    "enforcement": {
+      "operator": "synthetic operator",
+      "evidence_ref": "fixture:operator-receipt@1",
+      "mechanism": "In-memory fixture; no role tools executed"
+    },
+    "concurrency_limit": 2,
+    "manual_responsibilities": {
+      "isolation": "Not applicable: synthetic local bookkeeping; no execution claim",
+      "metering": "Not applicable: synthetic local bookkeeping; no execution claim",
+      "operational_monitoring": "Not applicable: synthetic local bookkeeping; no execution claim",
+      "environment_targets": "Not applicable: synthetic local bookkeeping; no execution claim",
+      "release_policy": "Not applicable: synthetic local bookkeeping; no execution claim"
+    },
+    "scope_confirmation": {
+      "operator": "synthetic operator",
+      "evidence_ref": "fixture:operator-receipt@1",
+      "ref": "fixture:scope@1",
+      "objective": "Synthetic bookkeeping",
+      "deliverables": "Local ledger",
+      "completion_criteria": "Assertions pass",
+      "verification_scope": "Local synthetic tests",
+      "resource_unknowns": "No model calls; model usage unknown/not measured",
+      "stop_conditions": "Stop on failure or completion",
+      "included": [
+        "ledger"
+      ],
+      "excluded": [
+        "pilot",
+        "deployment"
+      ],
+      "locations": [
+        "ledger-only"
+      ],
+      "phases": [
+        "rehearsal"
+      ],
+      "execution_holds": [],
+      "approved_changes": [],
+      "max_elapsed_ms": 60000,
+      "max_cost": 0
     }
   }
 }

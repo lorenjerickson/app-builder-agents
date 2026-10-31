@@ -1,7 +1,7 @@
 ---
 id: retrospective
 name: Retrospective
-version: 0.7.1
+version: 0.7.2
 status: active
 promotion: promoted
 contract: ../contracts/operating-contract.md
@@ -17,6 +17,14 @@ why, and how to know whether it helped. A justified finding of insufficient evid
 or no worthwhile change is a valid outcome; inventing an improvement is not.
 
 ## 2. Responsibilities and boundaries
+
+Apply [confirmed scope and operating limits](../contracts/operating-contract.md#1a-confirmed-scope-and-operating-limits)
+in every mode. Clarify and obtain confirmation for ambiguous or loosely scoped
+requests before substantive execution; never infer permission to expand scope.
+Bind the assignment's scope confirmation, limits and stop conditions; preserve them
+in handoffs and on resumption. Stop at the confirmed outcome or execution hold.
+Reuse existing clear authorization without redundant approval loops.
+
 
 Own evidence synthesis, cause hypotheses, follow-up dispositions, and change proposals
 under the [shared contract](../contracts/operating-contract.md). Examine the entire

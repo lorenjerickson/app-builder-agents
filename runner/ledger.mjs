@@ -1,8 +1,10 @@
 import { DatabaseSync } from 'node:sqlite';
 import { createHash } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import { manifestPolicy, assignmentPolicy, resultPolicy, receipt, names, text } from './policy.mjs';
 
 // This ledger records a local, synthetic rehearsal. It never executes role tools.
-const VERSION = '0.4.0';
+const SCHEMA = 2;
 const ROLES = ['requirements', 'branding', 'architecture', 'experience', 'development',
   'testing', 'deployment', 'monitoring', 'retrospective', 'coordinator'];
 const OWNERS = {
@@ -12,7 +14,7 @@ const OWNERS = {
   deployment_record: 'deployment', environment_record: 'deployment', operations_plan: 'deployment',
   observation_report: 'monitoring', incident_report: 'monitoring', retrospective_report: 'retrospective',
   change_proposal: 'retrospective', run_manifest: 'coordinator', task_graph: 'coordinator', run_report: 'coordinator',
-  decision_request: '*',
+  decision_request: '*', decision_record: 'coordinator',
 };
 const RESULT_STATUSES = ['succeeded', 'failed', 'blocked', 'needs_decision'];
 const CHECK_OUTCOMES = ['pass', 'fail', 'not_run', 'not_applicable'];
@@ -53,6 +55,16 @@ function emptyState() {
 
 export class Ledger {
   constructor(path) {
+    // Inspect existing histories without a write connection or PRAGMA changes.
+    if (path !== ':memory:' && existsSync(path)) {
+      const probe = new DatabaseSync(path, { readOnly: true });
+      try {
+        const row = probe.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='state'").get();
+        const saved = row && JSON.parse(probe.prepare('SELECT body FROM state WHERE id=1').get()?.body ?? '{}');
+        if (saved?.manifest && saved.manifest.ledger_schema !== SCHEMA) { this.db = probe; this.legacy = true; return; }
+      } catch (error) { probe.close(); throw error; }
+      probe.close();
+    }
     this.db = new DatabaseSync(path);
     this.db.exec(`PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA busy_timeout=5000;
       CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK (id=1), body TEXT NOT NULL);
@@ -75,6 +87,7 @@ export class Ledger {
   }
 
   apply(command) {
+    requireThat(!this.legacy, 'legacy ledger is read-only; create a new schema-2 ledger, no migration');
     object(command, 'command'); string(command.type, 'type');
     // Serialize at the boundary: caller mutation cannot alter committed state.
     const cmd = clone(command);
@@ -102,10 +115,11 @@ export class Ledger {
     string(id, 'task_id'); requireThat(own(state.tasks, id), `unknown task ${id}`); return state.tasks[id];
   }
 
-  artifact(state, ref, { returned = true } = {}) {
+  artifact(state, ref, { returned = true, allowUnknown = false } = {}) {
     string(ref, 'artifact_ref');
     requireThat(own(state.artifacts, ref), `unknown artifact ${ref}`);
     const artifact = state.artifacts[ref];
+    requireThat(allowUnknown || artifact.provenance !== 'unknown', 'unknown provenance is not accepted input');
     requireThat(!artifact.superseded_by && !artifact.invalidated, `stale artifact ${ref}`);
     requireThat(artifact.envelope.completeness === 'complete', `partial artifact ${ref}`);
     if (returned) requireThat(artifact.returned, `unreturned artifact ${ref}`);
@@ -132,7 +146,7 @@ export class Ledger {
       fields(m, 'run_id objective mode contract_version rehearsal authorization_ref max_attempts gates', 'manifest');
       for (const key of ['run_id', 'objective', 'authorization_ref']) string(m[key], key);
       requireThat(m.mode === 'workflow_evaluation' && m.rehearsal === true, 'only rehearsal workflow_evaluation is supported');
-      requireThat(m.contract_version === VERSION, `contract_version must be ${VERSION}`);
+      manifestPolicy(m);
       positive(m.max_attempts, 'max_attempts'); object(m.gates, 'gates');
       for (const [id, checks] of Object.entries(m.gates)) {
         requireThat(/^R[A-Za-z0-9_.-]+$/.test(id), 'only R-prefixed rehearsal gate IDs are supported');
@@ -151,6 +165,9 @@ export class Ledger {
       }
       return { cancelled: true, reason: cmd.reason };
     }
+    if (cmd.type === 'receipt') return this.recordReceipt(state, cmd);
+    if (cmd.type === 'external_baseline') return this.externalBaseline(state, cmd);
+    if (cmd.type === 'select_remediation') return this.selectRemediation(state, cmd);
     if (cmd.type === 'assign') return this.assign(state, cmd);
     if (cmd.type === 'dispatch') return this.dispatch(state, cmd);
     if (cmd.type === 'artifact') return this.registerArtifact(state, cmd);
@@ -199,7 +216,7 @@ export class Ledger {
     requireThat(a.scope !== null && (typeof a.scope === 'string' || Array.isArray(a.scope) || typeof a.scope === 'object'), 'invalid scope');
     requireThat(a.authorization_refs.length > 0, 'assignment requires authorization reference');
     for (const type of a.expected_artifact_types) requireThat(OWNERS[type] === a.role || OWNERS[type] === '*', `role does not own ${type}`);
-    for (const ref of [...a.baseline_refs, ...a.input_refs]) this.artifact(state, ref);
+    for (const ref of [...a.baseline_refs, ...a.input_refs]) this.artifact(state, ref, { allowUnknown: ['discovery','compatibility','workflow_evaluate'].includes(a.mode) });
     for (const id of a.dependency_task_ids) this.task(state, id);
     for (const id of a.required_gate_refs) requireThat(own(state.gates, id), `unknown gate ${id}`);
     if (a.parent_task_id !== undefined) this.task(state, a.parent_task_id);
@@ -208,6 +225,9 @@ export class Ledger {
     requireThat(Number.isFinite(a.limits.max_cost) && a.limits.max_cost >= 0, 'max_cost must be nonnegative');
     positive(a.limits.remaining_task_attempts, 'remaining_task_attempts'); positive(a.limits.remaining_run_attempts, 'remaining_run_attempts');
     strings(a.acceptance_checks, 'acceptance_checks');
+    assignmentPolicy(a, state.manifest);
+    const { assignment_hash, ...savedAssignment } = a;
+    requireThat(assignment_hash === hash(savedAssignment), 'saved assignment hash mismatch');
     // A stable work key is supplied by the operator; also prohibit an exact semantic
     // duplicate under a new key so renaming task IDs cannot reset the obvious case.
     const identity = hash({ role: a.role, mode: a.mode, objective: a.objective, scope: a.scope, baseline_refs: a.baseline_refs, input_refs: a.input_refs });
@@ -225,6 +245,12 @@ export class Ledger {
     const task = this.task(state, cmd.task_id); const a = task.assignment; const work = state.work[task.work_key];
     requireThat(['pending', 'ready', 'failed', 'blocked'].includes(task.status), `cannot dispatch ${task.status} task`);
     requireThat(!task.invalidated, 'assignment inputs invalidated; create a revised assignment');
+    requireThat(state.manifest.scope_confirmation.execution_holds.length === 0 && a.execution_holds.length === 0, 'execution hold blocks dispatch');
+    requireThat(state.attempts.filter(x=>x.status==='running').length < state.manifest.concurrency_limit, 'concurrency limit');
+    if (work.attempts > 0 || ['repair','reverify'].includes(a.mode)) {
+      const selection = task.selection;
+      requireThat(selection && selection.for_attempt === work.attempts + 1, 'remediation selection required for retained lineage');
+    }
     requireThat(!this.uncertain(state, task), 'uncertain action requires reconciliation');
     requireThat(!Object.values(state.tasks).some(other => other !== task && other.work_key === task.work_key && other.status === 'running'), 'work already running');
     requireThat(work.attempts < 3, 'three total work attempts exhausted');
@@ -234,7 +260,7 @@ export class Ledger {
     requireThat(task.attempt < a.limits.remaining_run_attempts, 'assignment run allowance exhausted');
     for (const id of a.dependency_task_ids) requireThat(this.task(state, id).status === 'succeeded' && !this.task(state, id).invalidated, `dependency ${id} not succeeded`);
     for (const id of a.required_gate_refs) requireThat(state.gates[id].verdict === 'pass', `gate ${id} not passed`);
-    for (const ref of [...a.baseline_refs, ...a.input_refs]) this.artifact(state, ref);
+    for (const ref of [...a.baseline_refs, ...a.input_refs]) this.artifact(state, ref, { allowUnknown: ['discovery','compatibility','workflow_evaluate'].includes(a.mode) });
     task.status = 'running'; task.attempt += 1; work.attempts += 1;
     task.dispatched_gate_hashes = Object.fromEntries(a.required_gate_refs.map(id => [id, gateHash(state.gates[id])]));
     state.attempts.push({ task_id: cmd.task_id, work_key: task.work_key, attempt: task.attempt, status: 'running', started_at: new Date().toISOString() });
@@ -261,11 +287,23 @@ export class Ledger {
     if (!a.requirement_ids.length) string(a.traceability_reason, 'traceability_reason');
     const expectedInputs = [...new Set([...task.assignment.input_refs, ...task.assignment.baseline_refs])].sort();
     requireThat(JSON.stringify([...a.input_refs].sort()) === JSON.stringify(expectedInputs), 'artifact input_refs mismatch');
-    for (const ref of a.input_refs) this.artifact(state, ref);
+    for (const ref of a.input_refs) this.artifact(state, ref, { allowUnknown: ['discovery','compatibility','workflow_evaluate'].includes(task.assignment.mode) });
     requireThat(['complete', 'partial'].includes(a.completeness), 'invalid completeness');
     requireThat(a.completeness === 'partial' ? a.missing_fields.length > 0 : a.missing_fields.length === 0, 'completeness and missing_fields disagree');
     requireThat(own(cmd, 'payload') && cmd.payload !== null && typeof cmd.payload === 'object', 'artifact payload must be an object or array');
     requireThat(a.content_hash === hash(cmd.payload), 'artifact content_hash mismatch');
+    if(a.type==='decision_record') {
+      const p=cmd.payload;
+      for(const k of ['question','decision','interpretation','authority','date','source']) string(p[k], `decision ${k}`);
+      strings(p.binding_on,'decision binding_on'); requireThat(p.binding_on.length>0&&p.binding_on.every(x=>ROLES.includes(x)), 'invalid binding roles');
+      strings(p.affected_artifacts,'affected_artifacts'); list(p.required_revisions,'required_revisions');
+      requireThat(p.required_revisions.length>0,'required revisions or explicit none required');
+      for(const item of p.required_revisions) {
+        if(item.artifact==='none')string(item.reason,'no revision reason');
+        else {string(item.artifact,'revision artifact');requireThat(ROLES.includes(item.role),'revision role');string(item.task_ref,'revision task');requireThat(['proposed','selected','complete','deferred'].includes(item.disposition),'revision disposition');}
+      }
+      requireThat(p.supersedes===null||typeof p.supersedes==='string','decision supersedes required');
+    }
     const ref = `${a.artifact_id}@${a.revision}`;
     requireThat(!own(state.artifacts, ref), 'immutable artifact revision already exists');
     state.artifacts[ref] = { envelope: a, payload: cmd.payload, attempt: task.attempt, returned: false, accepted_by: [], invalidated: false, superseded_by: null };
@@ -305,7 +343,7 @@ export class Ledger {
       }
       const expectedInputs = [...new Set([...task.assignment.input_refs, ...task.assignment.baseline_refs])].sort();
       requireThat(JSON.stringify([...r.consumed_refs].sort()) === JSON.stringify(expectedInputs), 'consumed_refs do not match assignment');
-      for (const ref of r.consumed_refs) this.artifact(state, ref);
+      for (const ref of r.consumed_refs) this.artifact(state, ref, { allowUnknown: ['discovery','compatibility','workflow_evaluate'].includes(task.assignment.mode) });
       const outputTypes = [];
       for (const ref of r.output_refs) {
         requireThat(own(state.artifacts, ref), `unknown output ${ref}`);
@@ -326,6 +364,7 @@ export class Ledger {
         for (const id of task.assignment.acceptance_checks) requireThat(r.checks.some(check => check.check_id === id && check.outcome !== 'not_run'), `success missing check ${id}`);
       }
       if (r.status === 'needs_decision') requireThat(outputTypes.includes('decision_request'), 'needs_decision requires decision_request');
+      resultPolicy(r, task.assignment);
       requireThat(!this.uncertain(state, task), 'result cannot settle uncertain external action before reconciliation');
     } catch (error) {
       state.archived_results.push({ result: r, reason: 'malformed', error: error.message });
@@ -344,6 +383,46 @@ export class Ledger {
     work.output_hashes = [...new Set([...work.output_hashes, ...newHashes])];
     this.settleAttempt(state, task, r.status, progress);
     return { status: task.status, accepted_result: true };
+  }
+
+  selectRemediation(state, cmd) {
+    requireThat(!state.cancelled,'run is cancelled');
+    const task=this.task(state,cmd.task_id), work=state.work[task.work_key];
+    requireThat(task.status!=='running','cannot select running work');
+    receipt(cmd.selection,'remediation selection');
+    for(const k of ['authority_ref','finding_ref','scope','recheck_scope'])string(cmd.selection[k],k);
+    const prior=state.attempts.find(x=>x.task_id===cmd.selection.original_task_id&&x.attempt===cmd.selection.original_attempt&&x.work_key===task.work_key&&x.status!=='running');
+    requireThat(prior,'selection must retain original settled work lineage');
+    requireThat(cmd.selection.for_attempt===work.attempts+1,'selection attempt mismatch');
+    task.selection=cmd.selection;
+    return { selected:task.assignment.task_id, for_attempt:cmd.selection.for_attempt };
+  }
+
+  externalBaseline(state, cmd) {
+    requireThat(!state.cancelled,'run is cancelled');
+    string(cmd.ref,'external ref');requireThat(/^[^@]+@[^@]+$/.test(cmd.ref),'external immutable revision required');
+    receipt(cmd.receipt,'ingestion receipt');
+    requireThat(!own(state.artifacts,cmd.ref),'immutable artifact revision already exists');
+    requireThat(cmd.payload!==undefined&&cmd.content_hash===hash(cmd.payload),'external hash mismatch');
+    const [artifact_id,revision]=cmd.ref.split('@');
+    state.artifacts[cmd.ref]={envelope:{artifact_id,revision,type:'external_baseline',producer_role:null,task_id:null,input_refs:[],completeness:'complete',content_hash:cmd.content_hash},
+      payload:cmd.payload,provenance:'unknown',ingestion:cmd.receipt,returned:true,accepted_by:[],invalidated:false,superseded_by:null};
+    return { artifact_ref:cmd.ref,provenance:'unknown' };
+  }
+
+  recordReceipt(state, cmd) {
+    requireThat(!state.cancelled,'run is cancelled');
+    receipt(cmd.receipt,'receipt');string(cmd.id,'receipt id');requireThat(cmd.id !== '__proto__','reserved receipt identity');
+    state.receipts??={};requireThat(!own(state.receipts,cmd.id),'immutable receipt id');
+    const r=cmd.receipt;
+    requireThat(['external_acceptance','placement','observation','decision_propagation','dependency_coverage'].includes(r.kind),'unsupported receipt kind');
+    const artifact=this.artifact(state,r.artifact_ref,{allowUnknown:true});
+    if(r.kind==='external_acceptance') {requireThat(artifact.envelope.type==='external_baseline','not external baseline');string(r.authority_ref,'external authority');artifact.provenance='authority_accepted';}
+    if(r.kind==='placement') {for(const k of ['requested_location','actual_location','reason'])string(r[k],k); requireThat(r.content_hash===artifact.envelope.content_hash,'placement must preserve producer hash');}
+    if(r.kind==='observation')for(const k of ['observed_at','configuration_ref','subject_ref','method','result'])string(r[k],k);
+    if(r.kind==='decision_propagation') {requireThat(artifact.envelope.type==='decision_record','not decision record');strings(r.roles,'propagated roles');requireThat(artifact.payload.binding_on.every(x=>r.roles.includes(x)),'missing binding role');strings(r.reconciled_revision_refs,'reconciled revisions');for(const ref of r.reconciled_revision_refs)this.artifact(state,ref);}
+    if(r.kind==='dependency_coverage') {strings(r.changed_guarantees,'changed guarantees');strings(r.dependency_refs,'dependency refs');for(const ref of r.dependency_refs)this.artifact(state,ref);string(r.recheck_scope,'bounded recheck scope');string(r.consequence_sweep,'consequence sweep');}
+    state.receipts[cmd.id]=r;return {recorded:cmd.id};
   }
 
   action(state, cmd) {
@@ -439,7 +518,16 @@ export class Ledger {
     // Rehearsal conservatively invalidates every gate; no production semantic
     // dependency inference or compatibility proof is claimed by this adapter.
     for (const gate of Object.values(state.gates)) { gate.verdict = 'inconclusive'; gate.invalidated = true; }
-    for (const artifact of Object.values(state.artifacts)) artifact.accepted_by = [];
+    // Conservative gate invalidation must also invalidate completed consumers:
+    // their outputs cannot remain current merely because their dependency was
+    // expressed as a gate reference instead of a direct artifact reference.
+    this.invalidateTasks(state, Object.keys(state.tasks).filter(id =>
+      state.tasks[id].assignment.required_gate_refs.length > 0));
+    for (const [id, task] of Object.entries(state.tasks)) if (task.invalidated) invalidTasks.add(id);
+    for (const [ref, artifact] of Object.entries(state.artifacts)) {
+      artifact.accepted_by = [];
+      if (artifact.invalidated) invalidRefs.add(ref);
+    }
     return { superseded: cmd.artifact_ref, replacement: cmd.new_ref, invalidated_tasks: [...invalidTasks], invalidated_artifacts: [...invalidRefs] };
   }
 }
