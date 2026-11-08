@@ -31,6 +31,15 @@ The preferred technology stack is defined in docs/tech-stack.md. Any recommendat
 
 In conversations that reference these agents look for gaps or opprtunities for improvemnt in the agents themselves. Write these to the BACKLOG.md file in this folder.
 
+## Engineering feedback and evaluation efficiency
+
+For maintenance, review, release or qualification of this definition set, follow
+[engineering feedback guidance](docs/engineering-feedback.md). It preserves the
+outer engineering/inner evaluation boundary and independent review, while defining
+bounded dispatch, full-envelope harness preflight, compact evidence and selective
+rechecks. It is maintenance guidance, not another candidate runtime authority.
+Read the applicable sections; do not launch evaluations merely to apply the guide.
+
 ## Scope control
 
 Execute only the user's confirmed outcome. If a request is ambiguous or not tightly

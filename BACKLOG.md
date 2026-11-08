@@ -1,14 +1,15 @@
 # Project backlog
 
-Updated: 2026-10-30.
+Updated: 2026-11-08.
 
 ## Current state
 
 Active definition set: **v0.7.2**, promoted for publication by Loren on
 2026-10-30. Rollback: **v0.7.1**. All selected backlog work is complete:
 P63 definitions and static review, P61/P62 bounded investigations, and P21 local
-rehearsal ledger implementation and independent review. No approved, proposed or
-deferred items remain. See [promotion record](docs/promotion-0.7.2.md).
+rehearsal ledger implementation and independent review. New proposed work P64/P65 below awaits selection; no definition changes are activated
+by its recording. P66 external engineering guidance was completed with independent
+static review on 2026-11-08; runtime definitions remain v0.7.2. See [promotion record](docs/promotion-0.7.2.md).
 
 Evidence: P63 static review passed; P21's 22/22 author/independent tests and
 2/2 subprocess persistence checks passed. Release verification adds the published
@@ -127,13 +128,43 @@ reset original attempts. The subsequent selected [four-case diagnostic](docs/eva
 
 ## Proposed work
 
-None. All previously approved items are completed below.
+- **P65 — Bound external design-tool waits and persist partial authoring checkpoints.** Source: observed design-revision run, 2026-10-31; an approximately 719-second read-only screenshot call consumed most of a bounded authoring allowance while text remained unsaved. Owner: workflow authority / Coordinator and Experience. Status: proposed, not selected. Consider a pre-call checkpoint of draft text, changed-node identities and write readbacks; budget-aware per-call deadlines or yielded waits; a Coordinator watchdog that can stop a stalled read and reserve closeout/review time; and explicit unknown-outcome reconciliation before any write retry. Acceptance: a delayed export/read cannot erase completed draft progress or prevent an honest timely handoff; interrupted reads are distinguished from uncertain writes; no duplicated mutations, fabricated exports or automatic budget increase. Reuse existing external-action and attempt rules; investigate the host capability before choosing a mechanism. No definition or runtime change is authorized by this entry.
+
+- **P64 — Specify replaceable external-dependency proxies and complete stub implementations.**
+  Source: explicit Loren request during a dependent application's design-alignment review, 2026-10-31.
+  Owner: workflow authority; affected definitions: Architecture and Development, with corresponding contract/template and Testing handoff alignment as needed.
+  Status: **proposed; backlog recording authorized, definition changes and execution not yet selected**. Active v0.7.2 remains unchanged.
+
+  **Architecture instruction to add:** Inventory every external dependency and specify an application-owned proxy interface (port) for each. Core domain code must depend on those interfaces and domain-owned types, not provider SDKs, transport details or provider-specific schemas. Specify operations, inputs/outputs, authorization boundaries, errors, timeouts, retry/idempotency, unknown outcomes and relevant asynchronous events. Isolate provider translation in implementations and select/wire implementations at the composition/configuration boundary. Swapping a conforming dependency implementation must require changes only to its implementation and binding, not changes scattered throughout the core domain. Record compatibility limits explicitly; this does not promise that a provider with materially different capabilities can be swapped without revisiting the contract. Apply the rule to all external dependencies, not just those with a provider already selected; no new service topology or provider choice is implied.
+
+  **Development instruction to add:** Provide a stub implementation of every specified external-dependency proxy interface, including dependencies whose selection is deferred. Stubs must implement the contract sufficiently for decoupled integration testing and holistic, verifiable operation of the authorized application workflows without real providers, credentials, paid calls or external side effects. Supply deterministic fixtures and controllable success, refusal, failure, timeout, pending/unknown and callback/event behavior where applicable, including idempotency and reconciliation semantics. Model enough state to support complete workflows and observable assertions; do not use unconditional-success placeholders. Bind stubs through the same interfaces and composition boundary as real implementations, document how to select/reset them, and identify simulated outcomes clearly in environment/evidence. Keep simulated behavior out of production bindings unless explicitly authorized.
+
+  **Acceptance criteria for the future definition change:**
+  1. Architecture outputs include a complete dependency-to-interface-to-implementation/stub map, with each deferred selection explicit and every boundary contract specified.
+  2. Development outputs include runnable stubs, deterministic scenario controls and documented bindings for every interface; all currently authorized workflows can be exercised coherently with deferred dependencies stubbed.
+  3. A conformance/change-isolation check demonstrates that switching between stub and another conforming implementation changes only the implementation/binding, with no provider-specific changes spread through domain code.
+  4. Independent Testing can run integration and whole-workflow checks using the stubs and distinguish stub-backed evidence from real-provider verification. Stub-backed success never closes provider selection, live integration, operational-readiness or release conditions that require real dependencies.
+  5. Existing scope deferrals remain intact: stubs enable the authorized scope without promoting deferred product features or choosing providers. The rule describes required deliverables; it does not authorize unselected implementation, testing or deployment.
+
+  Next action: select the bounded definition/contract/template update and its review; retain evidence and release/version discipline before activating the changed instructions.
+
 
 ## Deferred work
 
 None.
 
 ## Completed work
+
+- **P66 — Bound engineering feedback overhead without weakening evaluation.**
+  Selected and completed 2026-11-08. Added linked external maintenance guidance
+  for outcome boundaries, native/helper dispatch accounting, complete-request
+  preflight, lossless evidence reuse, dependency invalidation, failure routing and
+  independent delta review. [Guidance](docs/engineering-feedback.md);
+  [independent static review](docs/p66-static-review.md): pass, no blocking findings.
+  Links and whitespace checked; pre-existing P64/P65 content preserved. Published
+  v0.7.2 runtime definitions and release bindings unchanged; maintenance guidance
+  is local and uncommitted. No pilot, qualification rerun, publication, behavioral
+  result or measured usage-reduction claim. No further execution selected.
 
 - **P61 — Investigate design-to-test coverage interpretation.** Previously unselected
    retrospective follow-up, assigned an ID for tracking. Owner: workflow

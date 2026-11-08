@@ -55,6 +55,7 @@ Static definition reviews and the assisted ledger rehearsal are complete. Scoped
 - [Assisted coordinator ledger](runner/README.md): durable bookkeeping, operator examples and handoff rehearsal.
 - [Blueprint](docs/blueprint.md): conceptual rationale and later pilot proposal.
 - [Requirements template](templates/requirements.md): starting artifact format for Requirements.
+- [Engineering feedback guidance](docs/engineering-feedback.md): maintaining and evaluating this system with bounded usage and independent review.
 - [Project backlog](BACKLOG.md): agent gaps, improvements and next work.
 
 The shared operating contract is authoritative for the draft's vocabulary and
